@@ -3,38 +3,7 @@ const connect = require('../Database/DB')
 const router = require('express-promise-router')()
 
 
-// router.get('/test',async (req,res,next) => {
-//     try {
-//         connect.query('SELECT * FROM device_asset.acc_adm',(err,rows) => {
-//             if (err){
-//                 res.send(err)
-//             }
-//             else{
-//                 res.send(rows)
-//             }
-//         }) 
-//     }
-//     catch (e) {
-//         res.send(e)
-//     }
-// })
 
-
-router.get('/notebook',async (req,res,next) => {
-    try {
-        connect.query('SELECT * FROM device_asset.notebook_it_atess',(err,rows) => {
-            if (err){
-                res.send(err)
-            }
-            else{
-                res.send(rows)
-            }
-        }) 
-    }
-    catch (e) {
-        res.send(e)
-    }
-})
 
 //get Admin
 router.get('/tbl_admin',async (req,res,next) => {
@@ -69,6 +38,26 @@ router.get('/tbl_admin/Search',async (req,res,next)=> {
         res.send(e)
     }
 })
+
+//get admin for Search by Role
+router.get ("/get/employee/:admin_designation" ,(req,res,next) => {
+    const admin_designation = req.params.admin_designation;
+    console.log(req.params)
+
+    connect.query('SELECT * FROM device_asset.tbl_admin WHERE admin_designation = ? ',admin_designation,
+    (err,rows) => {
+        if (err){
+            res.send(err)
+        }
+        else {
+            Object.keys(rows).forEach(function (key) {
+                var row = rows[key];
+                res.send(row)
+            })
+        }
+    }) 
+})
+
 
 
 //add employee
