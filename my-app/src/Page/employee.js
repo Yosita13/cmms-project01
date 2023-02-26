@@ -25,10 +25,6 @@ import Employeeslist from '../Page/employeeslist';
 import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
 
 
-
-
-
-
 const { Option } = Select;
 
 const AllEmployees = () => {
@@ -44,8 +40,6 @@ const AllEmployees = () => {
   const [admin_password, setAdmin_password] = useState("");
   const [admin_phone, setAdmin_phone] = useState("");
   const [admin_designation, setAdmin_designation] = useState("");
-  const [created_timestamp, setCreated_timestamp] = useState("");
-  const [updated_timestamp, setUpdated_timestamp] = useState("");
   const [admin_address, setAdmin_address] = useState("");
   const [admin_newphone, setAdmin_newphone] = useState("");
   const [admin_id, setAdmin_id] = useState("");
@@ -112,6 +106,15 @@ const AllEmployees = () => {
     }
 
   }
+
+  const Designation = (value) => {
+    console.log('des',value)
+    const des = Admin.filter((des) => des.admin_designation == value.Designation)
+    setAdmin_designation(Designation);
+    console.log('333')
+  }
+
+
   const onReset = () => {
     form.resetFields();
     getAdmin();
@@ -261,32 +264,7 @@ const AllEmployees = () => {
     form.setFieldValue({ admin_password: e.target.value })
   }
 
-  const handleEmployee = () => {
-
-    if (EmployeeName === null) {
-      const emp = Admin.filter((emp) => emp.admin_id === EmployeeID)
-      setAdmin(emp)
-      console.log('แต๋มสวย')
-      console.log(emp);
-      console.log(EmployeeName);
-      console.log('id', EmployeeID);
-    } else if (EmployeeID === null) {
-      const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === EmployeeName)
-      setAdmin(emp)
-      console.log(emp);
-      console.log('แต๋มขี้เหล่')
-      console.log(emp);
-      console.log(EmployeeName);
-      console.log('id', EmployeeID);
-
-    }
-  }
-
-  const handleClear = async () => {
-    setEmployeeID(null)
-    setEmployeeName(null)
-    getAdmin()
-  }
+  
 
   
 const handleButtonClick = (e) => {
@@ -396,12 +374,12 @@ const menuProps = {
             <Button type="primary" danger onClick={() => {deleteEmployees()}}>Delete</Button>
           </Col> */}
 
-          <Button type="primary" success onClick={() => getEmployees(text)}
+          <Button type="primary"  success onClick={() => getEmployees(text)} 
             data-bs-toggle="modal" data-bs-target="#add_employee"><i className="fa fa-plus" />
             Edit
           </Button>
 
-          <Button type="primary" danger onClick={() => deleEmployees(text)}
+          <Button type="primary"  danger onClick={() => deleEmployees(text)}
             data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
             delete
           </Button>
@@ -913,6 +891,7 @@ const menuProps = {
 
                   
                 </Form.Item>
+              
 
                 
                 
@@ -937,8 +916,8 @@ const menuProps = {
                   </Dropdown>
                   <label className="focus-label">Designation</label>
                 </Space>
-
-              </Form.Item>
+                </Form.Item>
+            
              
               {/* <Form.Item
                     name="id"

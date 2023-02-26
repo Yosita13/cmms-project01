@@ -246,7 +246,7 @@ function RepairDetails() {
                                             {/* Page Content */}
                                             <div className="content container-fluid">
                                                 <div className="row">
-                                                    <div className="col-sm-12">
+                                                    <div className="col-sm-12"> 
 
                                                         {/* Account Logo */}
 
