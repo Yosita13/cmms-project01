@@ -40,6 +40,7 @@ const AllEmployees = () => {
   const [admin_address, setAdmin_address] = useState("");
   const [admin_id, setAdmin_id] = useState("");
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const [SearchEmployee,setSearchEmployee] = useState();
 
 
@@ -186,7 +187,41 @@ const AllEmployees = () => {
     setOpen(false);
   };
 
+  const onFinish2 = (value) => {
+    console.log(value);
 
+    if (value.name === undefined) {
+      console.log('แต๋มสวย')
+      const emp = Admin.filter((emp) => emp.admin_id === value.id)
+      setAdmin(emp)
+      // alert(`${Admin}`)
+
+    } else if (value.id === undefined) {
+      const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === value.name)
+      setAdmin(emp)
+      console.log(emp);
+      console.log('แต๋มขี้เหล่')
+
+    }else if(value.name !== undefined && value.id !== undefined){
+      const emp1 = Admin.filter((emp1) => (emp1.admin_id === value.id) && emp1.admin_name.split(" ")[0] === value.name)
+      // const emp2 = Admin.filter((emp2) => emp2.admin_name.split(" ")[0] === value.name)
+      setAdmin(emp1)
+      console.log('1',emp1)
+      // console.log('2',emp2);
+    // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] !== value.name)){
+    //   setAdmin([])
+    // }
+    // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] === value.name)){
+    //   setAdmin(emp1)
+    // }
+
+    }
+
+  }
+  const onReset = () => {
+    form.resetFields();
+    getAdmin();
+  };
 
 
   return (
@@ -445,56 +480,138 @@ const AllEmployees = () => {
               <a href="#" className="btn btn-success btn-block w-100"> Search </a>
             </div>
           </div> */}
+
+          
           {/* Search Filter */}
-        
-          <div className="row filter-row">
-            <div className="col-sm-6 col-md-3">
+          <Form
+            // {...layout}
+
+            form={form2}
+            name="control-hooks"
+            onFinish={onFinish2}
+          // style={{
+          //   maxWidth: 600,
+          // }}
+          >
+            <div className="row filter-row">
+              <Form.Item
+                style={{
+                  marginBottom: 0,
+                }}
+              >
+                <Form.Item
+                  name="id"
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //   },
+                  // ]}
+                  style={{
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
+                  }}
+                >
+                  <input className="form-control floating" placeholder="Employee ID" />
+                </Form.Item>
+                <Form.Item
+                  name="name"
+
+                  style={{
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
+                    margin: '0 8px',
+                  }}
+                >
+                  <input className="form-control floating" placeholder="Employee Name" />
+                </Form.Item>
+              </Form.Item>
+              {/* <Form.Item
+        name="id"
+       
+      >
+       
+          <div className="col-sm-6 col-md-3"> 
               <div className="form-group form-focus">
-                <input type="text" className="form-control floating" />
-                
-                <label className="focus-label">Employee ID</label>
+        <input className="form-control floating" placeholder="Employee ID"/>
+        </div>
+        </div>
+        </div>
+      </Form.Item> */}
+              {/* <input type="text" className="form-control floating" onChange={(e) => setEmployeeID(e.target.value)} placeholder="Employee ID"/> */}
+
+
+              {/* <Form.Item name="name"
               
+              >
+               <div className="col-sm-6 col-md-3">
+              <div className="form-group form-focus">
+                <input className="form-control floating" placeholder="Employee Name" />
                 
               </div>
+            </div> 
+              </Form.Item> */}
+
+              {/* </div>
+            </div> */}
+
+              {/* <div className="col-sm-6 col-md-2">
+                <section className="form-group form-focus select-focus">
+                  <div className="btn-group">
+                    <select type="button" className="btn btn-secondary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <option>Select Designation</option>
+                      <option>Admin</option>
+                      <option>IT Support</option>
+
+                    </select>
+
+                    <label className="focus-label">Designation</label>
+                  </div>
+                </section>
+              </div> */}
+              
             </div>
-            <div className="col-sm-6 col-md-3">
-              <div className="form-group form-focus">
-                <input type="text" className="form-control floating" />
-                <label className="focus-label">Employee Name</label>
+
+            <Form.Item >
+              {/* <Button type="primary" htmlType="submit">
+        Search
+        </Button> */}
+              <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
+                <Button type="primary" htmlType="submit" className="btn btn-success btn-block w-20">
+                  Search
+                </Button>
+                <Button htmlType="button" className="btn btn-danger btn-block w-20 " style={{ marginLeft: '5px' }} onClick={onReset}>
+                  Reset
+                </Button>
+                {/* <a href="#" className="btn btn-success btn-block w-20" htmlType="submit"> Search </a> */}
+                {/* <a href="#" className="btn btn-danger btn-block w-20 " style={{ marginLeft : '5px' }}  onClick={handleClear} > Clear </a> */}
+                <div></div>
               </div>
-            </div>
-            
+
+            </Form.Item>
+
+            {/* <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
+              <a href="#" className="btn btn-success btn-block w-20" > Search </a>
+              <a href="#" className="btn btn-danger btn-block w-20 " style={{ marginLeft : '5px' }}  onClick={handleClear} > Clear </a>
+              <div></div>
+            </div> */}
+          </Form>
+          
             
 
-            <div className="col-sm-6 col-md-2">
-              <section className="form-group form-focus select-focus">
-                <div className="btn-group">
-                  <select type="button" className="btn btn-secondary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <option>Select Designation</option>
-                    <option>Admin</option>
-                    <option>IT Support</option>
-                  
-                  </select>
-                  
-                  <label className="focus-label">Designation</label>
-                </div>
-              </section>
-            </div>
+            
 
-            <div className="col-sm-6 col-md-4" style={{ textAlign: 'right' }}>
-              <a href="#" className="btn btn-success btn-block w-50"> Search </a>
-            </div>
+            
           </div>
         </div>
         {/* /employee */}
-        <Employeeslist />
+        <Employeeslist Admin={Admin}/>
         {/* Add Employee Modal */}
         <Addemployee />
         {/* /Add Employee Modal */}
        
         
       </div>
-    </div>
+   
   );
 }
 

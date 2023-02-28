@@ -9,10 +9,10 @@ import {
 } from "../Entryfile/imagepath"
 import Addemployee from "../_components/modelbox/Addemployee"
 import Editemployee from "../_components/modelbox/Editemployee"
-import { DownOutlined ,UserOutlined} from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import Header from '../initialpage/Sidebar/header'
 import Sidebar from '../initialpage/Sidebar/sidebar'
-import { Dropdown, Button, Col, Modal, Space, Table, Tag , MenuProps, message,Tooltip } from 'antd';
+import { Dropdown, Button, Col, Modal, Space, Table, Tag } from 'antd';
 import {
   Form,
   Input,
@@ -24,7 +24,6 @@ import {
 import Employeeslist from '../Page/employeeslist';
 import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
 
-
 const { Option } = Select;
 
 const AllEmployees = () => {
@@ -35,11 +34,14 @@ const AllEmployees = () => {
   const [Admin, setAdmin] = useState([])
   const [Edit, setEdit] = useState([])
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const [admin_name, setAdmin_name] = useState("");
   const [admin_email, setAdmin_email] = useState("");
   const [admin_password, setAdmin_password] = useState("");
   const [admin_phone, setAdmin_phone] = useState("");
   const [admin_designation, setAdmin_designation] = useState("");
+  const [created_timestamp, setCreated_timestamp] = useState("");
+  const [updated_timestamp, setUpdated_timestamp] = useState("");
   const [admin_address, setAdmin_address] = useState("");
   const [admin_newphone, setAdmin_newphone] = useState("");
   const [admin_id, setAdmin_id] = useState("");
@@ -90,31 +92,22 @@ const AllEmployees = () => {
       console.log(emp);
       console.log('แต๋มขี้เหล่')
 
-    } else if (value.name !== undefined && value.id !== undefined) {
+    }else if(value.name !== undefined && value.id !== undefined){
       const emp1 = Admin.filter((emp1) => (emp1.admin_id === value.id) && emp1.admin_name.split(" ")[0] === value.name)
       // const emp2 = Admin.filter((emp2) => emp2.admin_name.split(" ")[0] === value.name)
       setAdmin(emp1)
-      console.log('1', emp1)
+      console.log('1',emp1)
       // console.log('2',emp2);
-      // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] !== value.name)){
-      //   setAdmin([])
-      // }
-      // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] === value.name)){
-      //   setAdmin(emp1)
-      // }
+    // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] !== value.name)){
+    //   setAdmin([])
+    // }
+    // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] === value.name)){
+    //   setAdmin(emp1)
+    // }
 
     }
 
   }
-
-  const Designation = (value) => {
-    console.log('des',value)
-    const des = Admin.filter((des) => des.admin_designation == value.Designation)
-    setAdmin_designation(Designation);
-    console.log('333')
-  }
-
-
   const onReset = () => {
     form.resetFields();
     getAdmin();
@@ -142,6 +135,9 @@ const AllEmployees = () => {
     }
   };
 
+
+
+
   useEffect(() => {
     getAdmin()
   }, [])
@@ -158,7 +154,52 @@ const AllEmployees = () => {
 
   console.log(Admin)
 
- 
+  const items = [
+    {
+      label: <a href="/app/profile/employee-profile">My Profile</a>,
+      key: '0',
+    },
+    {
+      label: <a href="/settings/companysetting">Settings</a>,
+      key: '1',
+    },
+    {
+      label: <a href="/login">Logout</a>,
+      key: '2',
+    },
+  ];
+
+
+
+  // const addAdmin = () => {
+  //   axios.post('http://localhost:5000/DB/tbl_admin', {
+  //     admin_name: admin_name,
+  //     admin_designation: admin_designation,
+  //     admin_email: admin_email,
+  //     admin_password: admin_password,
+  //     // confirmpassword: confirmpassword,
+  //     admin_phone: admin_phone,
+  //     created_timestamp : created_timestamp ,
+  //     updated_timestamp : updated_timestamp ,
+  //     admin_address: admin_address,
+  //     admin_id: admin_id
+  //   }).then(() => {
+  //     setAdmin([
+  //       {
+  //         admin_name: admin_name,
+  //         admin_designation: admin_designation,
+  //         admin_email: admin_email,
+  //         admin_password: admin_password,
+  //         //confirmpassword: confirmpassword,
+  //         admin_phone: admin_phone,
+  //         created_timestamp : created_timestamp ,
+  //         updated_timestamp : updated_timestamp ,
+  //         admin_address: admin_address,
+  //         admin_id: admin_id
+  //       }
+  //     ])
+  //   })
+  // }
 
 
   const prefixSelector = (
@@ -170,7 +211,6 @@ const AllEmployees = () => {
       </Select>
     </Form.Item>
   );
-
   const toggleMobileMenu = () => {
     setMenu(!menu)
   }
@@ -222,6 +262,8 @@ const AllEmployees = () => {
       alert('success!!')
     })
 
+
+
   }
 
 
@@ -245,8 +287,11 @@ const AllEmployees = () => {
       }
       //console.log('222',defaultValue);
       setInitialValues(defaultValue);
+
+
     })
     showModal()
+
 
   }
 
@@ -264,43 +309,33 @@ const AllEmployees = () => {
     form.setFieldValue({ admin_password: e.target.value })
   }
 
-  
+  const handleEmployee = () => {
 
-  
-const handleButtonClick = (e) => {
-  message.info('Click on left button.');
-  console.log('click left button', e);
-};
 
-const handleMenuClick= (e) => {
-  message.info('Click on menu item.');
-  console.log('click', e);
-};
+    if (EmployeeName === null) {
+      const emp = Admin.filter((emp) => emp.admin_id === EmployeeID)
+      setAdmin(emp)
+      console.log('แต๋มสวย')
+      console.log(emp);
+      console.log(EmployeeName);
+      console.log('id', EmployeeID);
+    } else if (EmployeeID === null) {
+      const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === EmployeeName)
+      setAdmin(emp)
+      console.log(emp);
+      console.log('แต๋มขี้เหล่')
+      console.log(emp);
+      console.log(EmployeeName);
+      console.log('id', EmployeeID);
 
-const items= [
-  {
-    label: '1st menu item',
-    key: '1',
-    icon: <UserOutlined />,
-  },
-  {
-    label: '2nd menu item',
-    key: '2',
-    icon: <UserOutlined />,
-  },
-  {
-    label: '3rd menu item',
-    key: '3',
-    icon: <UserOutlined />,
-    
-  },
- 
-];
+    }
+  }
 
-const menuProps = {
-  items,
-  onClick: handleMenuClick,
-};
+  const handleClear = async () => {
+    setEmployeeID(null)
+    setEmployeeName(null)
+    getAdmin()
+  }
 
 
   const columns = [
@@ -339,7 +374,17 @@ const menuProps = {
       title: 'Role',
       dataIndex: 'admin_designation',
       render: (text, record) => <Tag>{text}</Tag>
-   
+      //console.log(text)
+
+      // <div className="dropdown">
+      // <a href="" className="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{text} </a>
+      // <div className="dropdown-menu">
+      //   <a className="dropdown-item" href="#">Software Engineer</a>
+      //   <a className="dropdown-item" href="#">Software Tester</a>
+      //   <a className="dropdown-item" href="#">Frontend Developer</a>
+      //   <a className="dropdown-item" href="#">UI/UX Developer</a>
+      // </div>
+      // </div>
 
     },
     // {
@@ -374,15 +419,21 @@ const menuProps = {
             <Button type="primary" danger onClick={() => {deleteEmployees()}}>Delete</Button>
           </Col> */}
 
-          <Button type="primary"  success onClick={() => getEmployees(text)} 
+          <Button type="primary" success onClick={() => getEmployees(text)}
             data-bs-toggle="modal" data-bs-target="#add_employee"><i className="fa fa-plus" />
             Edit
           </Button>
 
-          <Button type="primary"  danger onClick={() => deleEmployees(text)}
+          <Button type="primary" danger onClick={() => deleEmployees(text)}
             data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
             delete
           </Button>
+
+
+
+
+
+
 
           <Modal
             width={650}
@@ -844,12 +895,10 @@ const menuProps = {
           </div> */}
           {/* Search Filter */}
 
-          
-
           <Form
             // {...layout}
 
-            form={form}
+            form={form2}
             name="control-hooks"
             onFinish={onFinish2}
           // style={{
@@ -857,7 +906,6 @@ const menuProps = {
           // }}
           >
             <div className="row filter-row">
-            
               <Form.Item
                 style={{
                   marginBottom: 0,
@@ -872,69 +920,41 @@ const menuProps = {
                   // ]}
                   style={{
                     display: 'inline-block',
-                    width: 'calc(30% - 10px)',
+                    width: 'calc(50% - 8px)',
                   }}
                 >
                   <input className="form-control floating" placeholder="Employee ID" />
                 </Form.Item>
-                
                 <Form.Item
                   name="name"
 
                   style={{
                     display: 'inline-block',
-                    width: 'calc(30% - 10px)',
+                    width: 'calc(50% - 8px)',
                     margin: '0 8px',
                   }}
                 >
                   <input className="form-control floating" placeholder="Employee Name" />
-
-                  
                 </Form.Item>
-              
-
-                
-                
-{/*                  
-                    <select type="button" className="btn btn-secondary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <option>Select Designation</option>
-                      <option>Admin</option>
-                      <option>IT Support</option>
-                    </select>
-                    
-                  */}
-                
-
-                <Space wrap className="form-group form-focus select-focus"   >
-                  <Dropdown type="button"  className="btn btn-secondary dropdown-toggle me-5 "  menu={menuProps}>
-                    <Button>
-                      <Space>
-                      Select Designation
-                        
-                      </Space>
-                    </Button>
-                  </Dropdown>
-                  <label className="focus-label">Designation</label>
-                </Space>
-                </Form.Item>
-            
-             
+              </Form.Item>
               {/* <Form.Item
-                    name="id"
+        name="id"
        
-                  >
+      >
        
-                <div className="col-sm-6 col-md-3"> 
-                    <div className="form-group form-focus">
-                      <input className="form-control floating" placeholder="Employee ID"/>
-                    </div>
-                </div>
-              </div>
-                </Form.Item> */}
-              {   /* <input type="text" className="form-control floating" onChange={(e) => setEmployeeID(e.target.value)} placeholder="Employee ID"/> */}
+          <div className="col-sm-6 col-md-3"> 
+              <div className="form-group form-focus">
+        <input className="form-control floating" placeholder="Employee ID"/>
+        </div>
+        </div>
+        </div>
+      </Form.Item> */}
+              {/* <input type="text" className="form-control floating" onChange={(e) => setEmployeeID(e.target.value)} placeholder="Employee ID"/> */}
 
 
-              {/* <Form.Item name="name">
+              {/* <Form.Item name="name"
+              
+              >
                <div className="col-sm-6 col-md-3">
               <div className="form-group form-focus">
                 <input className="form-control floating" placeholder="Employee Name" />
@@ -946,13 +966,27 @@ const menuProps = {
               {/* </div>
             </div> */}
 
+              {/* <div className="col-sm-6 col-md-2">
+                <section className="form-group form-focus select-focus">
+                  <div className="btn-group">
+                    <select type="button" className="btn btn-secondary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <option>Select Designation</option>
+                      <option>Admin</option>
+                      <option>IT Support</option>
+
+                    </select>
+
+                    <label className="focus-label">Designation</label>
+                  </div>
+                </section>
+              </div> */}
               
             </div>
 
             <Form.Item >
               {/* <Button type="primary" htmlType="submit">
-                    Search
-                    </Button> */}
+        Search
+        </Button> */}
               <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
                 <Button type="primary" htmlType="submit" className="btn btn-success btn-block w-20">
                   Search

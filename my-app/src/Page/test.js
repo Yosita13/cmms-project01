@@ -12,7 +12,7 @@ import Editemployee from "../_components/modelbox/Editemployee"
 import { DownOutlined } from '@ant-design/icons';
 import Header from '../initialpage/Sidebar/header'
 import Sidebar from '../initialpage/Sidebar/sidebar'
-import { Dropdown,Button, Col, Modal, Space ,Table, Tag} from 'antd';
+import { Dropdown, Button, Col, Modal, Space, Table, Tag } from 'antd';
 import {
   Form,
   Input,
@@ -23,70 +23,109 @@ import {
 } from 'antd';
 import Employeeslist from '../Page/employeeslist';
 import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
-import { AudioOutlined } from '@ant-design/icons';
-
 
 const { Option } = Select;
 
-const Employees = () => {
+const AllEmployees = () => {
 
- 
-    const [menu, setMenu] = useState(false)
-    const [open, setOpen] = useState(false)
-    const [Admin, setAdmin] = useState([])
-    const [Edit, setEdit] = useState([])
-    const [form] = Form.useForm();
-    const [admin_name, setAdmin_name] = useState("");
-    const [admin_email, setAdmin_email] = useState("");
-    const [admin_password, setAdmin_password] = useState("");
-    const [admin_phone, setAdmin_phone] = useState("");
-    const [admin_designation, setAdmin_designation] = useState("");
-    const [created_timestamp, setCreated_timestamp] = useState("");
-    const [updated_timestamp, setUpdated_timestamp] = useState("");
-    const [admin_address, setAdmin_address] = useState("");
-    const [admin_newphone, setAdmin_newphone] = useState("");
-    const [admin_id, setAdmin_id] = useState("");
-    const [dataEmployee,setDataEmployee] = useState();
-    const [initialValues,setInitialValues] = useState();
-    const [newPassword,setNewPassword] = useState();
 
-  const onFinish =async  (values) => {
+  const [menu, setMenu] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [Admin, setAdmin] = useState([])
+  const [Edit, setEdit] = useState([])
+  const [form] = Form.useForm();
+  const [admin_name, setAdmin_name] = useState("");
+  const [admin_email, setAdmin_email] = useState("");
+  const [admin_password, setAdmin_password] = useState("");
+  const [admin_phone, setAdmin_phone] = useState("");
+  const [admin_designation, setAdmin_designation] = useState("");
+  const [created_timestamp, setCreated_timestamp] = useState("");
+  const [updated_timestamp, setUpdated_timestamp] = useState("");
+  const [admin_address, setAdmin_address] = useState("");
+  const [admin_newphone, setAdmin_newphone] = useState("");
+  const [admin_id, setAdmin_id] = useState("");
+  const [dataEmployee, setDataEmployee] = useState();
+  const [initialValues, setInitialValues] = useState();
+  const [newPassword, setNewPassword] = useState();
+  const [EmployeeID, setEmployeeID] = useState(null);
+  const [EmployeeName, setEmployeeName] = useState(null);
+
+  console.log('employeeID', EmployeeID);
+
+  const onFinish = async (values) => {
     setOpen(false);
     form.resetFields();
     console.log('Received values of form: ', values);
     try {
       console.log('Received values of form: ', values);
-      const {data} = await axios.post('http://localhost:5000/DB/tbl_admin2',{
-        admin_id:values.ID,
-        admin_name : values.Name,
-        admin_email : values.email,
-        admin_password : values.password,
-        admin_phone : values.phone,
-        admin_address : values.Address,
-        admin_designation : values.role
+      const { data } = await axios.post('http://localhost:5000/DB/tbl_admin2', {
+        admin_id: values.ID,
+        admin_name: values.Name,
+        admin_email: values.email,
+        admin_password: values.password,
+        admin_phone: values.phone,
+        admin_address: values.Address,
+        admin_designation: values.role
       })
       console.log(data);
 
       alert('success!!')
 
-    }catch(e){
+    } catch (e) {
 
     }
   };
 
-  const Finish = async(values) => {
+  const onFinish2 = (value) => {
+    console.log(value);
+
+    if (value.name === undefined) {
+      console.log('แต๋มสวย')
+      const emp = Admin.filter((emp) => emp.admin_id === value.id)
+      setAdmin(emp)
+      // alert(`${Admin}`)
+
+    } else if (value.id === undefined) {
+      const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === value.name)
+      setAdmin(emp)
+      console.log(emp);
+      console.log('แต๋มขี้เหล่')
+
+    }else if(value.name !== undefined && value.id !== undefined){
+      const emp1 = Admin.filter((emp1) => (emp1.admin_id === value.id) && emp1.admin_name.split(" ")[0] === value.name)
+      // const emp2 = Admin.filter((emp2) => emp2.admin_name.split(" ")[0] === value.name)
+      setAdmin(emp1)
+      console.log('1',emp1)
+      // console.log('2',emp2);
+    // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] !== value.name)){
+    //   setAdmin([])
+    // }
+    // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] === value.name)){
+    //   setAdmin(emp1)
+    // }
+
+    }
+
+  }
+  const onReset = () => {
+    form.resetFields();
+    getAdmin();
+  };
+  const Finish = async (values) => {
     setOpen(false);
     form.resetFields();
     console.log('Received values of form: ', values);
     try {
       const { data } = await axios.put(`http://localhost:5000/DB/update/${values.admin_id}`,
-      { admin_id: values.admin_id,
-        admin_name: values.admin_name,
-        admin_email: values.admin_email,
-        admin_password: values.admin_password,
-        admin_phone: values.admin_phone,
-        admin_address: values.admin_address,
-        admin_designation: values.admin_designation}) 
+        {
+          admin_id: values.admin_id,
+          admin_name: values.admin_name,
+          admin_email: values.admin_email,
+          admin_password: values.admin_password,
+          admin_phone: values.admin_phone,
+          admin_address: values.admin_address,
+          admin_designation: values.admin_designation
+        })
       // console.log(data.length)
       alert('success!!')
 
@@ -95,7 +134,7 @@ const Employees = () => {
     }
   };
 
-  
+
 
 
   useEffect(() => {
@@ -111,6 +150,8 @@ const Employees = () => {
 
     }
   }
+
+  console.log(Admin)
 
   const items = [
     {
@@ -159,8 +200,6 @@ const Employees = () => {
   //   })
   // }
 
-  
-
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -208,53 +247,53 @@ const Employees = () => {
   //     });
   //   }
   // }); 
-  
+
   const deleEmployees = (values) => {
     //console.log(admin_id);
-      axios.delete(`http://localhost:5000/DB/delete/${values.admin_id}`).then((response) => {
-        setAdmin(
-          Admin.filter((values) => {
-            return values.admin_id != admin_id;
-          })
-        )
-        console.log(response);
-        
-        alert('success!!')
-      })
-  
-      
-      
+    axios.delete(`http://localhost:5000/DB/delete/${values.admin_id}`).then((response) => {
+      setAdmin(
+        Admin.filter((values) => {
+          return values.admin_id != admin_id;
+        })
+      )
+      console.log(response);
+
+      alert('success!!')
+    })
+
+
+
   }
 
 
   const getEmployees = (values) => {
-    
-    //console.log(values);
-      axios.get(`http://localhost:5000/DB/get/employee/${values.admin_id}`).then((response) => {
-        //console.log('123',response.data.admin_name);
-        
-        setDataEmployee(response.data);
-        const defaultValue = {
-          admin_id: response.data.admin_id,
-          admin_name: response.data.admin_name,
-          admin_email: response.data.admin_email,
-          admin_password: response.data.admin_password,
-          admin_phone: response.data.admin_phone,
-          created_timestamp: response.data.created_timestamp,
-          updated_timestamp: response.data.updated_timestamp,
-          admin_address: response.data.admin_address,
-          admin_designation: response.data.admin_designation
-        }
-        //console.log('222',defaultValue);
-        setInitialValues(defaultValue);
 
-        
-      })
-      showModal()
-      
-    
+    //console.log(values);
+    axios.get(`http://localhost:5000/DB/get/employee/${values.admin_id}`).then((response) => {
+      //console.log('123',response.data.admin_name);
+
+      setDataEmployee(response.data);
+      const defaultValue = {
+        admin_id: response.data.admin_id,
+        admin_name: response.data.admin_name,
+        admin_email: response.data.admin_email,
+        admin_password: response.data.admin_password,
+        admin_phone: response.data.admin_phone,
+        created_timestamp: response.data.created_timestamp,
+        updated_timestamp: response.data.updated_timestamp,
+        admin_address: response.data.admin_address,
+        admin_designation: response.data.admin_designation
+      }
+      //console.log('222',defaultValue);
+      setInitialValues(defaultValue);
+
+
+    })
+    showModal()
+
+
   }
-  
+
   const showModal = () => {
     setOpen(true);
   };
@@ -263,13 +302,40 @@ const Employees = () => {
     setOpen(false);
   };
 
- 
-  const handlepassword = (e) =>{
-      
-    form.setFieldValue({admin_password:e.target.value})
-}
 
- 
+  const handlepassword = (e) => {
+
+    form.setFieldValue({ admin_password: e.target.value })
+  }
+
+  const handleEmployee = () => {
+
+
+    if (EmployeeName === null) {
+      const emp = Admin.filter((emp) => emp.admin_id === EmployeeID)
+      setAdmin(emp)
+      console.log('แต๋มสวย')
+      console.log(emp);
+      console.log(EmployeeName);
+      console.log('id', EmployeeID);
+    } else if (EmployeeID === null) {
+      const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === EmployeeName)
+      setAdmin(emp)
+      console.log(emp);
+      console.log('แต๋มขี้เหล่')
+      console.log(emp);
+      console.log(EmployeeName);
+      console.log('id', EmployeeID);
+
+    }
+  }
+
+  const handleClear = async () => {
+    setEmployeeID(null)
+    setEmployeeName(null)
+    getAdmin()
+  }
+
 
   const columns = [
 
@@ -334,7 +400,7 @@ const Employees = () => {
     //         <Button type='text' ><MoreOutlined /></Button>
     //       </Dropdown>
 
-         
+
     //     </div>
 
     // },
@@ -343,7 +409,7 @@ const Employees = () => {
       title: 'Action',
       render: (text, record) =>
         <div className="dropdown profile-action">
-        
+
 
           {/* <Col span={12} style={{ textAlign: 'left' }}>
             <Button  type="primary" htmlType="submit"  >Edit  </Button>
@@ -352,23 +418,23 @@ const Employees = () => {
             <Button type="primary" danger onClick={() => {deleteEmployees()}}>Delete</Button>
           </Col> */}
 
-          <Button type="primary" success onClick={() => getEmployees (text)} 
-             data-bs-toggle="modal" data-bs-target="#add_employee"><i className="fa fa-plus" />
+          <Button type="primary" success onClick={() => getEmployees(text)}
+            data-bs-toggle="modal" data-bs-target="#add_employee"><i className="fa fa-plus" />
             Edit
           </Button>
 
-          <Button type="primary" danger onClick={() => deleEmployees (text)} 
-             data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
+          <Button type="primary" danger onClick={() => deleEmployees(text)}
+            data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
             delete
           </Button>
 
-          
 
-          
 
-      
-        
-          <Modal 
+
+
+
+
+          <Modal
             width={650}
             title="Edit"
             open={open}
@@ -378,40 +444,40 @@ const Employees = () => {
             okText="submit"
             cancelText="cancle"
           >
-            {initialValues&&
-            <Form
-              initialValues={initialValues }
-              {...formItemLayout}
-              form={form}
-              name="save"
-              onFinish={Finish}
-              scrollToFirstError
-            >
-              <Form.Item
-                
-                name="admin_name"
-                label="Name"
-                rules={[{ required: true, message: 'Please input your  Name', whitespace: true }]}
+            {initialValues &&
+              <Form
+                initialValues={initialValues}
+                {...formItemLayout}
+                form={form}
+                name="save"
+                onFinish={Finish}
+                scrollToFirstError
+              >
+                <Form.Item
+
+                  name="admin_name"
+                  label="Name"
+                  rules={[{ required: true, message: 'Please input your  Name', whitespace: true }]}
                 // onChange={(event) => {
                 //   setAdmin_name(event.target.value)
                 // }}
-              >
-                <Input />
+                >
+                  <Input />
 
-              </Form.Item>
+                </Form.Item>
 
-              <Form.Item
-                name="admin_id"
-                label="ID"
-                rules={[{ required: true, message: 'Please input your ID!' }]}
-                onChange={(event) => {
-                  setAdmin_id(event.target.value)
-                }}
-              >
-                <Input disabled/>
-              </Form.Item>
+                <Form.Item
+                  name="admin_id"
+                  label="ID"
+                  rules={[{ required: true, message: 'Please input your ID!' }]}
+                  onChange={(event) => {
+                    setAdmin_id(event.target.value)
+                  }}
+                >
+                  <Input disabled />
+                </Form.Item>
 
-              {/* <Form.Item
+                {/* <Form.Item
                       name="Last Name"
                       label="Last Name"
 
@@ -420,7 +486,7 @@ const Employees = () => {
                       <Input />
                     </Form.Item> */}
 
-              {/* <Form.Item
+                {/* <Form.Item
                       name="nickname"
                       label="Nickname"
                       rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
@@ -428,23 +494,23 @@ const Employees = () => {
                       <Input />
                     </Form.Item> */}
 
-              <Form.Item
-                name="admin_designation"
-                label="role"
-                rules={[{ required: true, message: 'Please select role!' }]}
-                onChange={(event) => {
-                  setAdmin_designation(event.target.value)
-                }}
-              >
-                <Select placeholder="select your role">
-                  <Option value="admin">Admin</Option>
-                  <Option value="it support">IT Support</Option>
-                  <Option value="other">Other</Option>
-                </Select>
-              </Form.Item>
+                <Form.Item
+                  name="admin_designation"
+                  label="role"
+                  rules={[{ required: true, message: 'Please select role!' }]}
+                  onChange={(event) => {
+                    setAdmin_designation(event.target.value)
+                  }}
+                >
+                  <Select placeholder="select your role">
+                    <Option value="admin">Admin</Option>
+                    <Option value="it support">IT Support</Option>
+                    <Option value="other">Other</Option>
+                  </Select>
+                </Form.Item>
 
 
-              {/* <Form.Item
+                {/* <Form.Item
                       name="gender"
                       label="Gender"
                       rules={[{ required: true, message: 'Please select gender!' }]}
@@ -456,107 +522,107 @@ const Employees = () => {
                       </Select>
                     </Form.Item> */}
 
-              <Form.Item
-                name="admin_email"
-                label="E-mail"
-                rules={[
-                  {
-                    type: 'email',
-                    message: 'The input is not valid E-mail!',
-                  },
-                  {
-                    required: true,
-                    message: 'Please input your E-mail!',
-                  },
-                ]}
-                onChange={(event) => {
-                  setAdmin_email(event.target.value)
-                }}
-              >
-
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                name="admin_password"
-                label="Password"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your password!',
-                  },
-                ]}
-                hasFeedback
-                onChange={(event) => {
-                  setAdmin_password(event.target.value)
-                }}
-              >
-                <Input.Password onChange={handlepassword}/>
-              </Form.Item>
-
-              <Form.Item
-                name="confirm"
-                label="Confirm Password"
-                dependencies={['password']}
-                hasFeedback
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please confirm your password!',
-                  },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value ||  dataEmployee.admin_password=== value || getFieldValue('admin_password') === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                      
-                      
+                <Form.Item
+                  name="admin_email"
+                  label="E-mail"
+                  rules={[
+                    {
+                      type: 'email',
+                      message: 'The input is not valid E-mail!',
                     },
-                  }),
-                ]}
+                    {
+                      required: true,
+                      message: 'Please input your E-mail!',
+                    },
+                  ]}
+                  onChange={(event) => {
+                    setAdmin_email(event.target.value)
+                  }}
+                >
 
-              >
-                <Input.Password />
-              </Form.Item>
+                  <Input />
+                </Form.Item>
 
-              <Form.Item
-                name="admin_phone"
-                label="Phone Number"
-                rules={[{ required: true, message: 'Please input your phone number!' }]}
-                onChange={(event) => {
-                  setAdmin_newphone(event.target.value)
-                }}
-              >
-                <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
-              </Form.Item>
+                <Form.Item
+                  name="admin_password"
+                  label="Password"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input your password!',
+                    },
+                  ]}
+                  hasFeedback
+                  onChange={(event) => {
+                    setAdmin_password(event.target.value)
+                  }}
+                >
+                  <Input.Password onChange={handlepassword} />
+                </Form.Item>
 
-              <Form.Item
-                name="admin_address"
-                label="Address"
-                rules={[{ required: true, message: 'Please input your Address', whitespace: true }]}
-                onChange={(event) => {
-                  setAdmin_address(event.target.value)
-                }}
-              >
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  name="confirm"
+                  label="Confirm Password"
+                  dependencies={['password']}
+                  hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please confirm your password!',
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || dataEmployee.admin_password === value || getFieldValue('admin_password') === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('The two passwords that you entered do not match!'));
 
-              <Form.Item  {...tailFormItemLayout}>
-                <Row>
-                  <Col span={12} style={{ textAlign: 'left' }}>
-                    <Button type="primary" htmlType="submit" >
-                      Save
-                    </Button></Col>
-                  <Col span={12} style={{ textAlign: 'right' }}>
-                    <Button type="primary" danger onClick={hideModal}>
-                      Cancle
-                    </Button>
-                  </Col>
-                </Row>
 
-              </Form.Item>
-            </Form>}
+                      },
+                    }),
+                  ]}
+
+                >
+                  <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                  name="admin_phone"
+                  label="Phone Number"
+                  rules={[{ required: true, message: 'Please input your phone number!' }]}
+                  onChange={(event) => {
+                    setAdmin_newphone(event.target.value)
+                  }}
+                >
+                  <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                </Form.Item>
+
+                <Form.Item
+                  name="admin_address"
+                  label="Address"
+                  rules={[{ required: true, message: 'Please input your Address', whitespace: true }]}
+                  onChange={(event) => {
+                    setAdmin_address(event.target.value)
+                  }}
+                >
+                  <Input />
+                </Form.Item>
+
+                <Form.Item  {...tailFormItemLayout}>
+                  <Row>
+                    <Col span={12} style={{ textAlign: 'left' }}>
+                      <Button type="primary" htmlType="submit" >
+                        Save
+                      </Button></Col>
+                    <Col span={12} style={{ textAlign: 'right' }}>
+                      <Button type="primary" danger onClick={hideModal}>
+                        Cancle
+                      </Button>
+                    </Col>
+                  </Row>
+
+                </Form.Item>
+              </Form>}
           </Modal>
 
         </div>
@@ -566,21 +632,7 @@ const Employees = () => {
 
   ]
 
-  const { Search } = Input;
 
-  const suffix = (
-    <AudioOutlined
-      style={{
-        fontSize: 16,
-        color: '#1890ff',
-      }}
-    />
-  );
-  
-  const onSearch = (value) => console.log(value);
-  
-  
-    
 
   return (
     <div className={`main-wrapper ${menu ? 'slide-nav' : ''}`}>
@@ -655,7 +707,7 @@ const Employees = () => {
                         setAdmin_id(event.target.value)
                       }}
                     >
-                      <Input  />
+                      <Input />
                     </Form.Item>
 
                     {/* <Form.Item
@@ -760,7 +812,7 @@ const Employees = () => {
                           },
                         }),
                       ]}
-                      
+
                     >
                       <Input.Password />
                     </Form.Item>
@@ -806,9 +858,6 @@ const Employees = () => {
 
                 {/* employeeslist */}
 
-                
-
-               
               </div>
             </div>
           </div>
@@ -844,87 +893,138 @@ const Employees = () => {
             </div>
           </div> */}
           {/* Search Filter */}
-        
-          <div className="row filter-row">
-            <div className="col-sm-6 col-md-3">
-              <div className="form-group form-focus">
-                <input type="text" className="form-control floating" />
-                    <label className="focus-label">Employee ID</label> 
 
-                              {/* <Space >
+          <Form
+            // {...layout}
 
+            form={form}
+            name="control-hooks"
+            onFinish={onFinish2}
+          // style={{
+          //   maxWidth: 600,
+          // }}
+          >
+            <div className="row filter-row">
+              <Form.Item
+                style={{
+                  marginBottom: 0,
+                }}
+              >
+                <Form.Item
+                  name="id"
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //   },
+                  // ]}
+                  style={{
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
+                  }}
+                >
+                  <input className="form-control floating" placeholder="Employee ID" />
+                </Form.Item>
+                <Form.Item
+                  name="name"
 
-                                  <Search 
-                                      placeholder="Employee ID"
-                                      allowClear
-                                      
-                                      size="large"
-                                      onSearch={onSearch}
-                                  />
-
-                             </Space> */}
-                
-              
-              
-                
-              </div>
-            </div>
-            <div className="col-sm-6 col-md-3">
-              <div className="form-group form-focus">
-                <input type="text" className="form-control floating" />
-                <label className="focus-label">Employee Name</label>
-                              {/* <Space >
-                                  <Search 
-                                      placeholder="Employee ID"
-                                      allowClear
-                                      size="large"
-                                      onSearch={onSearch}
-                                  />
-
-                              </Space> */}
-
-
-              </div>
-            </div>
-            
-            
-
-            <div className="col-sm-6 col-md-2">
-              <section className="form-group form-focus select-focus">
-                <div className="btn-group">
-                  <select type="button" className="btn btn-secondary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <option>Select Designation</option>
-                    <option>Admin</option>
-                    <option>IT Support</option>
-                  
-                  </select>
-                  
-                  <label className="focus-label">Designation</label>
-                </div>
-              </section>
-            </div>
-
-            <div className="col-sm-6 col-md-4" style={{ textAlign: 'right' }}>
-                
-              <a href="#" className="btn btn-success btn-block w-50" onClick={onSearch}> Search </a>
-            </div>
-          </div>
-        </div>
-
+                  style={{
+                    display: 'inline-block',
+                    width: 'calc(50% - 8px)',
+                    margin: '0 8px',
+                  }}
+                >
+                  <input className="form-control floating" placeholder="Employee Name" />
+                </Form.Item>
+              </Form.Item>
+              {/* <Form.Item
+        name="id"
        
-  
-          
-        
+      >
+       
+          <div className="col-sm-6 col-md-3"> 
+              <div className="form-group form-focus">
+        <input className="form-control floating" placeholder="Employee ID"/>
+        </div>
+        </div>
+        </div>
+      </Form.Item> */}
+              {/* <input type="text" className="form-control floating" onChange={(e) => setEmployeeID(e.target.value)} placeholder="Employee ID"/> */}
+
+
+              {/* <Form.Item name="name"
+              
+              >
+               <div className="col-sm-6 col-md-3">
+              <div className="form-group form-focus">
+                <input className="form-control floating" placeholder="Employee Name" />
+                
+              </div>
+            </div> 
+              </Form.Item> */}
+
+              {/* </div>
+            </div> */}
+
+              {/* <div className="col-sm-6 col-md-2">
+                <section className="form-group form-focus select-focus">
+                  <div className="btn-group">
+                    <select type="button" className="btn btn-secondary dropdown-toggle me-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <option>Select Designation</option>
+                      <option>Admin</option>
+                      <option>IT Support</option>
+
+                    </select>
+
+                    <label className="focus-label">Designation</label>
+                  </div>
+                </section>
+              </div> */}
+              
+            </div>
+
+            <Form.Item >
+              {/* <Button type="primary" htmlType="submit">
+        Search
+        </Button> */}
+              <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
+                <Button type="primary" htmlType="submit" className="btn btn-success btn-block w-20">
+                  Search
+                </Button>
+                <Button htmlType="button" className="btn btn-danger btn-block w-20 " style={{ marginLeft: '5px' }} onClick={onReset}>
+                  Reset
+                </Button>
+                {/* <a href="#" className="btn btn-success btn-block w-20" htmlType="submit"> Search </a> */}
+                {/* <a href="#" className="btn btn-danger btn-block w-20 " style={{ marginLeft : '5px' }}  onClick={handleClear} > Clear </a> */}
+                <div></div>
+              </div>
+
+            </Form.Item>
+
+            {/* <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
+              <a href="#" className="btn btn-success btn-block w-20" > Search </a>
+              <a href="#" className="btn btn-danger btn-block w-20 " style={{ marginLeft : '5px' }}  onClick={handleClear} > Clear </a>
+              <div></div>
+            </div> */}
+          </Form>
+
+          {/* </div> */}
+
+          {/* <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
+              <a href="#" className="btn btn-success btn-block w-20" onClick={handleEmployee}> Search </a>
+              <a href="#" className="btn btn-danger btn-block w-20 " style={{ marginLeft : '5px' }}  onClick={handleClear} > Clear </a>
+              <div></div>
+            </div> */}
+        </div>
         {/* /employee */}
-        <Employeeslist />
+        <Employeeslist Admin={Admin} />
         {/* Add Employee Modal */}
         <Addemployee />
         {/* /Add Employee Modal */}
-       
-        
+
+
       </div>
     </div>
   );
 }
 
-export default Employees;
+export default AllEmployees;

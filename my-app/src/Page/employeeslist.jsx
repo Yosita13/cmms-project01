@@ -168,9 +168,9 @@ const Employeeslist = ({Admin}) => {
   const getEmployees = (values) => {
     
     //console.log(values);
-      axios.get(`http://localhost:5000/DB/get/employee/${values.admin_id}`).then((response) => {
+      axios.get(`http://localhost:5000/DB/getEmployee/${values.admin_id}`).then((response) => {
         //console.log('123',response.data.admin_name);
-        
+        console.log(response.data);
         setDataEmployee(response.data);
         const defaultValue = {
           admin_id: response.data.admin_id,
@@ -188,10 +188,14 @@ const Employeeslist = ({Admin}) => {
 
         
       })
-      showModal()
+      // showModal()
+      setOpen(true);
+      console.log(initialValues);
+      console.log(dataEmployee);
       
     
   }
+  console.log(initialValues);
 
   const handlepassword = (e) =>{
       

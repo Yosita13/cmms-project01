@@ -119,9 +119,9 @@ router.put ("/update/:admin_id" ,(req,res,next) => {
 })
 
 //get Employee for edit employee
-router.get ("/get/employee/:admin_id" ,(req,res,next) => {
+router.get ("/getEmployee/:admin_id" ,(req,res,next) => {
     const admin_id = req.params.admin_id;
-    console.log(req.params)
+    console.log('555',req.params)
 
     connect.query('SELECT * FROM device_asset.tbl_admin WHERE admin_id = ? ',admin_id,
     (err,rows) => {
@@ -132,7 +132,9 @@ router.get ("/get/employee/:admin_id" ,(req,res,next) => {
             Object.keys(rows).forEach(function (key) {
                 var row = rows[key];
                 res.send(row)
+                
             })
+            // console.log(rows);
         }
     }) 
 })
