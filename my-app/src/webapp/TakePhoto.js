@@ -1,93 +1,3 @@
-// import React,{ useRef, useState, useEffect } from 'react'
-// import { Link } from 'react-router-dom';
-
-// const TakePhoto = () => {
-
-//     const videoRef = useRef(null);
-//     const photoRef = useRef(null);
-
-//     const [hasPhoto,setHasPhoto] = useState(false);
-
-
-
-//     const getVideo = () => {
-//         navigator.mediaDevices
-//         .getUserMedia({ 
-//              video: true 
-//             // video:{width: 1920,height:1080}
-//         })
-//         .then(stream => {
-//             let video = videoRef.current;
-//             video.srcObject = stream;
-//             video.play();
-//         })
-//         .catch(err => {
-//             console.err(err);
-//         })
-
-//     }
-
-//     const takeAPhoto = () => {
-//         const width = 414 ;
-//         const height = width/(16/9);
-
-//         let video = videoRef.current;
-//         let photo = photoRef.current;
-
-//         photo.width = width;
-//         photo.height = height;
-
-//         let ctx = photo.getContext('2d');
-//         ctx.drawImage(video,0,0,width,height);
-//         setHasPhoto(true);
-//     }
-
-//     const closePhoto = ( ) => {
-//         let photo = photoRef.current;
-//         let ctx = photo.getContext('2d');
-
-//         ctx.clearRect(0,0,photo.width,photo.height);
-
-//         setHasPhoto(false);
-
-
-//     }
-//     useEffect(() => {
-//         getVideo();
-//     },[videoRef])
-
-//     return (
-
-
-//         <div className='photo'>
-//             <div className="camera">
-//                 <video ref={videoRef}></video>
-//                 <button className='bottonPhoto'  type="primary" shape='circle' onClick={takeAPhoto}>SNAP</button>
-//             </div>
-
-//             <div className = {'result ' + (hasPhoto ? 'hasPhoto ' 
-//             : '')}>
-//                 <canvas ref ={photoRef}></canvas>
-//                 <button className='bottonPhoto' onClick={closePhoto}>CLOSE</button>
-//                 <div >
-//                     <Link to="/webapp/RepairDetails">
-//                         <button className='bottonPhoto' type="primary"  >NEXT</button>
-//                     </Link>
-
-//                 </div>
-
-//             </div>
-
-
-
-
-
-
-//         </div>
-//     )
-// }
-
-// export default TakePhoto
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -204,6 +114,10 @@ import React, { useRef, useState, useEffect } from 'react'
 const TakePhoto = () => {
     const videoRef = useRef(null);
     const photoRef = useRef(null);
+    const[image1,setImage1] = useState('');
+  const[imageURLs,setImageURLs] = useState('');
+  const[images,setImages] = useState([]);
+  const[URLsImage,setURLsImage] = useState([]);
 
     const [hasPhoto, setHasPhoto] = useState(false);
 
@@ -226,9 +140,19 @@ const TakePhoto = () => {
 
     }
 
-    const takeAPhoto = () => {
-        const width = 414;
-        const height = width / (16 / 9);
+    useEffect(()=>{
+        if (images.length < 1) return;
+        const newURLsImage = [];
+        images.forEach(image => newURLsImage.push(URL.createObjectURL(image)))
+        setURLsImage(newURLsImage)
+      },[images]);
+    
+
+    const takeAPhoto = (e) => {
+        // const width = 414;
+        // const height = width / (16 / 9);
+        const width = 1080;
+        const height = 1080;
 
         let video = videoRef.current;
         let photo = photoRef.current;
@@ -239,7 +163,13 @@ const TakePhoto = () => {
         let ctx = photo.getContext('2d');
         ctx.drawImage(video, 0, 0, width, height);
         setHasPhoto(true);
+
+        setImages([...e.target.files]);
+    //console.log(e.target.files)
+    setImage1(e.target.files[0])
     }
+    console.log("Image",images);
+  console.log("URLSImage",URLsImage);
 
     const closePhoto = () => {
         let photo = photoRef.current;
@@ -251,6 +181,10 @@ const TakePhoto = () => {
 
 
     }
+
+    const imageUpload = () => {
+        console.log(photoRef.current);
+    }    
     useEffect(() => {
         getVideo();
     }, [videoRef])
@@ -294,7 +228,7 @@ const TakePhoto = () => {
                                                             <button className='bottonPhoto' onClick={closePhoto}>CLOSE</button>
                                                             <div >
                                                                 <Link to="/webapp/RepairDetails">
-                                                                    <button className='bottonPhoto' type="primary"  >Upload</button>
+                                                                    <button className='bottonPhoto' type="primary" onClick={imageUpload}  >Upload</button>
                                                                 </Link>
 
                                                             </div>

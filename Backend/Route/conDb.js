@@ -1,7 +1,7 @@
 const { request } = require('express')
+const express = require('express')
 const connect = require('../Database/DB')
 const router = require('express-promise-router')()
-
 
 
 
@@ -22,7 +22,7 @@ router.get('/tbl_admin',async (req,res,next) => {
     }
 })
 
-//get Admin for search
+//get Admin for search ไม่ได้ใช้ ไปfilter หน้า fontend เอา
 router.get('/tbl_admin/Search',async (req,res,next)=> {
     try {
         connect.query('SELECT * FROM device_asset.tbl_admin',(err,rows) => {
@@ -255,12 +255,51 @@ router.get('/search/:admin_id',(req,res) => {
     console.log('success');
 }) 
 
+//upload link image to database ----------------------------------------------------
+router.post("/tbl_list_repair2" ,(req,res,next) => {
+    
+    const case_detail = req.body.case_detail.case_detail;
+    const created_timestamp = req.body.created_timestamp ;
+    const updated_timestamp = req.body.updated_timestamp ;
+    const owner_id = req.body.owner_id;
+    const admin_id = req.body.admin_id;
+    const case_image = req.body.case_image
+    const case_note = req.body.case_note
 
 
+    console.log(req.body);
+    // console.log(next);
+    // res.send('hello')
+    connect.query('INSERT INTO tbl_list_repair (admin_id,case_image,created_timestamp,updated_timestamp) VALUES(?,?,now(),now())',
+    [admin_id,case_image,created_timestamp,updated_timestamp],
+    (err,resul) => {
+        
+        if (err){
+            console.log(err);
+        
+        }
+        else{
+            res.send("Values inserted");
+        }
+    }
+    )
+})
 
 
-
-
-
+router.get('/tbl_list_repair3',async (req,res,next)=> {
+    try {
+        connect.query('SELECT * FROM device_asset.tbl_list_repair',(err,rows) => {
+            if (err){
+                res.send(err)
+            }
+            else{
+                res.send(rows)
+            }
+        }) 
+    }
+    catch (e) {
+        res.send(e)
+    }
+})
 
 module.exports = router;

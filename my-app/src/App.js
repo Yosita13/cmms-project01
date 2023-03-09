@@ -15,8 +15,9 @@ import TakePhoto from './webapp/TakePhoto';
 import RepairDetails from './webapp/RepairDetails';
 import Status from './webapp/status';
 import DataDevice from './webapp/DataDevice';
-import Test from './Page/test';
+import Tests3 from './webapp/tests3';
 import Employee from './Page/employee';
+import UploadImage from './webapp/uploadImage';
 
 
 const App = () => {
@@ -32,14 +33,15 @@ const App = () => {
               <Route path="/Page/allemployees" render={(props) => (<Allemployees/>)}></Route>
               <Route path="/Page/navbar" render={(props) => (<Navbar/>)}></Route>
               <Route path="/Page/employeeslist" render={(props) => (<Employeeslist/>)}></Route>
+              <Route path="/Page/employee" render={(props) => (<Employee/>)}></Route>
               <Route path="/webapp/userhome" render={(props) => (<Userhome/>)}></Route>
               <Route path="/webapp/QR" render={(props) => (<QR/>)}></Route>
               <Route path="/webapp/TakePhoto" render={(props) => (<TakePhoto/>)}></Route>
               <Route path="/webapp/RepairDetails" render={(props) => (<RepairDetails/>)}></Route>
               <Route path="/webapp/Status" render={(props) => (<Status/>)}></Route>
               <Route path="/webapp/DataDevice" render={(props) => (<DataDevice/>)}></Route>
-              <Route path="/webapp/test" render={(props) => (<Test/>)}></Route>
-              <Route path="/Page/employee" render={(props) => (<Employee/>)}></Route>
+              <Route path="/webapp/tests3" render={(props) => (<Tests3/>)}></Route>
+              <Route path="/webapp/uploadImage" render={(props) => (<UploadImage/>)}></Route>
              
               <Redirect to={{pathname: '/Page/admindashboard'}}/>
           </Switch>

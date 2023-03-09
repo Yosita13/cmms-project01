@@ -41,7 +41,7 @@ const Userhome = () => {
                                                 {/* /Account Logo */}
 
                                                 <Link to={{
-                                                    pathname: "/webapp/TakePhoto",
+                                                    pathname: "/webapp/uploadImage",
                                                     state: location.state
                                                 }}>
                                                     <Button type="primary" onClick={showModal} shape='round'

@@ -17,7 +17,7 @@ function DataDevice() {
 
     const location = useLocation()
 
-    console.log( location.state);
+    console.log( '55555',location.state);
 
     useEffect(() => {
         getStatus()
