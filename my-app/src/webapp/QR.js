@@ -65,19 +65,19 @@ const ReadQr = () => {
                             {selected}
                           </h2> */}
 
-                          <button
+                          <button type="submit" className="btn btn-greensushi submit-btn"
                             onClick={() => {
                               setStartScan(!startScan);
                             }}
                           >
-                            {startScan ? "Stop Scan" : "Start Scan"}
-                          </button>
+                            {startScan ?  "Stop Scan" : "Start Scan"}
+                          </button><br></br>
                           {startScan && (
                             <>
-                              <select onChange={(e) => setSelected(e.target.value)}>
-                                <option value={"environment"}>Back Camera</option>
-                                <option value={"user"}>Front Camera</option>
-                              </select>
+                              <select type="submit" className="btn btn-gray-1000" onChange={(e) => setSelected(e.target.value)}>
+                                <option className="btn btn-gray-1000" value={"environment"}>Back Camera</option>
+                                <option className="btn btn-gray-1000" value={"user"}>Front Camera</option>
+                              </select><br></br>
                               <QrReader
                                 facingMode={selected}
                                 delay={1000}

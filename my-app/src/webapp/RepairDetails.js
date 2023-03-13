@@ -170,6 +170,7 @@ import cat from '../webapp/cat.png';
 import { Button, Form, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
+import { useLocation } from 'react-router-dom';
 
 
 
@@ -178,13 +179,32 @@ function RepairDetails() {
     const [open, setOpen] = useState(false);
     const [case_detail, setCase_detail] = useState("");
     const [detail, setDetail] = useState("");
+    const [pic,setPic] = useState();
     const { Meta } = Card;
+    const location = useLocation()
+   
 
-
+    console.log('location',location);
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
     };
+
+    useEffect(() => {
+        getImage()
+      }, [])
+    
+      const getImage = async () => {
+        try {
+          const { data } = await axios.get(`http://localhost:5000/DB/getImage/${location.state}`)
+           console.log('data',data)
+          setPic(data)
+        } catch (error) {
+    
+        }
+      }
+
+     
 
     /* eslint-disable no-template-curly-in-string */
     const validateMessages = {
@@ -204,34 +224,23 @@ function RepairDetails() {
         console.log('Received values of form: ', values);
         try {
             console.log('Received values of form: ', values);
-            const { data } = await axios.post('http://localhost:5000/DB/tbl_list_repair', {
+            const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${values.id}`, {
                 case_detail: values.case_detail
             })
-            console.log(data);
+           
         } catch (e) {
 
         }
     };
 
+    
     const hideModal = () => {
         setOpen(false);
     };
 
+   
 
-    const getRepailDeail = async () => {
-        try {
-            const { data } = await axios.get('http://localhost:5000/DB/tbl_list_repair')
-            // console.log(data.length)
-            setDetail(data)
-        } catch (error) {
-
-        }
-    }
-
-    useEffect(() => {
-        getRepailDeail()
-    }, [])
-
+    
     return (
         <>
 
@@ -264,7 +273,7 @@ function RepairDetails() {
 
                                                         {/* Content Starts */}
                                                        <Card>
-                                                       <img alt="" src={cat} />
+                                                       {pic&&<img alt="" src={pic.image} />}
 
                                                         
 
@@ -295,7 +304,7 @@ function RepairDetails() {
                                                                     <Link to="/webapp/TakePhoto">
                                                                         <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
                                                                     </Link>
-                                                                    <Button type="primary" className="btn-greensushi" htmlType="submit">Save</Button>
+                                                                    <Button type="primary" className="btn-greensushi"  htmlType="submit">Save</Button>
                                                                 </Form.Item>
                                                             </Form>
                                                       </Card>

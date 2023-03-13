@@ -2,6 +2,8 @@ const { request } = require('express')
 const express = require('express')
 const connect = require('../Database/DB')
 const router = require('express-promise-router')()
+const multer = require('multer');
+const path = require('path');
 
 
 
@@ -21,43 +23,6 @@ router.get('/tbl_admin',async (req,res,next) => {
         res.send(e)
     }
 })
-
-//get Admin for search ไม่ได้ใช้ ไปfilter หน้า fontend เอา
-router.get('/tbl_admin/Search',async (req,res,next)=> {
-    try {
-        connect.query('SELECT * FROM device_asset.tbl_admin',(err,rows) => {
-            if (err){
-                res.send(err)
-            }
-            else{
-                res.send(rows)
-            }
-        }) 
-    }
-    catch (e) {
-        res.send(e)
-    }
-})
-
-//get admin for Search by Role
-router.get ("/get/employee/:admin_designation" ,(req,res,next) => {
-    const admin_designation = req.params.admin_designation;
-    console.log(req.params)
-
-    connect.query('SELECT * FROM device_asset.tbl_admin WHERE admin_designation = ? ',admin_designation,
-    (err,rows) => {
-        if (err){
-            res.send(err)
-        }
-        else {
-            Object.keys(rows).forEach(function (key) {
-                var row = rows[key];
-                res.send(row)
-            })
-        }
-    }) 
-})
-
 
 
 //add employee
@@ -239,56 +204,60 @@ router.get('/getstatus/:id',async (req,res) => {
 })
 
 
-//search employee
 
-router.get('/search/:admin_id',(req,res) => {
-    
-    const admin_id = req.params.admin_id;
-    connect.query('SELETE * FROM tbl_admin WHERE admin_id LIKE = %??????%',admin_id,(err,result) => {
+
+
+//
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, '../public_html/', 'uploads'),
+    filename: function (req, file, cb) {   
+        // null as first argument means no error
+        cb(null, Date.now() + '-' + file.originalname )  
+    }
+})
+
+//-------post image from uplodaimage.js to database ----------------------------------------------
+router.post('/tbl_list_repair2', async (req, res) => {	
+    try {
+        console.log(req.body.body.userInfo.filepreview);
+        console.log(req.body);
+        const image = req.body.body.userInfo.filepreview;
+       
+           const id = req.body.body.id
+       
+            const sql = "INSERT INTO testimg (image,admin_id) VALUES(?,?)"
+            connect.query(sql, [image,id], (err, results) => {  if (err) throw err;
+			     
+                res.send(results)   
+			}); 
+      
+    }catch (err) {console.log(err)}
+})
+//-----------get image from database for show RepairDetails.js-------------------------------------
+router.get ("/getImage/:id" ,(req,res,next) => {
+    const id = req.params.id;
+    console.log(req.params)
+
+    connect.query('SELECT * FROM testimg WHERE id = ?',id,
+    (err,rows) => {
         if (err){
             res.send(err)
         }
-        else{
-            res.send(rows)
+        else {
+            
+            Object.keys(rows).forEach(function (key) {
+                var row = rows[key];
+                res.send(row)
+            })
         }
-    })
-    console.log('success');
-}) 
-
-//upload link image to database ----------------------------------------------------
-router.post("/tbl_list_repair2" ,(req,res,next) => {
-    
-    const case_detail = req.body.case_detail.case_detail;
-    const created_timestamp = req.body.created_timestamp ;
-    const updated_timestamp = req.body.updated_timestamp ;
-    const owner_id = req.body.owner_id;
-    const admin_id = req.body.admin_id;
-    const case_image = req.body.case_image
-    const case_note = req.body.case_note
-
-
-    console.log(req.body);
-    // console.log(next);
-    // res.send('hello')
-    connect.query('INSERT INTO tbl_list_repair (admin_id,case_image,created_timestamp,updated_timestamp) VALUES(?,?,now(),now())',
-    [admin_id,case_image,created_timestamp,updated_timestamp],
-    (err,resul) => {
-        
-        if (err){
-            console.log(err);
-        
-        }
-        else{
-            res.send("Values inserted");
-        }
-    }
-    )
+    }) 
 })
-
-
-router.get('/tbl_list_repair3',async (req,res,next)=> {
+//--------------get tastimage----------------------------------------------
+router.get('/gat/tbl_tastimg/:id',async (req,res,next) => {
+    const id = req.params.id;
+    console.log('id',req.params)
     try {
-        connect.query('SELECT * FROM device_asset.tbl_list_repair',(err,rows) => {
+        connect.query('SELECT * FROM testimg WHERE id = ?',id,(err,rows) => {
             if (err){
                 res.send(err)
             }
@@ -301,5 +270,26 @@ router.get('/tbl_list_repair3',async (req,res,next)=> {
         res.send(e)
     }
 })
+//---------put repair พังอยู่----------------------------------------------------------
+router.put ("/put/repair/:id" ,(req,res,next) => {
+    
+    
+    const case_detail = req.body.id;
+    
+    console.log(req.body)
+    connect.query('UPDATE testimg SET case_detail=? WHERE id = ?',[case_detail],
+    (err,result) => {
+        if (err){
+            console.log(err);
+        
+        }
+        else{
+            res.send("Values updated");
+        }
+        
+    })
+})
+
+
 
 module.exports = router;
