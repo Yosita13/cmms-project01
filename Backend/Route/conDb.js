@@ -70,7 +70,7 @@ router.put ("/update/:admin_id" ,(req,res,next) => {
     const admin_address = req.body.admin_address;
     const admin_id = req.body.admin_id;
     
-    console.log(req.body)
+    console.log('edit',req.body)
     connect.query('UPDATE tbl_admin SET admin_name=?,admin_designation=?,admin_email=?,admin_password=?,admin_phone=?,admin_address=?,admin_id=?,created_timestamp=now(),updated_timestamp=now() WHERE admin_id = ?',[admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,admin_id,admin_id,created_timestamp,updated_timestamp],
     (err,result) => {
         if (err){
@@ -255,7 +255,7 @@ router.get ("/getImage/:id" ,(req,res,next) => {
 //--------------get tastimage----------------------------------------------
 router.get('/gat/tbl_tastimg/:id',async (req,res,next) => {
     const id = req.params.id;
-    console.log('id',req.params)
+    console.log('id11',req.params)
     try {
         connect.query('SELECT * FROM testimg WHERE id = ?',id,(err,rows) => {
             if (err){
@@ -270,14 +270,15 @@ router.get('/gat/tbl_tastimg/:id',async (req,res,next) => {
         res.send(e)
     }
 })
-//---------put repair พังอยู่----------------------------------------------------------
+//---------put repair ----------------------------------------------------------
 router.put ("/put/repair/:id" ,(req,res,next) => {
     
+    const id = req.body.id;
+    const case_detail = req.body.case_detail;
     
-    const case_detail = req.body.id;
-    
-    console.log(req.body)
-    connect.query('UPDATE testimg SET case_detail=? WHERE id = ?',[case_detail],
+    console.log('id22',req.body.id);
+    console.log('reqbody',req.body)
+    connect.query('UPDATE testimg SET case_detail=? WHERE id = ?',[case_detail,id],
     (err,result) => {
         if (err){
             console.log(err);
@@ -290,6 +291,7 @@ router.put ("/put/repair/:id" ,(req,res,next) => {
     })
 })
 
+//-----------------------------------------------------------------------------
 
 
 module.exports = router;

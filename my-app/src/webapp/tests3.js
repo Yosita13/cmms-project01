@@ -1,128 +1,263 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// import React, { Component } from 'react';
+// import { useState } from "react";
+// import ReactDOM from 'react-dom';
+// import axios from 'axios';
+
+
+// import '../assets/css/style.css';
+
+
+
+// const TakePhoto= () => {
+
+
+//     // Upload to local seaweedFS instance
+//     const uploadImage = async file => {
+//         const formData = new FormData();
+//         formData.append('file', file);
+
+//         // Connect to a seaweedfs instance
+//     };
+
+//     class CameraFeed extends Component {
+//         /**
+//          * Processes available devices and identifies one by the label
+//          * @memberof CameraFeed
+//          * @instance
+//          */
+//         processDevices(devices) {
+//             devices.forEach(device => {
+//                 console.log(device.label);
+//                 this.setDevice(device);
+//             });
+//         }
+
+//         /**
+//          * Sets the active device and starts playing the feed
+//          * @memberof CameraFeed
+//          * @instance
+//          */
+//         async setDevice(device) {
+//             const { deviceId } = device;
+//             const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { deviceId } });
+//             this.videoPlayer.srcObject = stream;
+//             this.videoPlayer.play();
+//         }
+
+//         /**
+//          * On mount, grab the users connected devices and process them
+//          * @memberof CameraFeed
+//          * @instance
+//          * @override
+//          */
+//         async componentDidMount() {
+//             const cameras = await navigator.mediaDevices.enumerateDevices();
+//             this.processDevices(cameras);
+//         }
+
+//         /**
+//          * Handles taking a still image from the video feed on the camera
+//          * @memberof CameraFeed
+//          * @instance
+//          */
+//         takePhoto = () => {
+//             const { sendFile } = this.props;
+//             const context = this.canvas.getContext('2d');
+//             context.drawImage(this.videoPlayer, 0, 0, 680, 360);
+//             this.canvas.toBlob(sendFile);
+//         };
+
+
+
+//         render() {
+//             return (
+//                 <div className="c-camera-feed">
+//                     <div className="c-camera-feed__viewer">
+//                         <video ref={ref => (this.videoPlayer = ref)} width="680" heigh="360" />
+//                     </div>
+//                     <button onClick={this.takePhoto}>Take photo!</button>
+
+
+//                     <div className="c-camera-feed__stage">
+//                         <canvas width="680" height="360" ref={ref => (this.canvas = ref)} />
+//                     </div>
+//                 </div>
+//             );
+//         }
+//     }
+//     return (
+//         <div className="TakePhoto">
+//             <h1>Image capture test</h1>
+//             <p>Capture image from USB webcamera and upload to form</p>
+//             <CameraFeed sendFile={uploadImage} />
+//         </div>
+//     );
+// }
+
+// const rootElement = document.getElementById('root');
+// ReactDOM.render(<TakePhoto />, rootElement);
+
+// export default TakePhoto;
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import { Component } from 'react';
 import { Helmet } from "react-helmet";
-import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
-
-function UploadImage() {
-
-    const [imageID, setImageID] = useState("");
-
-    const location = useLocation()
-    const id = location.state
-    console.log(id);
+import { Link } from 'react-router-dom';
+import React, { useRef, useState, useEffect } from 'react'
+import axios from 'axios';
 
 
-    console.log('ID of user', location.state);
+const TakePhoto = () => {
+    const videoRef = useRef(null);
+    const photoRef = useRef(null);
+    const[image1,setImage1] = useState('');
+  const[imageURLs,setImageURLs] = useState('');
+  const[images,setImages] = useState([]);
+  const[URLsImage,setURLsImage] = useState([]);
+  const [photo, setPhoto] = useState(null);
 
 
-    const [userInfo, setuserInfo] = useState({
-        file: [],
-        filepreview: null,
-    });
+    const [hasPhoto, setHasPhoto] = useState(false);
 
-    const handleInputChange = (event) => {
-        setuserInfo({
-            ...userInfo,
-            file: event.target.files[0],
-            filepreview: URL.createObjectURL(event.target.files[0]),
-        });
 
-    }
 
-    const [isSucces, setSuccess] = useState(null);
-
-    const submit = async () => {
-        const formdata = new FormData();
-        formdata.append('avatar', userInfo.file);
-        formdata.append('id', id);
-        const image = { headers: { "Content-Type": "multipart/form-data" } }
-
-        console.log('id');
-
-        axios.post("http://localhost:5000/DB/tbl_list_repair2", formdata, image)
-            .then(res => { // then print response status
-                console.warn(res);
-                console.log(res)
-                setImageID(res.data.insertId)
-                if (res.data.success === 1) {
-                    setSuccess("Image upload successfully");
-                }
-
+    const getVideo = () => {
+        navigator.mediaDevices
+            .getUserMedia({
+                video: true
+                // video:{width: 1920,height:1080}
             })
+            .then(stream => {
+                let video = videoRef.current;
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(err => {
+                console.err(err);
+            })
+
     }
 
+    useEffect(()=>{
+        if (images.length < 1) return;
+        const newURLsImage = [];
+        images.forEach(image => newURLsImage.push(URL.createObjectURL(image)))
+        setURLsImage(newURLsImage)
+      },[images]);
+    
+
+    const takeAPhoto = (e) => {
+        // const width = 414;
+        // const height = width / (16 / 9);
+        const width = 1080;
+        const height = 1080;
+
+        let video = videoRef.current;
+        let photo = photoRef.current;
+
+        photo.width = width;
+        photo.height = height;
+
+        let ctx = photo.getContext('2d');
+        ctx.drawImage(video, 0, 0, width, height);
+        setHasPhoto(true);
+
+        setImages([...e.target.files]);
+    //console.log(e.target.files)
+    setImage1(e.target.files[0])
+    }
+    console.log("Image",images);
+  console.log("URLSImage",URLsImage);
+
+    const closePhoto = () => {
+        let photo = photoRef.current;
+        let ctx = photo.getContext('2d');
+
+        ctx.clearRect(0, 0, photo.width, photo.height);
+
+        setHasPhoto(false);
+
+
+    }
+
+    const imageUpload = async () => {
+        console.log(photoRef.current);
+        const formData = new FormData();
+        formData.append('photo', photo);
+
+        try {
+            const response = await axios.post('/api/photos', formData);
+            console.log(response.data);
+          } catch (error) {
+            console.error(error);
+          }
+    }    
+    useEffect(() => {
+        getVideo();
+    }, [videoRef])
     return (
-       
-            <div className="container mr-60">
-                <Helmet>
-                    <title>แจ้งซ่อม</title>
-                    <meta name="description" content="Login page" />
-                </Helmet>
-                {/* Page Content */}
-                <div className="content container-fluid">
-                    <div className="row">
-                        <div className="col-md-8 offset-md-2">
-                            {/* Page Header */}
-                            <div className="page-header">
-                                <div className="form-header">
-                                    <div className="row align-items-center">
-                                        <div className="account-logo">
-                                            <img src={LogoOnlineAssest} alt="Dreamguy's Technologies" />
-                                        </div>
-                                    
-                                <div className="row">
-                                    <div className="col-sm-12">
-                                        <h4 className="page-title">Upload Image</h4><br></br>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Page Header */}
-                        
-                                <div className="col-lg-2">
-                                    {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
-                                </div>
-                           
 
+        <div className="account-content">
+            <div className="container">
+                <div classname="col-sm-6 col-md-4">
+                    <div className="content container-fluid">
+                        <div className="page-header">
+                            <div className="form-header">
+                                <div className="row align-items-center">
+                                    {/* Page Content */}
+                                    <div className="content container-fluid">
+                                        <div className="row">
+                                            <div className="col-sm-12">
 
+                                                <Helmet>
+                                                    <title>Blank - HRMS admin Template</title>
+                                                    <meta name="description" content="Reactify Blank Page" />
+                                                </Helmet>
+                                                {/* Page Content */}
+                                                <div className="content container-fluid">
+                                                    {/* Page Header */}
+                                                    <div className="page-header">
+                                                        <div className="row">
+                                                            <div className="col-sm-12">
 
-                           
-                                    {isSucces !== null ? <h4> {isSucces} </h4> : null}
-                                    <div className="form-group row">
-                                        <div className="form-row">
-                                        {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
-                                            <div className="col-lg-14">
-                                                <input type="file" className="form-control" name="upload_file" onChange={handleInputChange} /><br></br>
-                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='photo'>
+                                                        <div className="camera">
+                                                            <video ref={videoRef}></video>
+                                                            <button className='bottonPhoto' type="primary" onClick={takeAPhoto}>SNAP</button>
+                                                        </div>
 
-                                            <div style={{ marginTop: '5px' }} className="submit-section">
-                                                <div className="form-row">
-                                                {userInfo.filepreview !== null ?
-                                            <img className="previewimg" src={userInfo.filepreview} alt="UploadImage" />
-                                            : null}
-                                                    {/* <Link to={{
-                                                    pathname: "/webapp/RepairDetails",
-                                                    state: location.state
-                                                }}> */}
-                                                    <button type="submit" className="btn btn-greensushi submit-btn" onClick={() => submit()} > Save </button>
-                                                    {/* </Link> */}
+                                                        <div className={'result ' + (hasPhoto ? 'hasPhoto '
+                                                            : '')}>
+                                                            <canvas ref={photoRef}></canvas>
+                                                            <button className='bottonPhoto' onClick={closePhoto}>CLOSE</button>
+                                                            <div >
+                                                                <Link to="/webapp/RepairDetails">
+                                                                    <button className='bottonPhoto' type="primary" onClick={imageUpload}  >Upload</button>
+                                                                </Link>
 
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        
-
                                     </div>
-                                
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-       
+        </div>
+
     );
 }
-
-export default UploadImage;
+export default TakePhoto;

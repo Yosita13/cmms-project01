@@ -171,25 +171,73 @@ import { Button, Form, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 
 
 function RepairDetails() {
 
+    let history = useHistory()
     const [open, setOpen] = useState(false);
     const [case_detail, setCase_detail] = useState("");
     const [detail, setDetail] = useState("");
     const [pic,setPic] = useState();
+    const [dataImg,setDataImg] = useState();
+    const [initialValues, setInitialValues] = useState();
+    const [id,setID] = ('')
+   
     const { Meta } = Card;
     const location = useLocation()
-   
+    
+    
+    
 
-    console.log('location',location);
+    console.log('location',location.state);
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
     };
 
+    const onFinish = async (values) => {
+        setOpen(false);
+        console.log('Received values of form: ', values);
+        console.log('id front',location.state);
+        try {
+            console.log('Received values of form: ', values);
+            const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${location.state}}`, {
+                case_detail: values.case_detail,
+                id:location.state
+                
+            })
+           
+            
+           
+        } catch (e) {
+
+        }
+    };
+
+    useEffect(() => {
+        getDataImage()
+      }, [])
+
+    const getDataImage = async (values) => {
+
+        try {
+        const { data } = await axios.get(`http://localhost:5000/DB/gat/tbl_tastimg/${location.state}`)
+          console.log('123',data);
+          setID(data)
+        }catch(error){
+
+        }
+          
+            
+          //console.log('222',defaultValue);
+        
+      }
+      
+
+   
     useEffect(() => {
         getImage()
       }, [])
@@ -219,20 +267,7 @@ function RepairDetails() {
     };
     /* eslint-enable no-template-curly-in-string */
 
-    const onFinish = async (values) => {
-        setOpen(false);
-        console.log('Received values of form: ', values);
-        try {
-            console.log('Received values of form: ', values);
-            const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${values.id}`, {
-                case_detail: values.case_detail
-            })
-           
-        } catch (e) {
-
-        }
-    };
-
+   
     
     const hideModal = () => {
         setOpen(false);
@@ -285,7 +320,7 @@ function RepairDetails() {
                                                                
                                                                 validateMessages={validateMessages}
                                                             >
-                                                                <Form.Item name={['case_detail', 'case_detail']} label="รายละเอียดการแจ้งซ่อม"
+                                                                <Form.Item name={['case_detail']} label="รายละเอียดการแจ้งซ่อม"
                                                                     onChange={(event) => {
                                                                         setCase_detail(event.target.value)
                                                                     }}
@@ -301,10 +336,10 @@ function RepairDetails() {
                                                                 */}
 
                                                                 <Form.Item >
-                                                                    <Link to="/webapp/TakePhoto">
+                                                                    <Link to="/webapp/QR">
                                                                         <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
                                                                     </Link>
-                                                                    <Button type="primary" className="btn-greensushi"  htmlType="submit">Save</Button>
+                                                                    <Button type="primary" className="btn-greensushi"   htmlType="submit">Save</Button>
                                                                 </Form.Item>
                                                             </Form>
                                                       </Card>
