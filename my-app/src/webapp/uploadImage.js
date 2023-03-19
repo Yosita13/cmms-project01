@@ -130,6 +130,7 @@ function UploadImage() {
                 // const file = new Blob ([res.data],{type:'image/jpeg'})
                 
                  history.push({pathname:'/webapp/RepairDetails',state:res.data.insertId})
+                
             })
             
             //history.push({pathname:'/webapp/RepairDetails',state:imageID})

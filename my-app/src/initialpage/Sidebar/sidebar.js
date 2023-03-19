@@ -121,7 +121,7 @@ const toggleLevelThree = (value) => {
                 }
               </li> */}
               <li className={pathname.includes('Activties') ?"active" :""}> 
-                <Link to = "/Page/allemployees"><i className="la la-users" /> <span>Activties</span></Link>
+                <Link to = "/Page/activity"><i className="la la-users" /> <span>Activties</span></Link>
               </li>
 
               <li className="submenu">

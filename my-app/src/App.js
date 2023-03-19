@@ -18,6 +18,8 @@ import DataDevice from './webapp/DataDevice';
 import Tests3 from './webapp/tests3';
 import Employee from './Page/employee';
 import UploadImage from './webapp/uploadImage';
+import Activity from './Page/activity';
+import Test from './Page/test'
 
 
 const App = () => {
@@ -34,6 +36,8 @@ const App = () => {
               <Route path="/Page/navbar" render={(props) => (<Navbar/>)}></Route>
               <Route path="/Page/employeeslist" render={(props) => (<Employeeslist/>)}></Route>
               <Route path="/Page/employee" render={(props) => (<Employee/>)}></Route>
+              <Route path="/Page/activity" render={(props) => (<Activity/>)}></Route>
+              <Route path="/Page/test" render={(props) => (<Test/>)}></Route>
               <Route path="/webapp/userhome" render={(props) => (<Userhome/>)}></Route>
               <Route path="/webapp/QR" render={(props) => (<QR/>)}></Route>
               <Route path="/webapp/TakePhoto" render={(props) => (<TakePhoto/>)}></Route>

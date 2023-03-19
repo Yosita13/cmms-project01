@@ -6,7 +6,7 @@ import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
 
 const Userhome = () => {
 
-    const [menu, setMenu] = useState(false)
+    
     const [open, setOpen] = useState(false);
     const location = useLocation()
     

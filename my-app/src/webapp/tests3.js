@@ -1,263 +1,380 @@
-
-
-//---------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// import React, { Component } from 'react';
-// import { useState } from "react";
-// import ReactDOM from 'react-dom';
+// import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
+// import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
+// import CmmsOnline from '../webapp/CmmsOnline.png';
+// import { Button, Form, Input } from 'antd';
+// import { Link } from 'react-router-dom';
 
 
-// import '../assets/css/style.css';
+
+// function RepairDetails() {
+
+//     const [open, setOpen] = useState(false);
+//     const [case_detail, setCase_detail] = useState("");
+//     const [detail, setDetail] = useState("");
 
 
-
-// const TakePhoto= () => {
-
-
-//     // Upload to local seaweedFS instance
-//     const uploadImage = async file => {
-//         const formData = new FormData();
-//         formData.append('file', file);
-
-//         // Connect to a seaweedfs instance
+//     const layout = {
+//         labelCol: { span: 8 },
+//         wrapperCol: { span: 16 },
 //     };
 
-//     class CameraFeed extends Component {
-//         /**
-//          * Processes available devices and identifies one by the label
-//          * @memberof CameraFeed
-//          * @instance
-//          */
-//         processDevices(devices) {
-//             devices.forEach(device => {
-//                 console.log(device.label);
-//                 this.setDevice(device);
-//             });
+//     /* eslint-disable no-template-curly-in-string */
+//     const validateMessages = {
+//         required: '${label} is required!',
+//         types: {
+//             email: '${label} is not a valid email!',
+//             number: '${label} is not a valid number!',
+//         },
+//         number: {
+//             range: '${label} must be between ${min} and ${max}',
+//         },
+//     };
+//     /* eslint-enable no-template-curly-in-string */
+
+//     const onFinish = async (values) => {
+//         setOpen(false);
+//         console.log('Received values of form: ', values);
+//         try {
+//             console.log('Received values of form: ', values);
+//             const { data } = await axios.post('http://localhost:5000/DB/tbl_list_repair', {
+
+//                 case_detail: values.case_detail
+//             })
+//             console.log(data);
+//         } catch (e) {
+
 //         }
+//     };
 
-//         /**
-//          * Sets the active device and starts playing the feed
-//          * @memberof CameraFeed
-//          * @instance
-//          */
-//         async setDevice(device) {
-//             const { deviceId } = device;
-//             const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { deviceId } });
-//             this.videoPlayer.srcObject = stream;
-//             this.videoPlayer.play();
-//         }
-
-//         /**
-//          * On mount, grab the users connected devices and process them
-//          * @memberof CameraFeed
-//          * @instance
-//          * @override
-//          */
-//         async componentDidMount() {
-//             const cameras = await navigator.mediaDevices.enumerateDevices();
-//             this.processDevices(cameras);
-//         }
-
-//         /**
-//          * Handles taking a still image from the video feed on the camera
-//          * @memberof CameraFeed
-//          * @instance
-//          */
-//         takePhoto = () => {
-//             const { sendFile } = this.props;
-//             const context = this.canvas.getContext('2d');
-//             context.drawImage(this.videoPlayer, 0, 0, 680, 360);
-//             this.canvas.toBlob(sendFile);
-//         };
+//     const hideModal = () => {
+//         setOpen(false);
+//     };
 
 
+//     const getRepailDeail = async () => {
+//         try {
+//             const { data } = await axios.get('http://localhost:5000/DB/tbl_list_repair')
+//             // console.log(data.length)
+//             setDetail(data)
+//         } catch (error) {
 
-//         render() {
-//             return (
-//                 <div className="c-camera-feed">
-//                     <div className="c-camera-feed__viewer">
-//                         <video ref={ref => (this.videoPlayer = ref)} width="680" heigh="360" />
-//                     </div>
-//                     <button onClick={this.takePhoto}>Take photo!</button>
-
-
-//                     <div className="c-camera-feed__stage">
-//                         <canvas width="680" height="360" ref={ref => (this.canvas = ref)} />
-//                     </div>
-//                 </div>
-//             );
 //         }
 //     }
+
+//     useEffect(() => {
+//         getRepailDeail()
+//     }, [])
+
 //     return (
-//         <div className="TakePhoto">
-//             <h1>Image capture test</h1>
-//             <p>Capture image from USB webcamera and upload to form</p>
-//             <CameraFeed sendFile={uploadImage} />
-//         </div>
-//     );
+//         <>
+//          <section className="comp-section comp-cards" id="comp_cards">
+//                 <div className="content container-fluid">
+//                     <div className="page-header">
+//                         <div className="row">
+//                             <div className="col-sm-12">
+//                                 <div className="col-md-6 text-center">
+
+//                                 <div classname="col-sm-6 col-md-4">
+//                                     <div className="content container-fluid">
+//                                         <div className="page-header">
+//                                             <div className="form-header">
+//                                                 <div className="row align-items-center">
+//                                     {/* Account Logo */}
+
+//                                     <div className="account-logo">
+//                                         <img src={CmmsOnline} alt="" />
+//                                     </div>
+
+//                                     {/* /Account Logo */}
+//                                     <br></br>
+//                                     <h3 className="card-title">รายละเอียดการแจ้งซ่อม</h3>
+//                                 </div>
+
+
+//                                     <div className="row">
+//                                             <div className="card flex-fill">
+//                                                 <img alt="" src={LogoOnlineAssest} className="card-img-top" />
+//                                                 <div className="card-header">
+//                                                     <h5 className="card-title mb-0"></h5>
+//                                                 </div>
+
+//                                                 <div className="card-body">
+//                                                     <Form
+//                                                         {...layout}
+//                                                         name="nest-messages"
+//                                                         onFinish={onFinish}
+//                                                         style={{ width: 400}}
+//                                                         validateMessages={validateMessages}
+//                                                     >
+//                                                         <Form.Item name={['case_detail', 'case_detail']} label="รายละเอียดการแจ้งซ่อม"
+//                                                             onChange={(event) => {
+//                                                                 setCase_detail(event.target.value)
+//                                                             }}
+//                                                         ><br></br><br></br>
+//                                                             <Input.TextArea />
+//                                                         </Form.Item>
+
+//                                                         {/* <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+//                                                             <Button className="btn btn-primary" type="primary" htmlType="submit">
+//                                                                 Submit
+//                                                             </Button>
+//                                                         </Form.Item>
+//                                                         */}
+
+//                                                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+//                                                             <Link to="/webapp/TakePhoto">
+//                                                                 <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
+//                                                             </Link>
+//                                                             <Button type="primary" className="btn-greensushi" htmlType="submit">Save</Button>
+//                                                         </Form.Item>
+//                                                     </Form>
+
+//                                                                         {/* Account Logo */}
+//                                                                         <div className="account-logo">
+//                                                                             <img src={LogoOnlineAssest} alt="Dreamguy's Technologies" />
+//                                                                         </div>
+//                                                                         {/* /Account Logo */}
+//                                                                     </div>
+//                                                                 </div>
+//                                                             </div>
+//                                                         </div>
+//                                                     </div>
+//                                                 </div>
+//                                             </div>
+
+//                                     </div>
+
+
+
+
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+
+//             </section>
+
+//         </>
+//     )
 // }
 
-// const rootElement = document.getElementById('root');
-// ReactDOM.render(<TakePhoto />, rootElement);
+// export default RepairDetails
 
-// export default TakePhoto;
 
-//---------------------------------------------------------------------------------------------------------------------------------------------------------
-
-import { Component } from 'react';
-import { Helmet } from "react-helmet";
-import { Link } from 'react-router-dom';
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-
-const TakePhoto = () => {
-    const videoRef = useRef(null);
-    const photoRef = useRef(null);
-    const[image1,setImage1] = useState('');
-  const[imageURLs,setImageURLs] = useState('');
-  const[images,setImages] = useState([]);
-  const[URLsImage,setURLsImage] = useState([]);
-  const [photo, setPhoto] = useState(null);
-
-
-    const [hasPhoto, setHasPhoto] = useState(false);
+import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
+import CmmsOnline from '../webapp/CmmsOnline.png';
+import cat from '../webapp/cat.png';
+import { Button, Form, Input } from 'antd';
+import { Link } from 'react-router-dom';
+import { Card } from 'antd';
+import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 
 
-    const getVideo = () => {
-        navigator.mediaDevices
-            .getUserMedia({
-                video: true
-                // video:{width: 1920,height:1080}
-            })
-            .then(stream => {
-                let video = videoRef.current;
-                video.srcObject = stream;
-                video.play();
-            })
-            .catch(err => {
-                console.err(err);
-            })
+function RepairDetails() {
 
-    }
-
-    useEffect(()=>{
-        if (images.length < 1) return;
-        const newURLsImage = [];
-        images.forEach(image => newURLsImage.push(URL.createObjectURL(image)))
-        setURLsImage(newURLsImage)
-      },[images]);
+    
+    let history = useHistory()
+    const [open, setOpen] = useState(false);
+    const [case_detail, setCase_detail] = useState("");
+    const [detail, setDetail] = useState("");
+    const [pic,setPic] = useState();
+    const [dataImg,setDataImg] = useState();
+    const [initialValues, setInitialValues] = useState();
+    const [id,setID] = ('')
+   
+    const { Meta } = Card;
+    const location = useLocation()
+    
+    
+    
     
 
-    const takeAPhoto = (e) => {
-        // const width = 414;
-        // const height = width / (16 / 9);
-        const width = 1080;
-        const height = 1080;
+    console.log('location',location.state);
+    const layout = {
+        labelCol: { span: 8 },
+        wrapperCol: { span: 16 },
+    };
 
-        let video = videoRef.current;
-        let photo = photoRef.current;
+ 
+  
 
-        photo.width = width;
-        photo.height = height;
+    const onFinish = async (values) => {
+        setOpen(false);
+        console.log('Received values of form: ', values);
+        console.log('id front',location.state);
+        try {
+            console.log('Received values of form: ', values);
+            const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${location.state}}`, {
+                case_detail: values.case_detail,
+                id:location.state
+                
+            })
+           
+           
+            
+           
+        } catch (e) {
 
-        let ctx = photo.getContext('2d');
-        ctx.drawImage(video, 0, 0, width, height);
-        setHasPhoto(true);
+        }
+    };
 
-        setImages([...e.target.files]);
-    //console.log(e.target.files)
-    setImage1(e.target.files[0])
-    }
-    console.log("Image",images);
-  console.log("URLSImage",URLsImage);
+    useEffect(() => {
+        getDataImage()
+      }, [])
 
-    const closePhoto = () => {
-        let photo = photoRef.current;
-        let ctx = photo.getContext('2d');
-
-        ctx.clearRect(0, 0, photo.width, photo.height);
-
-        setHasPhoto(false);
-
-
-    }
-
-    const imageUpload = async () => {
-        console.log(photoRef.current);
-        const formData = new FormData();
-        formData.append('photo', photo);
+    const getDataImage = async (values) => {
 
         try {
-            const response = await axios.post('/api/photos', formData);
-            console.log(response.data);
-          } catch (error) {
-            console.error(error);
-          }
-    }    
+        const { data } = await axios.get(`http://localhost:5000/DB/gat/tbl_tastimg/${location.state}`)
+          console.log('123',data);
+          setID(data)
+        }catch(error){
+
+        }
+          
+            
+          //console.log('222',defaultValue);
+        
+      }
+      
+
+   
     useEffect(() => {
-        getVideo();
-    }, [videoRef])
+        getImage()
+      }, [])
+    
+      const getImage = async () => {
+        try {
+          const { data } = await axios.get(`http://localhost:5000/DB/getImage/${location.state}`)
+           console.log('data',data)
+          setPic(data)
+        } catch (error) {
+    
+        }
+      }
+
+     
+
+    /* eslint-disable no-template-curly-in-string */
+    const validateMessages = {
+        required: '${label} is required!',
+        types: {
+            email: '${label} is not a valid email!',
+            number: '${label} is not a valid number!',
+        },
+        number: {
+            range: '${label} must be between ${min} and ${max}',
+        },
+    };
+    /* eslint-enable no-template-curly-in-string */
+
+   
+    
+    const hideModal = () => {
+        setOpen(false);
+    };
+
+   
+
+    
     return (
+        <>
 
-        <div className="account-content">
-            <div className="container">
-                <div classname="col-sm-6 col-md-4">
-                    <div className="content container-fluid">
-                        <div className="page-header">
-                            <div className="form-header">
-                                <div className="row align-items-center">
-                                    {/* Page Content */}
-                                    <div className="content container-fluid">
-                                        <div className="row">
-                                            <div className="col-sm-12">
+            <section className="comp-section comp-cards" id="comp_cards">
+                <div className="account-content">
+                    <div className="container">
+                        <div classname="col-sm-6 col-md-4">
+                            <div className="content container-fluid">
+                                <div className="page-header">
+                                    <div className="form-header">
+                                        <div className="row align-items-center">
+                                            {/* Page Content */}
+                                            <div className="content container-fluid">
+                                                <div className="row">
+                                                    <div className="col-sm-12"> 
 
-                                                <Helmet>
-                                                    <title>Blank - HRMS admin Template</title>
-                                                    <meta name="description" content="Reactify Blank Page" />
-                                                </Helmet>
-                                                {/* Page Content */}
-                                                <div className="content container-fluid">
-                                                    {/* Page Header */}
-                                                    <div className="page-header">
-                                                        <div className="row">
-                                                            <div className="col-sm-12">
+                                                        {/* Account Logo */}
 
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className='photo'>
-                                                        <div className="camera">
-                                                            <video ref={videoRef}></video>
-                                                            <button className='bottonPhoto' type="primary" onClick={takeAPhoto}>SNAP</button>
+                                                        <div className="account-logo">
+                                                            <img src={CmmsOnline} alt="" />
                                                         </div>
 
-                                                        <div className={'result ' + (hasPhoto ? 'hasPhoto '
-                                                            : '')}>
-                                                            <canvas ref={photoRef}></canvas>
-                                                            <button className='bottonPhoto' onClick={closePhoto}>CLOSE</button>
-                                                            <div >
-                                                                <Link to="/webapp/RepairDetails">
-                                                                    <button className='bottonPhoto' type="primary" onClick={imageUpload}  >Upload</button>
-                                                                </Link>
+                                                        {/* /Account Logo */}
+                                                        <br></br>
 
-                                                            </div>
-                                                        </div>
+                                                        <h3 className="page-title">รายละเอียดการแจ้งซ่อม</h3>
+
+
+
+
+                                                        {/* Content Starts */}
+                                                       <Card>
+                                                       {pic&&<img alt="" src={pic.image} />}
+
+                                                        
+
+
+                                                            <Form
+                                                                {...layout}
+                                                                name="nest-messages"
+                                                                onFinish={onFinish}
+                                                               
+                                                                validateMessages={validateMessages}
+                                                            >
+                                                                <Form.Item name={['case_detail']} label="รายละเอียดการแจ้งซ่อม"
+                                                                    onChange={(event) => {
+                                                                        setCase_detail(event.target.value)
+                                                                    }}
+                                                                >
+                                                                    <Input.TextArea />
+                                                                </Form.Item>
+
+                                                                {/* <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                                                                    <Button className="btn btn-primary" type="primary" htmlType="submit">
+                                                                        Submit
+                                                                    </Button>
+                                                                </Form.Item>
+                                                                */}
+
+                                                                <Form.Item >
+                                                                    <Link to="/webapp/QR">
+                                                                        <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
+                                                                    </Link>
+                                                                    <Button type="primary" className="btn-greensushi"   htmlType="submit">Save</Button>
+                                                                </Form.Item>
+                                                            </Form>
+                                                      </Card>
+
+                                                        {/* Account Logo */}
+
+                                                        <img src={LogoOnlineAssest} />
+
+                                                        {/* /Account Logo */}
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-    );
+            </section>
+
+
+        </>
+    )
 }
-export default TakePhoto;
+
+export default RepairDetails
+
+

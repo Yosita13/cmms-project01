@@ -39,7 +39,7 @@ router.post("/tbl_admin2" ,(req,res,next) => {
     const admin_address = req.body.admin_address;
     const admin_id = req.body.admin_id;
 
-    console.log(req.body);
+    console.log('data1',req.body);
     // console.log(next);
     // res.send('hello')
     connect.query('INSERT INTO tbl_admin (admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,admin_id,created_timestamp,updated_timestamp) VALUES(?,?,?,?,?,?,?,now(),now())',
@@ -225,7 +225,7 @@ router.post('/tbl_list_repair2', async (req, res) => {
        
            const id = req.body.body.id
        
-            const sql = "INSERT INTO testimg (image,admin_id) VALUES(?,?)"
+            const sql = "INSERT INTO tbl_repair (image,device_id) VALUES(?,?)"
             connect.query(sql, [image,id], (err, results) => {  if (err) throw err;
 			     
                 res.send(results)   
@@ -238,7 +238,7 @@ router.get ("/getImage/:id" ,(req,res,next) => {
     const id = req.params.id;
     console.log(req.params)
 
-    connect.query('SELECT * FROM testimg WHERE id = ?',id,
+    connect.query('SELECT * FROM tbl_repair WHERE id = ?',id,
     (err,rows) => {
         if (err){
             res.send(err)
@@ -257,7 +257,7 @@ router.get('/gat/tbl_tastimg/:id',async (req,res,next) => {
     const id = req.params.id;
     console.log('id11',req.params)
     try {
-        connect.query('SELECT * FROM testimg WHERE id = ?',id,(err,rows) => {
+        connect.query('SELECT * FROM tbl_repair WHERE id = ?',id,(err,rows) => {
             if (err){
                 res.send(err)
             }
@@ -278,7 +278,7 @@ router.put ("/put/repair/:id" ,(req,res,next) => {
     
     console.log('id22',req.body.id);
     console.log('reqbody',req.body)
-    connect.query('UPDATE testimg SET case_detail=? WHERE id = ?',[case_detail,id],
+    connect.query('UPDATE tbl_repair SET case_detail=? WHERE id = ?',[case_detail,id],
     (err,result) => {
         if (err){
             console.log(err);
@@ -291,7 +291,109 @@ router.put ("/put/repair/:id" ,(req,res,next) => {
     })
 })
 
-//-----------------------------------------------------------------------------
+//get Activity
+router.get('/get/activity',async (req,res,next) => {
+    try {
+        connect.query('SELECT * FROM tbl_repair',(err,rows) => {
+            if (err){
+                res.send(err)
+            }
+            else{
+                res.send(rows)
+            }
+        }) 
+    }
+    catch (e) {
+        res.send(e)
+    }
+})
+
+//update Repair_Status
+router.put ("/update/status/:id" ,(req,res,next) => {
+    
+    const status = req.body.status;
+    const id = req.params.id;
+    
+    
+    console.log('edit',req.body)
+    connect.query('UPDATE tbl_repair SET status=? WHERE id = ?',[status,id],
+    (err,result) => {
+        if (err){
+            console.log(err);
+        
+        }
+        else{
+            res.send("Values updated");
+        }
+    })
+})
+
+//get status for Repair_Status
+router.get ("/get/status/:id" ,(req,res,next) => {
+    const id = req.params.id;
+    console.log('555',req.params)
+
+    connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
+    (err,rows) => {
+        if (err){
+            res.send(err)
+        }
+        else {
+            Object.keys(rows).forEach(function (key) {
+                var row = rows[key];
+                res.send(row)
+                
+            })
+            // console.log(rows);
+        }
+    }) 
+})
+
+//get status for Repair_Status 
+router.get ("/get/get/for/join" ,(req,res,next) => {
+    const sql = `
+        SELECT r.id, e.employee_name, d.device_serial, d.device_model, r.case_detail, r.status
+        FROM tbl_repair AS r 
+        LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
+        LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
+        LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
+        ORDER BY r.id DESC
+    `;
+
+    connect.query(sql, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+            res.status(500).json({error: 'Error fetching data from database.'});
+        } else {
+            res.json(results);
+        }
+    });
+})
+
+//get status for Repair_Status test
+router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
+    const id = req.params.id;
+    console.log('555',req.params)
+    const sql = `
+        SELECT r.id, e.employee_name, d.device_serial, d.device_model, r.case_detail, r.status
+        FROM tbl_repair AS r 
+        LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
+        LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
+        LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
+        ORDER BY r.id DESC
+    `;
+
+    connect.query(sql,id, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+            res.status(500).json({error: 'Error fetching data from database.'});
+        } else {
+            res.json(results);
+        }
+    });
+})
+
+
 
 
 module.exports = router;
