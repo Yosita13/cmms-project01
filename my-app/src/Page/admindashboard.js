@@ -42,6 +42,9 @@ const AdminDashboard = () => {
   const [IT, setIt] = useState()
   const [License, setLicense] = useState()
   const [Admin, setAdmin] = useState()
+  const [activity,setActivity] = useState()
+  const [editStatus, setEditStatus] = useState();
+  const [open, setOpen] = useState(false)
 
   const toggleMobileMenu = () => {
     setMenu(!menu)
@@ -58,32 +61,33 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    getIT()
+    getAdmin()
   }, [])
 
-  const getIT = async () => {
+  const getAdmin = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/DB/test')
-      // console.log(data.length)
-      setIt(data)
+      const { data } = await axios.get('http://localhost:5000/DB/tbl_admin')
+       console.log(data.length)
+      setAdmin(data)
     } catch (error) {
 
     }
   }
   //console.log(IT.length)
 
+ 
   useEffect(() => {
-    getLicense()
+    getActivity()
   }, [])
+  const getActivity = () => {
 
-  const getLicense = async () => {
-    try {
-      const { data } = await axios.get('http://localhost:5000/DB/notebook')
-      // console.log(data.length)
-      setLicense(data)
-    } catch (error) {
+    console.log('editstatus', editStatus);
+    const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
+      setActivity(data)
+    })
+    //showModal()
+    setOpen(true);
 
-    }
   }
 
   // useEffect(() => {
@@ -130,7 +134,7 @@ const AdminDashboard = () => {
                 <div className="card-body">
                   <span className="dash-widget-icon"><i className="fa fa-cubes" /></span>
                   <div className="dash-widget-info">
-                    {/* <h3>{IT.length}</h3> */}
+                    {/* <h3>{Admin.length}</h3> */}
                     <span>IT</span>
                   </div>
                 </div>
@@ -171,65 +175,181 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
+         
           <div className="row">
-            <div className="col-md-12">
-              <div className="row">
-                <div className="col-md-6 text-center">
-                  <div className="card">
-                    <div className="card-body">
-                      <h3 className="card-title">Activties</h3>
-                      {/* <div id="bar-charts" /> */}
-                      <ResponsiveContainer width='100%' height={300}>
-                      {/* ถ้าจะทำลบ > barchart ออก */}
-                        <BarChart> 
-
-                          {/* data={barchartdata}
-                          margin={{
-                            top: 5, right: 5, left: 5, bottom: 5,
-                          }}
-                        >
-                          <CartesianGrid />
-                          <XAxis dataKey="y" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="Total Income" fill="#ff9b44" />
-                          <Bar dataKey="Total Outcome" fill="#fc6075" /> */}
-                        </BarChart>
-                      </ResponsiveContainer>
-
-                    </div>
+            <div className="col-md-6 d-flex">
+              <div className="card card-table flex-fill">
+                <div className="card-header">
+                  <h3 className="card-title mb-0">Activity</h3>
+                </div>
+                <div className="card-body">
+                  <div className="table-responsive">
+                    <table className="table custom-table mb-0">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Status</th>
+                          <th className="text-end">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <h2 className="table-avatar">
+                              
+                              <Link to = "/app/profile/client-profile">ttt<span>CEO</span></Link>
+                            </h2>
+                          </td>
+                          <td>barrycuda@example.com</td>
+                          <td>
+                            <div className="dropdown action-label">
+                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="fa fa-dot-circle-o text-success" /> Active
+                              </a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="dropdown dropdown-action">
+                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <h2 className="table-avatar">
+                              <a href="#" className="avatar"><img alt="" src={Avatar_19} /></a>
+                              <Link to = "/app/profile/client-profile">Tressa Wexler <span>Manager</span></Link>
+                            </h2>
+                          </td>
+                          <td>tressawexler@example.com</td>
+                          <td>
+                            <div className="dropdown action-label">
+                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="fa fa-dot-circle-o text-danger" /> Inactive
+                              </a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="dropdown dropdown-action">
+                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <h2 className="table-avatar">
+                              <Link to = "/app/profile/client-profile" className="avatar"><img alt="" src={Avatar_07} /></Link>
+                              <Link to = "/app/profile/client-profile">Ruby Bartlett <span>CEO</span></Link>
+                            </h2>
+                          </td>
+                          <td>rubybartlett@example.com</td>
+                          <td>
+                            <div className="dropdown action-label">
+                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="fa fa-dot-circle-o text-danger" /> Inactive
+                              </a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="dropdown dropdown-action">
+                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <h2 className="table-avatar">
+                              <Link to = "/app/profile/client-profile" className="avatar"><img alt="" src={Avatar_06} /></Link>
+                              <Link to = "/app/profile/client-profile"> Misty Tison <span>CEO</span></Link>
+                            </h2>
+                          </td>
+                          <td>mistytison@example.com</td>
+                          <td>
+                            <div className="dropdown action-label">
+                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="fa fa-dot-circle-o text-success" /> Active
+                              </a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="dropdown dropdown-action">
+                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <h2 className="table-avatar">
+                              <Link to = "/app/profile/client-profile" className="avatar"><img alt="" src={Avatar_14} /></Link>
+                              <Link to = "/app/profile/client-profile"> Daniel Deacon <span>CEO</span></Link>
+                            </h2>
+                          </td>
+                          <td>danieldeacon@example.com</td>
+                          <td>
+                            <div className="dropdown action-label">
+                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i className="fa fa-dot-circle-o text-danger" /> Inactive
+                              </a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="dropdown dropdown-action">
+                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
+                              <div className="dropdown-menu dropdown-menu-right">
+                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-
-                <div className="col-md-6 text-center">
-                  <div className="card">
-                    <div className="card-body">
-                      <h3 className="card-title">Assest Category</h3>
-                      <ResponsiveContainer width='100%' height={300}>
-                      <LineChart data={linechartdata}>
-                          {/* margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                        <CartesianGrid  />
-                        <XAxis dataKey="y" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="Total Sales" stroke="#ff9b44" fill="#ff9b44" strokeWidth={3} dot={{r : 3}} activeDot={{ r: 7 }} />
-                        <Line type="monotone" dataKey="Total Revenue" stroke="#fc6075" fill="#fc6075" strokeWidth={3} dot={{r : 3}} activeDot={{ r: 7 }} /> */}
-                      </LineChart>
-                      </ResponsiveContainer>
-                      
-                      {/* <div id="line-charts" /> */}
-                    </div>
-                  </div>
+                <div className="card-footer">
+                  <Link to = "/app/employees/clients">View all clients</Link>
                 </div>
-
               </div>
             </div>
-          </div>
+            </div>
         </div>
-
-
       </div>
     </div>
 

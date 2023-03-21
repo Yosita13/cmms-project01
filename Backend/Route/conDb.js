@@ -120,33 +120,6 @@ router.delete('/delete/:admin_id',(req,res) => {
     console.log('success');
 }) 
 
-// router.post("/tbl_list_repair" ,(req,res,next) => {
-    
-//     const case_detail = req.body.case_detail;
-//     const created_timestamp = req.body.created_timestamp ;
-//     const updated_timestamp = req.body.updated_timestamp ;
-//     const owner_id = req.body.owner_id;
-//     const admin_id = req.body.admin_id;
-//     const case_image = req.body.case_image
-//     const case_note = req.body.case_note
-
-
-//     console.log(req.body);
-//     // console.log(next);
-//     // res.send('hello')
-//     connect.query('INSERT INTO tbl_list_repair (case_note,case_image,admin_id,owner_id,case_detail,created_timestamp,updated_timestamp) VALUES(?,?,?,?,?,now(),now())',
-//     [case_note,case_image,admin_id,owner_id,case_detail,created_timestamp,updated_timestamp],
-//     (err,resul) => {
-//         if (err){
-//             console.log(err);
-        
-//         }
-//         else{
-//             res.send("Values inserted");
-//         }
-//     }
-//     )
-// })
 
 router.post("/tbl_list_repair" ,(req,res,next) => {
     
@@ -375,13 +348,17 @@ router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
     const id = req.params.id;
     console.log('555',req.params)
     const sql = `
-        SELECT r.id, e.employee_name, d.device_serial, d.device_model, r.case_detail, r.status
+        SELECT r.id, e.employee_name, e.employee_email,d.device_serial, d.device_model, r.case_detail, r.status
         FROM tbl_repair AS r 
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
         LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
         ORDER BY r.id DESC
     `;
+
+   
+
+
 
     connect.query(sql,id, (error, results, fields) => {
         if (error) {
@@ -391,6 +368,27 @@ router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
             res.json(results);
         }
     });
+})
+
+//get for send email test
+router.get ("/get/for/sendEmail/:id" ,(req,res,next) => {
+    const id = req.params.id;
+    console.log('555',req.params)
+
+    connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
+    (err,rows) => {
+        if (err){
+            res.send(err)
+        }
+        else {
+            Object.keys(rows).forEach(function (key) {
+                var row = rows[key];
+                res.send(row)
+                
+            })
+            // console.log(rows);
+        }
+    }) 
 })
 
 

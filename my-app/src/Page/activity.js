@@ -26,30 +26,12 @@ const Activity = ({ ID }) => {
   const [Status, setStatus] = useState(false);
   const [data, setData] = useState([]);
   const [editStatus, setEditStatus] = useState();
-
-
-
+  const [forsendEmail, setForsendEmail] = useState();
+  const [activity_email, setActivity_email] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   console.log('data is ', data)
-
-
-
-
-  // useEffect(() => {
-  //   getAdmin()
-  // }, [])
-
-  // const getAdmin = async () => {
-  //   try {
-  //     const { data } = await axios.get('http://localhost:5000/DB/get/activity')
-
-  //     // console.log('help',data.length)
-  //     setData(data)
-  //   } catch (error) {
-
-  //   }
-  // }
 
 
   useEffect(() => {
@@ -66,8 +48,6 @@ const Activity = ({ ID }) => {
 
     }
   }
-
-
 
   const onReset = () => {
     form.resetFields();
@@ -100,15 +80,55 @@ const Activity = ({ ID }) => {
     showModal()
     setOpen(true);
 
+  }
+  //----------------------------------------------------------------------------------------------------------------------
+  const SendEmail = () => {
 
+    console.log('editstatus', editStatus);
+    const { data } = axios.get(`http://localhost:5000/DB/get/for/sendEmail/${editStatus}`).then((response) => {
+
+      console.log(response.data);
+      setDataEmployee(response.data);
+      const defaultValue = {
+        admin_id: response.data.admin_id,
+        admin_name: response.data.admin_name,
+        admin_email: response.data.admin_email,
+        admin_password: response.data.admin_password,
+        admin_phone: response.data.admin_phone,
+        created_timestamp: response.data.created_timestamp,
+        updated_timestamp: response.data.updated_timestamp,
+        admin_address: response.data.admin_address,
+        admin_designation: response.data.admin_designation
+      }
+      //console.log('222',defaultValue);
+      setInitialValues(defaultValue);
+
+
+    })
+    showModalForEmail()
+    setForsendEmail(true);
 
   }
 
 
-  const test = (values) => {
+  const getID = (values) => {
     console.log('value', values);
     setEditStatus(values.id)
   }
+
+  const showModal2 = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+
   const handleButtonClick = (e) => {
 
     console.log('click left button', e);
@@ -128,7 +148,7 @@ const Activity = ({ ID }) => {
 
     },
     {
-      label: <a href="/app/profile/employee-profile">send email</a>,
+      label: <a onClick={showModal2}>send email</a>,
       key: '1',
       icon: <MailOutlined />,
     },
@@ -139,7 +159,6 @@ const Activity = ({ ID }) => {
     onClick: handleMenuClick,
   };
 
-
   const showModal = () => {
     setOpen(true);
   };
@@ -147,6 +166,16 @@ const Activity = ({ ID }) => {
   const hideModal = () => {
     setOpen(false);
   };
+
+  const showModalForEmail = () => {
+    setForsendEmail(true);
+  };
+
+  const hideModal2 = () => {
+    setForsendEmail(false);
+  };
+
+
 
 
 
@@ -178,11 +207,6 @@ const Activity = ({ ID }) => {
     },
   };
 
-
-
-
-
-
   const columns = [
 
     {
@@ -203,7 +227,7 @@ const Activity = ({ ID }) => {
     },
 
     {
-      title: 'device_serial',
+      title: 'Device_serial',
       dataIndex: 'device_serial',
       sorter: (a, b) => a.admin_email.length - b.admin_email.length,
     },
@@ -220,7 +244,6 @@ const Activity = ({ ID }) => {
       sorter: (a, b) => a.case_detail.length - b.case_detail.length,
     },
 
-
     {
       title: 'Status',
       dataIndex: 'status',
@@ -228,10 +251,8 @@ const Activity = ({ ID }) => {
         <div>
           <span className={text === ":success" ? "badge bg-inverse-success" : "badge bg-inverse-info"}>{text}</span>
         </div>
-
-
-      // render: (text, record) => <Tag>{text}</Tag>
     },
+
     {
       title: 'Action',
       render: (value) => (
@@ -240,25 +261,12 @@ const Activity = ({ ID }) => {
             menu={menuProps}
             placement="bottomRight"
             trigger={['click']}>
-            <Button type='text' onClick={() => test(value)}><MoreOutlined /></Button>
+            <Button type='text' onClick={() => getID(value)}><MoreOutlined /></Button>
           </Dropdown>
-
-
-
         </>
-
-
-
-
       )
-
-
     },
-
-
   ]
-
-
 
   return (
     <div className={`main-wrapper ${menu ? 'slide-nav' : ''}`}>
@@ -287,6 +295,7 @@ const Activity = ({ ID }) => {
               </div>
             </div>
           </div>
+
           <Modal
             width={650}
             title="Update Status"
@@ -319,8 +328,9 @@ const Activity = ({ ID }) => {
                 }}
               >
                 <Select placeholder="select status device">
-                  <Option value="success">success</Option>
                   <Option value="in progress">in progress</Option>
+                  <Option value="success">success</Option>
+                  <Option value="complete">complete</Option>
                 </Select>
               </Form.Item>
 
@@ -340,6 +350,122 @@ const Activity = ({ ID }) => {
               </Form.Item>
             </Form>
           </Modal>
+
+          {/* model2 */}
+          {/* <Modal
+            width={650}
+            title="Email"
+            open={forsendEmail}
+            // onOk={hideModal}
+            footer={null}
+            onCancel={hideModal2}
+            okText="submit"
+            cancelText="cancle"
+          >
+             {initialValues&&
+            <Form
+              {...formItemLayout}
+              form={form}
+              name="save"
+              onFinish={onFinish}
+              initialValues={{
+                residence: ['zhejiang', 'hangzhou', 'xihu'],
+                prefix: '86',
+              }}
+              scrollToFirstError
+            >
+
+
+              <Form.Item
+                name="Status"
+                label="Status"
+                rules={[{ required: true, message: 'Please select status!' }]}
+                onChange={(event) => {
+                  setStatus(event.target.value)
+                }}
+              >
+                <Select placeholder="select status device">
+                  <Option value="in progress">in progress</Option>
+                  <Option value="success">success</Option>
+                  <Option value="complete">complete</Option>
+                </Select>
+              </Form.Item>
+
+
+              <Form.Item
+                name="admin_email"
+                label="E-mail"
+                rules={[
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!',
+                  },
+                ]}
+                onChange={(event) => {
+                  setActivity_email(event.target.value)
+                }}
+              >
+
+                <Input />
+              </Form.Item>
+
+              <Form.Item  {...tailFormItemLayout}>
+                <Row>
+                  <Col span={12} style={{ textAlign: 'left' }}>
+                    <Button type="primary" htmlType="submit">
+                      save
+                    </Button></Col>
+                  <Col span={12} style={{ textAlign: 'right' }}>
+                    <Button type="primary" danger onClick={hideModal2}>
+                      Cancle
+                    </Button>
+                  </Col>
+                </Row>
+
+              </Form.Item>
+            </Form>}
+          </Modal> */}
+          
+          <div className="modal custom-modal fade" id="delete_approve" role="dialog">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-body">
+
+                  <Modal
+                    open={isModalOpen}
+                    // onOk={hideModal}
+                    footer={null}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                    okText="submit"
+                    cancelText="cancle"
+                  >
+                    <div className="form-header">
+                      <h3>Send Email</h3>
+                      <p>Are you sure want to send this email?</p>
+                    </div>
+                    <div className="modal-btn delete-action">
+                      <div className="row">
+                        <div className="col-6">
+                          <a href="" className="btn btn-primary continue-btn"  >Confirm</a>
+                        </div>
+                        <div className="col-6">
+                          <a href="" data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={handleCancel}>Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+                  </Modal>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
 
           <Form
 
