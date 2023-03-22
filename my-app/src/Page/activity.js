@@ -20,6 +20,7 @@ const Activity = ({ ID }) => {
   const [Admin, setAdmin] = useState([])
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
+  const [form3] = Form.useForm();
   const [admin_id, setAdmin_id] = useState("");
   const [dataEmployee, setDataEmployee] = useState();
   const [initialValues, setInitialValues] = useState();
@@ -31,12 +32,16 @@ const Activity = ({ ID }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
-  console.log('data is ', data)
+  //console.log('data is ', data)
 
 
   useEffect(() => {
     getAdmin()
   }, [])
+
+  useEffect(() => {
+    form3.setFieldValue({ admin_email: activity_email })
+  }, [activity_email])
 
   const getAdmin = async () => {
     try {
@@ -60,7 +65,9 @@ const Activity = ({ ID }) => {
     try {
       const { data } = await axios.put(`http://localhost:5000/DB/update/status/${editStatus}`,
         {
-          status: values.Status,
+
+          status: Status,
+          employee_email: activity_email
         })
       // console.log(data.length)
       alert('success!!')
@@ -82,46 +89,71 @@ const Activity = ({ ID }) => {
 
   }
   //----------------------------------------------------------------------------------------------------------------------
-  const SendEmail = () => {
+  // const SendEmail = () => {
 
-    console.log('editstatus', editStatus);
-    const { data } = axios.get(`http://localhost:5000/DB/get/for/sendEmail/${editStatus}`).then((response) => {
+  //   //console.log('editstatus', editStatus);
+  //   axios.get(`http://localhost:5000/DB/get/get/for/join1/${editStatus}`).then((response) => {
 
-      console.log(response.data);
-      setDataEmployee(response.data);
-      const defaultValue = {
-        admin_id: response.data.admin_id,
-        admin_name: response.data.admin_name,
-        admin_email: response.data.admin_email,
-        admin_password: response.data.admin_password,
-        admin_phone: response.data.admin_phone,
-        created_timestamp: response.data.created_timestamp,
-        updated_timestamp: response.data.updated_timestamp,
-        admin_address: response.data.admin_address,
-        admin_designation: response.data.admin_designation
-      }
-      //console.log('222',defaultValue);
-      setInitialValues(defaultValue);
+  //     console.log('sendEmail',activity_email);
+  //     console.log('sendEmail2',Status);
+  //     setDataEmployee(response.data);
+  //     const defaultValue = {
+
+  //       status: Status,
+  //       employee_email: activity_email
 
 
-    })
-    showModalForEmail()
-    setForsendEmail(true);
+  //     }
 
-  }
+
+  //     console.log('222',defaultValue);
+  //      setInitialValues(defaultValue);
+
+
+  //   })
+  //   // showModalForEmail()
+  //   setForsendEmail(true);
+
+  // }
 
 
   const getID = (values) => {
+
     console.log('value', values);
     setEditStatus(values.id)
+    setActivity_email(values.employee_email)
+    setStatus(values.status)
+    console.log('sta', values.status);
+    console.log('email', values.employee_email);
+    //form3.setFieldValue({admin_email:values.employee_email})
+
+
   }
+  console.log('from2', form3.getFieldValue('admin_email'));
 
   const showModal2 = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const hideModal2 = () => {
+
+    setForsendEmail(false);
+    form3.resetFields()
+    //console.log('111',activity_email)
+    form3.setFieldValue({ admin_email: activity_email })
+  };
+
+  const handleOk = (values) => {
+    console.log('va', values);
+    //setIsModalOpen(false);
+    hideModal2()
+
+    const { data } = axios.post('http://localhost:5000/DB/sendEmail', {
+      status: Status,
+      employee_email: values
+    })
+    console.log(data);
+    //form3.resetFields()
   };
 
   const handleCancel = () => {
@@ -148,7 +180,7 @@ const Activity = ({ ID }) => {
 
     },
     {
-      label: <a onClick={showModal2}>send email</a>,
+      label: <a onClick={() => setForsendEmail(true)}>send email</a>,
       key: '1',
       icon: <MailOutlined />,
     },
@@ -171,18 +203,13 @@ const Activity = ({ ID }) => {
     setForsendEmail(true);
   };
 
-  const hideModal2 = () => {
-    setForsendEmail(false);
-  };
-
-
-
-
 
 
   const toggleMobileMenu = () => {
     setMenu(!menu)
   }
+
+
 
   const formItemLayout = {
     labelCol: {
@@ -218,7 +245,12 @@ const Activity = ({ ID }) => {
     {
       title: 'User',
       dataIndex: 'employee_name',
-      sorter: (a, b) => a.admin_name.length - b.admin_name.length,
+      sorter: (a, b) => a.employee_name.length - b.employee_name.length,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'employee_email',
+      sorter: (a, b) => a.employee_email.length - b.employee_email.length,
     },
     {
       title: 'Device_id',
@@ -352,118 +384,113 @@ const Activity = ({ ID }) => {
           </Modal>
 
           {/* model2 */}
-          {/* <Modal
-            width={650}
-            title="Email"
-            open={forsendEmail}
-            // onOk={hideModal}
-            footer={null}
-            onCancel={hideModal2}
-            okText="submit"
-            cancelText="cancle"
-          >
-             {initialValues&&
-            <Form
-              {...formItemLayout}
-              form={form}
-              name="save"
-              onFinish={onFinish}
-              initialValues={{
-                residence: ['zhejiang', 'hangzhou', 'xihu'],
-                prefix: '86',
-              }}
-              scrollToFirstError
-            >
 
-
-              <Form.Item
-                name="Status"
-                label="Status"
-                rules={[{ required: true, message: 'Please select status!' }]}
-                onChange={(event) => {
-                  setStatus(event.target.value)
-                }}
-              >
-                <Select placeholder="select status device">
-                  <Option value="in progress">in progress</Option>
-                  <Option value="success">success</Option>
-                  <Option value="complete">complete</Option>
-                </Select>
-              </Form.Item>
-
-
-              <Form.Item
-                name="admin_email"
-                label="E-mail"
-                rules={[
-                  {
-                    type: 'email',
-                    message: 'The input is not valid E-mail!',
-                  },
-                  {
-                    required: true,
-                    message: 'Please input your E-mail!',
-                  },
-                ]}
-                onChange={(event) => {
-                  setActivity_email(event.target.value)
-                }}
-              >
-
-                <Input />
-              </Form.Item>
-
-              <Form.Item  {...tailFormItemLayout}>
-                <Row>
-                  <Col span={12} style={{ textAlign: 'left' }}>
-                    <Button type="primary" htmlType="submit">
-                      save
-                    </Button></Col>
-                  <Col span={12} style={{ textAlign: 'right' }}>
-                    <Button type="primary" danger onClick={hideModal2}>
-                      Cancle
-                    </Button>
-                  </Col>
-                </Row>
-
-              </Form.Item>
-            </Form>}
-          </Modal> */}
-          
           <div className="modal custom-modal fade" id="delete_approve" role="dialog">
             <div className="modal-dialog modal-dialog-centered">
               <div className="modal-content">
                 <div className="modal-body">
 
+
                   <Modal
-                    open={isModalOpen}
+
+                    open={forsendEmail}
                     // onOk={hideModal}
                     footer={null}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
+                    //onOk={handleOk}
+                    onCancel={hideModal2}
                     okText="submit"
                     cancelText="cancle"
                   >
+
                     <div className="form-header">
                       <h3>Send Email</h3>
                       <p>Are you sure want to send this email?</p>
+
+
+                      <Form
+                        initialValues={{ admin_email: activity_email }}
+                        {...formItemLayout}
+                        form={form3}
+                        name="save"
+                        onFinish={handleOk}
+
+
+                        scrollToFirstError
+                      >
+                        <Form.Item
+                          name="admin_email"
+                          label="E-mail"
+                          rules={[
+                            {
+                              type: 'email',
+                              message: 'The input is not valid E-mail!',
+                            },
+                            {
+                              required: true,
+                              message: 'Please input your E-mail!',
+                            },
+                          ]}
+
+                        >
+
+                          <Input />
+                        </Form.Item>
+                        {/* <Row>
+                    <Col span={6} offset={1}>
+                        <div className="text-left mt-2">
+                            <Button
+                                ghost
+                                type="primary"
+                                className="mr-2"
+                                onClick={hideModal2}
+
+                                htmlType="submit"
+                                // disabled={disableForm || loadingButton}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </Col>
+                    <Col span={12} offset={4}>
+                        <div className="text-right mt-2">
+                            <Button 
+                                type="primary"
+                                htmlType="submit"
+                                // disabled={disableForm || loadingButton}
+                            >
+                                APPLY
+                            </Button>
+                        </div>
+                    </Col>
+
+                </Row> */}
+
+
+                      </Form>
+
+
                     </div>
+
+
                     <div className="modal-btn delete-action">
                       <div className="row">
                         <div className="col-6">
-                          <a href="" className="btn btn-primary continue-btn"  >Confirm</a>
+                          <a className="btn btn-primary continue-btn" onClick={() => handleOk(form3.getFieldValue('admin_email'))}>Confirm</a>
+                          {/* <a  type = 'submit' className="btn btn-primary continue-btn"  >Confirm</a> */}
                         </div>
                         <div className="col-6">
-                          <a href="" data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={handleCancel}>Cancel</a>
+                          <a data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={hideModal2} >Cancel</a>
                         </div>
                       </div>
                     </div>
+
                   </Modal>
 
                 </div>
               </div>
             </div>
           </div>
+
 
 
 

@@ -4,6 +4,7 @@ const connect = require('../Database/DB')
 const router = require('express-promise-router')()
 const multer = require('multer');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 
 
@@ -325,7 +326,7 @@ router.get ("/get/status/:id" ,(req,res,next) => {
 //get status for Repair_Status 
 router.get ("/get/get/for/join" ,(req,res,next) => {
     const sql = `
-        SELECT r.id, e.employee_name, d.device_serial, d.device_model, r.case_detail, r.status
+        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail, r.status
         FROM tbl_repair AS r 
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
@@ -346,20 +347,16 @@ router.get ("/get/get/for/join" ,(req,res,next) => {
 //get status for Repair_Status test
 router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
     const id = req.params.id;
+   
     console.log('555',req.params)
     const sql = `
-        SELECT r.id, e.employee_name, e.employee_email,d.device_serial, d.device_model, r.case_detail, r.status
+        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail, r.status
         FROM tbl_repair AS r 
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
         LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
         ORDER BY r.id DESC
     `;
-
-   
-
-
-
     connect.query(sql,id, (error, results, fields) => {
         if (error) {
             console.log(error);
@@ -368,6 +365,7 @@ router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
             res.json(results);
         }
     });
+    
 })
 
 //get for send email test
@@ -390,7 +388,35 @@ router.get ("/get/for/sendEmail/:id" ,(req,res,next) => {
         }
     }) 
 })
-//////
+
+router.post("/sendEmail",(req,res,next) => {
+
+    console.log(req.body);
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'kh.hatari@gmail.com',
+          pass: 'qtyvtrqaoknhfqki'
+        }
+      });
+      
+      var mailOptions = {
+        from: 'kh.hatari@gmail.co',
+        to: req.body.employee_email,
+        subject: 'Sending Email using Node.js',
+        text: 'I Love You !'
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+})
 
 
 
