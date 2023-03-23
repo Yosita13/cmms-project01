@@ -5,6 +5,7 @@ import CmmsOnline from '../webapp/CmmsOnline.png';
 import { Button, Form } from 'antd';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { Card } from 'antd';
+import { Helmet } from "react-helmet";
 
 
 function Status() {
@@ -25,7 +26,8 @@ function Status() {
 
     const getStatus = async () => {
         try {
-            const { data } = await axios.get(`http://localhost:5000/DB/getstatus/${location.state}`)
+            const { data } = await axios.get(`http://localhost:5000/DB/get/status/device/${location.state}`)
+            console.log('data',data);
             // console.log(data.length)
             setDetail(data)
         } catch (error) {
@@ -41,6 +43,10 @@ function Status() {
                 <div className="account-content">
                     <div className="container">
                         <div classname="col-sm-6 col-md-4">
+                        <Helmet>
+                                <title>Status</title>
+                                <meta name="description" content="Login page" />
+                            </Helmet>
                             <div className="content container-fluid">
                                 <div className="page-header">
                                     <div className="form-header">
@@ -48,7 +54,7 @@ function Status() {
                                             {/* Page Content */}
                                             <div className="content container-fluid">
                                                 <div className="row">
-                                                    <div className="col-sm-12">
+                                                    <div className="col-sm-8">
 
                                                         {/* Account Logo */}
 
@@ -66,7 +72,8 @@ function Status() {
                                                             <div className="card-body">
                                                                 <span ><i className="fa fa-usd" /></span>
                                                                 <div className="dash-widget-info">
-                                                                    <h5>{detail[0]?.status}</h5>
+                                                                    <h5>{detail.case_detail}</h5>
+                                                                    {/* <h5>{detail[0]?.case_detail}</h5> */}
                                                                     {/* <h3>{License.length}</h3> */}
                                                                     {/* <span>License</span> */}
                                                                 </div>
@@ -83,7 +90,7 @@ function Status() {
                                                             <div className="card-body">
                                                                 <span ><i className="fa fa-usd" /></span>
                                                                 <div className="dash-widget-info">
-                                                                    <h5>{detail[0]?.status}</h5>
+                                                                    <h5>{detail.status}</h5>
                                                                     {/* <h3>{License.length}</h3> */}
                                                                     {/* <span>License</span> */}
                                                                 </div>

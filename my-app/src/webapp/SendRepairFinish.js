@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from "react-helmet";
 import { useHistory } from 'react-router-dom';
 import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
 function UploadImage() {
 
@@ -156,7 +157,18 @@ function UploadImage() {
                                     
                                 <div className="row">
                                     <div className="col-sm-12">
-                                        <h4 className="page-title">อัปโหลดรูปภาพอุปกรณ์ เพื่อแจ้งซ่อม</h4><br></br>
+                                        <h4 className="page-title">ส่งเรื่องแจ้งซ่อมสำเร็จ</h4><br></br>
+                                        <div className="col-md-12 col-sm-12 col-lg-12 col-xl-12">
+                                            <div className="card dash-widget">
+                                                <div className="card-body">
+                                                    <span className="dash-widget-icon"><CheckCircleOutlined /></span>
+                                                    <div className="dash-widget-info">
+                                                        <h2>ส่งเรื่องแจ้งซ่อมสำเร็จ</h2>
+                                                        {/* <span>ส่งเรื่องแจ้งซ่อมสำเร็จ</span> */}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -170,17 +182,18 @@ function UploadImage() {
                                     <div className="form-group row">
                                         <div className="form-row">
                                         {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
-                                            <div className="col-lg-14">
-                                                <input type="file" className="form-control" name="upload_file" onChange={handleInputChange} /><br></br>
-                                            </div>
+                                           
+
+                                       
 
                                             <div style={{ marginTop: '5px' }} className="submit-section">
                                                 <div className="form-row">
                                                     
-                                                {userInfo.filepreview !== null ?
-                                            <img className="previewimg" src={userInfo.filepreview} alt="UploadImage" />
-                                            : null}
-                                                    <button type="submit" className="btn btn-greensushi submit-btn" onClick={() => submit ()} > Save </button>
+                                                <Link to={{
+                                                    pathname: "/webapp/userhome",
+                                                    state: location.state
+                                                }}>
+                                                    <button type="submit" className="btn btn-greensushi submit-btn"  > OK </button></Link>
  
                                                 </div>
                                             </div>

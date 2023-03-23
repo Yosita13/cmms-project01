@@ -209,7 +209,7 @@ function RepairDetails() {
                 id:location.state
                 
             })
-           
+            history.push({pathname:'/webapp/sendRepairFinish'})
             
            
         } catch (e) {

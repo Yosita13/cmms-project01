@@ -20,6 +20,7 @@ import Employee from './Page/employee';
 import UploadImage from './webapp/uploadImage';
 import Test from './Page/test'
 import Activity from './Page/activity';
+import SendRepairFinish from './webapp/SendRepairFinish'
 
 
 const App = () => {
@@ -46,7 +47,7 @@ const App = () => {
               <Route path="/webapp/DataDevice" render={(props) => (<DataDevice/>)}></Route>
               <Route path="/webapp/tests3" render={(props) => (<Tests3/>)}></Route>
               <Route path="/webapp/uploadImage" render={(props) => (<UploadImage/>)}></Route>
-             
+            <Route path= "/webapp/sendRepairFinish" render={(props) => (<SendRepairFinish/>)}></Route>
               <Redirect to={{pathname: '/Page/admindashboard'}}/>
           </Switch>
       </Router>

@@ -25,7 +25,7 @@ const Userhome = () => {
                     <div className="row">
                         <div className="col-sm-12">
                             <Helmet>
-                                <title>Employee</title>
+                                <title>UserHome</title>
                                 <meta name="description" content="Login page" />
                             </Helmet>
                             {/* Page Content */}

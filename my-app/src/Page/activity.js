@@ -65,9 +65,9 @@ const Activity = ({ ID }) => {
     try {
       const { data } = await axios.put(`http://localhost:5000/DB/update/status/${editStatus}`,
         {
-
-          status: Status,
-          employee_email: activity_email
+          id:values.editStatus,
+          status:values.Status,
+          
         })
       // console.log(data.length)
       alert('success!!')
@@ -77,6 +77,7 @@ const Activity = ({ ID }) => {
     }
   };
 
+ 
 
   const getActivity = () => {
 

@@ -11,7 +11,7 @@ const nodemailer = require('nodemailer');
 //get Admin
 router.get('/tbl_admin',async (req,res,next) => {
     try {
-        connect.query('SELECT * FROM device_asset.tbl_admin',(err,rows) => {
+        connect.query('SELECT * FROM tbl_admin',(err,rows) => {
             if (err){
                 res.send(err)
             }
@@ -72,7 +72,7 @@ router.put ("/update/:admin_id" ,(req,res,next) => {
     const admin_id = req.body.admin_id;
     
     console.log('edit',req.body)
-    connect.query('UPDATE tbl_admin SET admin_name=?,admin_designation=?,admin_email=?,admin_password=?,admin_phone=?,admin_address=?,admin_id=?,created_timestamp=now(),updated_timestamp=now() WHERE admin_id = ?',[admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,admin_id,admin_id,created_timestamp,updated_timestamp],
+    connect.query('UPDATE tbl_admin SET admin_name=?,admin_email=?,admin_password=?,admin_phone=?,admin_address=?,admin_id=?,created_timestamp=now(),updated_timestamp=now(),admin_designation=? WHERE admin_id = ?',[admin_name,admin_email,admin_password,admin_phone,admin_address,admin_id,admin_id,created_timestamp,updated_timestamp,admin_designation],
     (err,result) => {
         if (err){
             console.log(err);
@@ -89,7 +89,7 @@ router.get ("/getEmployee/:admin_id" ,(req,res,next) => {
     const admin_id = req.params.admin_id;
     console.log('555',req.params)
 
-    connect.query('SELECT * FROM device_asset.tbl_admin WHERE admin_id = ? ',admin_id,
+    connect.query('SELECT * FROM tbl_admin WHERE admin_id = ? ',admin_id,
     (err,rows) => {
         if (err){
             res.send(err)
@@ -289,7 +289,7 @@ router.put ("/update/status/:id" ,(req,res,next) => {
     const id = req.params.id;
     
     
-    console.log('edit',req.body)
+    console.log('edit55',req.body)
     connect.query('UPDATE tbl_repair SET status=? WHERE id = ?',[status,id],
     (err,result) => {
         if (err){
@@ -303,11 +303,32 @@ router.put ("/update/status/:id" ,(req,res,next) => {
 })
 
 //get status for Repair_Status
-router.get ("/get/status/:id" ,(req,res,next) => {
-    const id = req.params.id;
+// router.get ("/get/status/:id" ,(req,res,next) => {
+//     const id = req.params.id;
+//     console.log('555',req.params)
+
+//     connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
+//     (err,rows) => {
+//         if (err){
+//             res.send(err)
+//         }
+//         else {
+//             Object.keys(rows).forEach(function (key) {
+//                 var row = rows[key];
+//                 res.send(row)
+                
+//             })
+//             // console.log(rows);
+//         }
+//     }) 
+// })
+
+//get status for Repair_Status
+router.get ("/get/status/device/:device_id" ,(req,res,next) => {
+    const device_id = req.params.device_id;
     console.log('555',req.params)
 
-    connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
+    connect.query('SELECT * FROM tbl_repair WHERE device_id = ? ',device_id,
     (err,rows) => {
         if (err){
             res.send(err)
@@ -322,6 +343,28 @@ router.get ("/get/status/:id" ,(req,res,next) => {
         }
     }) 
 })
+
+//get DataDeviece for Repair_Status
+router.get ("/getDataDevice/:device_id" ,(req,res,next) => {
+    const device_id = req.params.device_id;
+    console.log('555',req.params)
+
+    connect.query('SELECT * FROM tbl_device WHERE device_id = ? ',device_id,
+    (err,rows) => {
+        if (err){
+            res.send(err)
+        }
+        else {
+            Object.keys(rows).forEach(function (key) {
+                var row = rows[key];
+                res.send(row)
+                
+            })
+            // console.log(rows);
+        }
+    }) 
+})
+
 
 //get status for Repair_Status 
 router.get ("/get/get/for/join" ,(req,res,next) => {
@@ -369,26 +412,28 @@ router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
 })
 
 //get for send email test
-router.get ("/get/for/sendEmail/:id" ,(req,res,next) => {
-    const id = req.params.id;
-    console.log('555',req.params)
+// router.get ("/get/for/sendEmail/:id" ,(req,res,next) => {
+//     const id = req.params.id;
+//     console.log('555',req.params)
 
-    connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
-    (err,rows) => {
-        if (err){
-            res.send(err)
-        }
-        else {
-            Object.keys(rows).forEach(function (key) {
-                var row = rows[key];
-                res.send(row)
+//     connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
+//     (err,rows) => {
+//         if (err){
+//             res.send(err)
+//         }
+//         else {
+//             Object.keys(rows).forEach(function (key) {
+//                 var row = rows[key];
+//                 res.send(row)
                 
-            })
-            // console.log(rows);
-        }
-    }) 
-})
+//             })
+//             // console.log(rows);
+//         }
+//     }) 
+// })
 
+
+//send email
 router.post("/sendEmail",(req,res,next) => {
 
     console.log(req.body);

@@ -6,45 +6,62 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-import {User,Avatar_19,Avatar_07,Avatar_06,Avatar_14} from '../Entryfile/imagepath';
+import { User, Avatar_19, Avatar_07, Avatar_06, Avatar_14 } from '../Entryfile/imagepath';
 import '../Entryfile/imagepath';
 import Header from '../initialpage/Sidebar/header';
 import Sidebar from '../initialpage/Sidebar/sidebar';
 import "../Page/index.css"
 import axios from 'axios';
+
+
 import {
   BarChart, Bar, Cell, ResponsiveContainer,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+import { Form, Input, Select, Row, DatePicker, Dropdown, Button, Col, Modal, Space, Table, Tag } from 'antd';
+import { MoreOutlined, EditOutlined, MailOutlined ,LaptopOutlined,FileWordOutlined,WifiOutlined,UserOutlined} from '@ant-design/icons';
+import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
 
 
-const barchartdata = [
-  { y: '2006', "Total Income": 100, 'Total Outcome': 90 },
-  { y: '2007', "Total Income": 75, 'Total Outcome': 65 },
-  { y: '2008', "Total Income": 50, 'Total Outcome': 40 },
-  { y: '2009', "Total Income": 75, 'Total Outcome': 65 },
-  { y: '2010', "Total Income": 50, 'Total Outcome': 40 },
-  { y: '2011', "Total Income": 75, 'Total Outcome': 65 },
-  { y: '2012', "Total Income": 100, 'Total Outcome': 90 }
-];
-const linechartdata = [
-  { y: '2006', "Total Sales": 50, 'Total Revenue': 90 },
-  { y: '2007', "Total Sales": 75, 'Total Revenue': 65 },
-  { y: '2008', "Total Sales": 50, 'Total Revenue': 40 },
-  { y: '2009', "Total Sales": 75, 'Total Revenue': 65 },
-  { y: '2010', "Total Sales": 50, 'Total Revenue': 40 },
-  { y: '2011', "Total Sales": 75, 'Total Revenue': 65 },
-  { y: '2012', "Total Sales": 100, 'Total Revenue': 50 }
-];
+
 const AdminDashboard = () => {
 
   const [menu, setMenu] = useState(false)
-  const [IT, setIt] = useState()
-  const [License, setLicense] = useState()
-  const [Admin, setAdmin] = useState()
-  const [activity,setActivity] = useState()
-  const [editStatus, setEditStatus] = useState();
   const [open, setOpen] = useState(false)
+  const [Admin, setAdmin] = useState([])
+  const [form] = Form.useForm();
+  const [form2] = Form.useForm();
+  const [form3] = Form.useForm();
+  const [admin_id, setAdmin_id] = useState("");
+  const [dataEmployee, setDataEmployee] = useState();
+  const [initialValues, setInitialValues] = useState();
+  const [Status, setStatus] = useState(false);
+  const [data, setData] = useState([]);
+  const [editStatus, setEditStatus] = useState();
+  const [forsendEmail, setForsendEmail] = useState();
+  const [activity_email, setActivity_email] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+
+  const barchartdata = [
+    { y: '2006', "Total Income" : 100, 'Total Outcome' : 90 },
+    { y: '2007', "Total Income" : 75,  'Total Outcome' : 65 },
+    { y: '2008', "Total Income" : 50,  'Total Outcome' : 40 },
+    { y: '2009', "Total Income" : 75,  'Total Outcome' : 65 },
+    { y: '2010', "Total Income" : 50,  'Total Outcome' : 40 },
+    { y: '2011', "Total Income" : 75,  'Total Outcome' : 65 },
+    { y: '2012', "Total Income" : 100, 'Total Outcome' : 90 }
+];
+const linechartdata = [
+    { y: '2006', "Total Sales": 50, 'Total Revenue': 90 },
+    { y: '2007', "Total Sales": 75,  'Total Revenue': 65 },
+    { y: '2008', "Total Sales": 50,  'Total Revenue': 40 },
+    { y: '2009', "Total Sales": 75,  'Total Revenue': 65 },
+    { y: '2010', "Total Sales": 50,  'Total Revenue': 40 },
+    { y: '2011', "Total Sales": 75,  'Total Revenue': 65 },
+    { y: '2012', "Total Sales": 100, 'Total Revenue': 50 }
+];
 
   const toggleMobileMenu = () => {
     setMenu(!menu)
@@ -60,35 +77,23 @@ const AdminDashboard = () => {
     }
   });
 
-  useEffect(() => {
-    getAdmin()
-  }, [])
+  // useEffect(() => {
+  //   getAdmin()
+  // }, [])
 
-  const getAdmin = async () => {
-    try {
-      const { data } = await axios.get('http://localhost:5000/DB/tbl_admin')
-       console.log(data.length)
-      setAdmin(data)
-    } catch (error) {
+  // const getAdmin = async () => {
+  //   try {
+  //     const { data } = await axios.get('http://localhost:5000/DB/tbl_admin')
+  //      console.log(data.length)
+  //     setAdmin(data)
+  //   } catch (error) {
 
-    }
-  }
+  //   }
+  // }
   //console.log(IT.length)
 
- 
-  useEffect(() => {
-    getActivity()
-  }, [])
-  const getActivity = () => {
+  //-------------------------------------------------------------------------------------------------
 
-    console.log('editstatus', editStatus);
-    const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
-      setActivity(data)
-    })
-    //showModal()
-    setOpen(true);
-
-  }
 
   // useEffect(() => {
   //   getAdmin()
@@ -104,11 +109,249 @@ const AdminDashboard = () => {
   //   }
   // }
 
+  useEffect(() => {
+    getAdmin()
+  }, [])
+
+  useEffect(() => {
+    form3.setFieldValue({ admin_email: activity_email })
+  }, [activity_email])
+
+  const getAdmin = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/DB/get/get/for/join')
+
+      // console.log('help',data.length)
+      setData(data)
+    } catch (error) {
+
+    }
+  }
+
+  const onReset = () => {
+    form.resetFields();
+    getAdmin();
+  };
+  const onFinish = async (values) => {
+    setOpen(false);
+    form.resetFields();
+    console.log('Received values of form: ', values);
+    try {
+      const { data } = await axios.put(`http://localhost:5000/DB/update/status/${editStatus}`,
+        {
+
+          status: Status,
+          employee_email: activity_email
+        })
+      // console.log(data.length)
+      alert('success!!')
+
+    } catch (error) {
+
+    }
+  };
+
+
+  const getActivity = () => {
+
+    console.log('editstatus', editStatus);
+    const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
+
+    })
+    showModal()
+    setOpen(true);
+
+  }
+  //----------------------------------------------------------------------------------------------------------------------
+
+
+  const getID = (values) => {
+
+    console.log('value', values);
+    setEditStatus(values.id)
+    setActivity_email(values.employee_email)
+    setStatus(values.status)
+    console.log('sta', values.status);
+    console.log('email', values.employee_email);
+    //form3.setFieldValue({admin_email:values.employee_email})
+
+
+  }
+  console.log('from2', form3.getFieldValue('admin_email'));
+
+  const showModal2 = () => {
+    setIsModalOpen(true);
+  };
+
+  const hideModal2 = () => {
+
+    setForsendEmail(false);
+    form3.resetFields()
+    //console.log('111',activity_email)
+    form3.setFieldValue({ admin_email: activity_email })
+  };
+
+  const handleOk = (values) => {
+    console.log('va', values);
+    //setIsModalOpen(false);
+    hideModal2()
+
+    const { data } = axios.post('http://localhost:5000/DB/sendEmail', {
+      status: Status,
+      employee_email: values
+    })
+    console.log(data);
+    //form3.resetFields()
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+
+  const handleButtonClick = (e) => {
+
+    console.log('click left button', e);
+  };
+
+  const handleMenuClick = (e) => {
+
+    console.log('click', e);
+  };
+
+  const items = [
+    {
+      label: <a onClick={getActivity}>edit</a>,
+      key: '0',
+      icon: <EditOutlined />,
+
+
+    },
+    {
+      label: <a onClick={() => setForsendEmail(true)}>send email</a>,
+      key: '1',
+      icon: <MailOutlined />,
+    },
+  ];
+
+  const menuProps = {
+    items,
+    onClick: handleMenuClick,
+  };
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const hideModal = () => {
+    setOpen(false);
+  };
+
+  const showModalForEmail = () => {
+    setForsendEmail(true);
+  };
+
+
+
+
+
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 8 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 16 },
+    },
+  };
+  const tailFormItemLayout = {
+    wrapperCol: {
+      xs: {
+        span: 24,
+        offset: 0,
+      },
+      sm: {
+        span: 16,
+        offset: 8,
+      },
+    },
+  };
+
+  const columns = [
+
+    {
+      title: 'ID',
+      dataIndex: 'id',
+
+      sorter: (a, b) => a.ID.length - b.ID.length,
+    },
+    {
+      title: 'User',
+      dataIndex: 'employee_name',
+      sorter: (a, b) => a.employee_name.length - b.employee_name.length,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'employee_email',
+      sorter: (a, b) => a.employee_email.length - b.employee_email.length,
+    },
+    {
+      title: 'Device_id',
+      dataIndex: 'device_id',
+      sorter: (a, b) => a.device_id.length - b.device_id.length,
+    },
+
+    {
+      title: 'Device_serial',
+      dataIndex: 'device_serial',
+      sorter: (a, b) => a.admin_email.length - b.admin_email.length,
+    },
+
+    {
+      title: 'Model',
+      dataIndex: 'device_model',
+      sorter: (a, b) => a.admin_phone.length - b.admin_phone.length,
+    },
+
+    {
+      title: 'Note',
+      dataIndex: 'case_detail',
+      sorter: (a, b) => a.case_detail.length - b.case_detail.length,
+    },
+
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (text, record) =>
+        <div>
+          <span className={text === ":success" ? "badge bg-inverse-success" : "badge bg-inverse-info"}>{text}</span>
+        </div>
+    },
+
+    {
+      title: 'Action',
+      render: (value) => (
+        <>
+          <Dropdown
+            menu={menuProps}
+            placement="bottomRight"
+            trigger={['click']}>
+            <Button type='text' onClick={() => getID(value)}><MoreOutlined /></Button>
+          </Dropdown>
+        </>
+      )
+    },
+  ]
+
+
   return (
     <div className={`main-wrapper ${menu ? 'slide-nav' : ''}`}>
 
       <Header onMenuClick={(value) => toggleMobileMenu()} />
-      <Sidebar /> 
+      <Sidebar />
+
       <div className="page-wrapper">
         <Helmet>
           <title>Dashboard </title>
@@ -132,9 +375,9 @@ const AdminDashboard = () => {
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
               <div className="card dash-widget">
                 <div className="card-body">
-                  <span className="dash-widget-icon"><i className="fa fa-cubes" /></span>
+                  <span className="dash-widget-icon"><LaptopOutlined /></span>
                   <div className="dash-widget-info">
-                    {/* <h3>{Admin.length}</h3> */}
+                    <h3>{Admin.length}</h3>
                     <span>IT</span>
                   </div>
                 </div>
@@ -143,7 +386,7 @@ const AdminDashboard = () => {
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
               <div className="card dash-widget">
                 <div className="card-body">
-                  <span className="dash-widget-icon"><i className="fa fa-usd" /></span>
+                  <span className="dash-widget-icon"><FileWordOutlined /></span>
                   <div className="dash-widget-info">
                     <h3>SOON!</h3>
                     {/* <h3>{License.length}</h3> */}
@@ -155,7 +398,7 @@ const AdminDashboard = () => {
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
               <div className="card dash-widget">
                 <div className="card-body">
-                  <span className="dash-widget-icon"><i className="fa fa-diamond" /></span>
+                  <span className="dash-widget-icon"><WifiOutlined /></span>
                   <div className="dash-widget-info">
                     <h3>SOON!</h3>
                     <span>Network</span>
@@ -166,7 +409,7 @@ const AdminDashboard = () => {
             <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
               <div className="card dash-widget">
                 <div className="card-body">
-                  <span className="dash-widget-icon"><i className="fa fa-user" /></span>
+                  <span className="dash-widget-icon"><UserOutlined /></span>
                   <div className="dash-widget-info">
                     <h3>SOON!</h3>
                     <span>User</span>
@@ -175,183 +418,170 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-         
+
           <div className="row">
-            <div className="col-md-6 d-flex">
-              <div className="card card-table flex-fill">
-                <div className="card-header">
-                  <h3 className="card-title mb-0">Activity</h3>
+            <div className="col-md-12">
+              <div className="row">
+                <div className="col-md-6 text-center">
+                  <div className="card">
+                    <div className="card-body">
+                      <h3 className="card-title">Activity</h3>
+                      <div className="row">
+                  <div className="col-md-12">
+                    <div className="table-responsive">
+                      <Table className="table-striped"
+                        // pagination={{
+                        //   total: data?.length,
+                        //   showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                        //   showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+                        // }}
+                        style={{ overflowX: 'auto' }}
+                        columns={columns}
+
+                        dataSource={data}
+                        rowKey={record => record.id}
+
+                      />
+                    </div>
+                  </div>
+                  
                 </div>
+                
+                                           
+                    </div>
+                    <div className="card-footer">
+                  <Link to="/Page/activity">View all Activity</Link>
+                </div>
+                  </div>
+                </div>
+
+                <div className="col-md-6 text-center">
+                  <div className="card">
+                    <div className="card-body">
+                      <h3 className="card-title">Asset Categories</h3>
+                      <div className="row">
+                  <div className="col-md-12">
+                    <div className="table-responsive">
+                      <Table className="table-striped"
+                        // pagination={{
+                        //   total: data?.length,
+                        //   showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                        //   showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+                        // }}
+                        style={{ overflowX: 'auto' }}
+                        columns={columns}
+
+                        dataSource={data}
+                        rowKey={record => record.id}
+
+                      />
+                    </div>
+                  </div>
+                  
+                </div>
+                      {/* <div id="line-charts" /> */}
+                    </div>
+                    <div className="card-footer">
+                  <Link to="/Page/activity">View all Categories</Link>
+                </div>
+                  </div>
+                </div>
+                
+              </div>
+              
+            </div>
+          </div>
+
+          
+                
+              
                 <div className="card-body">
                   <div className="table-responsive">
                     <table className="table custom-table mb-0">
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Status</th>
-                          <th className="text-end">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <h2 className="table-avatar">
-                              
-                              <Link to = "/app/profile/client-profile">ttt<span>CEO</span></Link>
-                            </h2>
-                          </td>
-                          <td>barrycuda@example.com</td>
-                          <td>
-                            <div className="dropdown action-label">
-                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i className="fa fa-dot-circle-o text-success" /> Active
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
-                              </div>
+                      <div className="modal custom-modal fade" id="delete_approve" role="dialog">
+                        <div className="modal-dialog modal-dialog-centered">
+                          <div className="modal-content">
+                            <div className="modal-body">
+
+
+                              <Modal
+
+                                open={forsendEmail}
+                                // onOk={hideModal}
+                                footer={null}
+                                //onOk={handleOk}
+                                onCancel={hideModal2}
+                                okText="submit"
+                                cancelText="cancle"
+                              >
+
+                                <div className="form-header">
+                                  <h3>Send Email</h3>
+                                  <p>Are you sure want to send this email?</p>
+
+
+                                  <Form
+                                    initialValues={{ admin_email: activity_email }}
+                                    {...formItemLayout}
+                                    form={form3}
+                                    name="save"
+                                    onFinish={handleOk}
+
+
+                                    scrollToFirstError
+                                  >
+                                    <Form.Item
+                                      name="admin_email"
+                                      label="E-mail"
+                                      rules={[
+                                        {
+                                          type: 'email',
+                                          message: 'The input is not valid E-mail!',
+                                        },
+                                        {
+                                          required: true,
+                                          message: 'Please input your E-mail!',
+                                        },
+                                      ]}
+
+                                    >
+
+                                      <Input />
+                                    </Form.Item>
+                                  </Form>
+
+
+                                </div>
+
+
+                                <div className="modal-btn delete-action">
+                                  <div className="row">
+                                    <div className="col-6">
+                                      <a className="btn btn-primary continue-btn" onClick={() => handleOk(form3.getFieldValue('admin_email'))}>Confirm</a>
+                                      {/* <a  type = 'submit' className="btn btn-primary continue-btn"  >Confirm</a> */}
+                                    </div>
+                                    <div className="col-6">
+                                      <a data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={hideModal2} >Cancel</a>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </Modal>
+
                             </div>
-                          </td>
-                          <td className="text-end">
-                            <div className="dropdown dropdown-action">
-                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <h2 className="table-avatar">
-                              <a href="#" className="avatar"><img alt="" src={Avatar_19} /></a>
-                              <Link to = "/app/profile/client-profile">Tressa Wexler <span>Manager</span></Link>
-                            </h2>
-                          </td>
-                          <td>tressawexler@example.com</td>
-                          <td>
-                            <div className="dropdown action-label">
-                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i className="fa fa-dot-circle-o text-danger" /> Inactive
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="text-end">
-                            <div className="dropdown dropdown-action">
-                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <h2 className="table-avatar">
-                              <Link to = "/app/profile/client-profile" className="avatar"><img alt="" src={Avatar_07} /></Link>
-                              <Link to = "/app/profile/client-profile">Ruby Bartlett <span>CEO</span></Link>
-                            </h2>
-                          </td>
-                          <td>rubybartlett@example.com</td>
-                          <td>
-                            <div className="dropdown action-label">
-                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i className="fa fa-dot-circle-o text-danger" /> Inactive
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="text-end">
-                            <div className="dropdown dropdown-action">
-                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <h2 className="table-avatar">
-                              <Link to = "/app/profile/client-profile" className="avatar"><img alt="" src={Avatar_06} /></Link>
-                              <Link to = "/app/profile/client-profile"> Misty Tison <span>CEO</span></Link>
-                            </h2>
-                          </td>
-                          <td>mistytison@example.com</td>
-                          <td>
-                            <div className="dropdown action-label">
-                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i className="fa fa-dot-circle-o text-success" /> Active
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="text-end">
-                            <div className="dropdown dropdown-action">
-                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <h2 className="table-avatar">
-                              <Link to = "/app/profile/client-profile" className="avatar"><img alt="" src={Avatar_14} /></Link>
-                              <Link to = "/app/profile/client-profile"> Daniel Deacon <span>CEO</span></Link>
-                            </h2>
-                          </td>
-                          <td>danieldeacon@example.com</td>
-                          <td>
-                            <div className="dropdown action-label">
-                              <a className="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i className="fa fa-dot-circle-o text-danger" /> Inactive
-                              </a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success" /> Active</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</a>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="text-end">
-                            <div className="dropdown dropdown-action">
-                              <a href="#" className="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                              <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                                <a className="dropdown-item" href="#"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
+                          </div>
+                        </div>
+                      </div>
                     </table>
                   </div>
                 </div>
-                <div className="card-footer">
-                  <Link to = "/app/employees/clients">View all clients</Link>
-                </div>
+               
+                
               </div>
             </div>
-            </div>
-        </div>
-      </div>
-    </div>
+          </div>
+    
+
 
   );
 }
