@@ -4,15 +4,17 @@
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import {
-  headerlogo, lnEnglish, lnFrench, lnSpanish, lnGerman, Avatar_02, Avatar_03, Avatar_05,
-  Avatar_06, Avatar_08, Avatar_09, Avatar_13, Avatar_17, Avatar_21
-} from '../../Entryfile/imagepath'
+import '../Sidebar/navbar.css'
 
-import LogoOnlineAssest from '../Sidebar/img/LogoOnlineAssest.png';
-import user from '../Sidebar/img/user.jpg';
-import { DownOutlined } from '@ant-design/icons';
+
+ import LogoOnlineAssest from '../Sidebar/img/LogoOnlineAssest.png';
+// import user from '../Sidebar/img/user.jpg';
+import { DownOutlined, BellOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
+import { Avatar, Badge } from 'antd';
+import bell from "../Sidebar/img/bell.svg";
+import bars from '../Sidebar/img/bars.svg';
 
 
 
@@ -39,6 +41,24 @@ const Header = (props) => {
       key: '2',
     },
   ];
+
+  const text = 'Are you sure to delete this task?';
+  const description = 'Delete the task';
+  const confirm = () => {
+    
+    message.info('Clicked on Yes.');
+    <Link to= "/Page/activity"></Link>
+
+  };
+  const cancel = () => {
+    message.info('Clicked on no.');
+  };
+
+
+  
+
+
+
   //let pathname = location.pathname
 
   return (
@@ -64,46 +84,51 @@ const Header = (props) => {
         <h3>CMMS-Onlineasset</h3>
       </div>
       {/* /Header Title */}
-      <a id="mobile_btn" className="mobile_btn" href="#" onClick={() => onMenuClik()}><i className="fa fa-bars" /></a>
+      <a id="mobile_btn" className="mobile_btn" href="#" onClick={() => onMenuClik()}><img src = {bars} /></a>
       {/* Header Menu */}
       <ul className="nav user-menu">
-        {/* Search */}
-        <li className="nav-item">
-          <div className="top-nav-search">
-            <a href="javascript:void(0);" className="responsive-search">
-              <i className="fa fa-search" />
-            </a>
-            <form>
-              <input className="form-control" type="text" placeholder="Search here" />
-              <button className="btn" type="submit"><i className="fa fa-search" /></button>
-            </form>
-          </div>
-        </li>
-        {/* /Search */}
 
-        {/* Notifications */}
+{/* 
+        <li className="nav-item dropdown has-arrow main-drop">
+          <a href="#" className="nav-item dropdown has-arrow main-drop">
 
+            <Popconfirm
+              title="Activity"
+              description="You have new Activity is not update status"
+              onConfirm={confirm}
+              onCancel={cancel}
+              okText="update"
+              cancelText="decline" 
+            >
+              <Button type="link">
+                {/* <Badge count={3} size="small"> */}
+                {/* <Badge dot>
+                  <Avatar shape="circle" size="medium" icon={<BellOutlined />} />
 
-        {/* <li className="nav-item dropdown has-arrow main-drop"> 
-          <a href="#" className="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-            <span className="user-img me-1"><img src={user} alt="" />
-              <span className="status online" /></span>
-            <span>Admin</span>
-          </a>
-          <div className="DownOutlindropdown-menu dropdown-menu-righted">
-            <Link className="dropdown-item" to="/app/profile/employee-profile">My Profile</Link>
-            <Link className="dropdown-item" to="/settings/companysetting">Settings</Link>
-            <Link className="dropdown-item" to="/login">Logout</Link>
-          </div>
+                </Badge></Button>
+            </Popconfirm> */}
+          {/* </a>
+
         </li>  */}
+
+{/* navbar */}
+      {/* <div className="navbar">
+      <div className="icons">
+        <div className="icon">
+          <img src={bell} className="iconImg" alt="" />
+            <div className="counter">2</div>
+        </div>
+        </div>
+    </div> */}
+{/* navbar */}
+
 
         <li className="nav-item dropdown has-arrow main-drop">
           <a href="#" className="nav-item dropdown has-arrow main-drop">
-          
             <Dropdown menu={{ items }} trigger={['click']}>
               <a onClick={(e) => e.preventDefault()}>
-              <span className="user-img me-1"><img src={user} alt="" />
-              <span className="status online" /></span>
+                <span className="user-img me-1"><img src={''} alt="" />
+                  <span /></span>
                 <span>
                   Click me
                   <DownOutlined />
@@ -111,20 +136,18 @@ const Header = (props) => {
               </a>
             </Dropdown>
           </a>
-          
-        </li> 
 
-        
-       
+        </li>
 
-        
+
+
       </ul>
       {/* /Header Menu */}
 
-      
 
 
-     
+
+
 
 
 

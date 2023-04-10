@@ -5,6 +5,9 @@ const router = require('express-promise-router')()
 const multer = require('multer');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 
 
@@ -388,8 +391,8 @@ router.get ("/get/get/for/join" ,(req,res,next) => {
 })
 
 //get status for Repair_Status test
-router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
-    const id = req.params.id;
+router.get ("/get/get/for/join1/:device_id" ,(req,res,next) => {
+    const device_id = req.params.device_id;
    
     console.log('555',req.params)
     const sql = `
@@ -463,6 +466,22 @@ router.post("/sendEmail",(req,res,next) => {
 
 })
 
+//send noti 
+router.post("/sendNoti",(req,res,next) => {
+
+    const lineNotify = require('line-notify-nodejs')('G9lzeks0DzzT4BmXglynx3EtmyIkygN3NekiwUI1zuL');
+
+
+
+lineNotify.notify({
+  message: 'A new user has sent a request for repairing the device.',
+  
+  
+}).then(() => {
+  console.log('send completed!');
+});
+
+})
 
 
 

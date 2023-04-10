@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
 import { CheckCircleOutlined } from '@ant-design/icons';
 
-function UploadImage() {
+function SendRepairFinish() {
 
     let history = useHistory()
     const [imageID, setImageID] = useState("");
@@ -213,5 +213,5 @@ function UploadImage() {
     );
 }
 
-export default UploadImage;
+export default SendRepairFinish;
 

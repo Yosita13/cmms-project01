@@ -166,7 +166,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
 import CmmsOnline from '../webapp/CmmsOnline.png';
-import cat from '../webapp/cat.png';
 import { Button, Form, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
@@ -184,20 +183,39 @@ function RepairDetails() {
     const [pic,setPic] = useState();
     const [dataImg,setDataImg] = useState();
     const [initialValues, setInitialValues] = useState();
+    const [save, setSave] = useState(false);
     const [id,setID] = ('')
-   
     const { Meta } = Card;
+
+    
     const location = useLocation()
     
-    
+    console.log('location',location.state);
+
+
     
 
-    console.log('location',location.state);
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
     };
 
+    const sendNoti = async (values) => {
+
+      try {
+      const { data } = await axios.post(`http://localhost:5000/DB/sendNoti`)
+      }catch(error){
+
+      }
+        
+          
+        //console.log('222',defaultValue);
+      
+    }
+
+
+
+    
     const onFinish = async (values) => {
         setOpen(false);
         console.log('Received values of form: ', values);
@@ -210,6 +228,7 @@ function RepairDetails() {
                 
             })
             history.push({pathname:'/webapp/sendRepairFinish'})
+            sendNoti();
             
            
         } catch (e) {
@@ -235,6 +254,16 @@ function RepairDetails() {
           //console.log('222',defaultValue);
         
       }
+
+    //   const handleNotification = () => {
+    //     setSave(true);
+    //     socket.emit("sendNotification", {
+    //       senderName: user,
+    //       receiverName: post.username,
+          
+    //     });
+    //   };
+
       
 
    
@@ -339,7 +368,7 @@ function RepairDetails() {
                                                                     <Link to="/webapp/QR">
                                                                         <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
                                                                     </Link>
-                                                                    <Button type="primary" className="btn-greensushi"   htmlType="submit">Save</Button>
+                                                                    <Button type="primary" className="btn-greensushi"   htmlType="submit" >Save</Button>
                                                                 </Form.Item>
                                                             </Form>
                                                       </Card>

@@ -5,6 +5,10 @@
 import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Scrollbars } from 'react-custom-scrollbars';
+import bell from "../Sidebar/img/bell.svg";
+import speedometer2 from '../Sidebar/img/speedometer2.svg';
+import person from '../Sidebar/img/person.svg';
+import file from '../Sidebar/img/file.svg';
 
  
 const Sidebar = (props) => {
@@ -51,7 +55,7 @@ const toggleLevelThree = (value) => {
               </li>
              
               <li className={pathname.includes('main/dashboard') ? "active" : ""}>
-                  <Link to="/Page/admindashboard"><i className="la la-users" /> <span>Dashboard</span></Link>
+                  <Link to="/Page/admindashboard"><img src = {speedometer2} /> <span>Dashboard</span></Link>
                 </li>
               {/* <li className="submenu">
                 <a href="#" className={isSideMenu == "dashboard" ? "subdrop" : ""} onClick={()=> toggleSidebar(isSideMenu =="dashboard" ? "": "dashboard")}><i className="la la-dashboard" /> <span> Dashboard</span> <span className="menu-arrow" /></a>
@@ -93,7 +97,7 @@ const toggleLevelThree = (value) => {
               </li>       */}
 
                 <li className={pathname.includes('allemployees') ? "active" : ""}>
-                  <Link to="/Page/employee"><i className="la la-users" /> <span>Employees</span></Link>
+                  <Link to="/Page/employee"><img src= {person} /> <span>Employees</span></Link>
                 </li>      
               {/* <li className="submenu" >             
                 <a href="#" className= {isSideMenu == "employee" ? "subdrop" : ""} onClick={()=> toggleSidebar(isSideMenu =="employee" ? "": "employee")}><i className="la la-user" /> <span className="noti-dot"> Employees</span> <span className="menu-arrow" /></a>
@@ -121,33 +125,17 @@ const toggleLevelThree = (value) => {
                 }
               </li> */}
               <li className={pathname.includes('Activties') ?"active" :""}> 
-                <Link to = "/Page/activity"><i className="la la-users" /> <span>Activties</span></Link>
+                <Link to = "/Page/activity"><img src={bell} /> <span>Activties</span></Link>
               </li>
 
-              <li className="submenu">
-                <a href="#" className={isSideMenu == "category" ? "subdrop" : ""} onClick={()=> toggleSidebar(isSideMenu =="category" ? "": "category")}><i className="la la-rocket" /> 
-                <span> Category</span> 
-                <span className="menu-arrow" /></a>
-                { isSideMenu == "category" ? 
-                <ul>
-                  <li><Link className={pathname.includes('t_dashboard' ) ?"active" : pathname.includes('projects-list' ) ?
-                  "active" : pathname.includes('cts-view' ) ? "active" : ""} 
-                      to="/app/projects/project_dashboard">IT</Link></li>
-                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/tasks/tasks">Lisence</Link></li>
-                  <li><Link className={pathname.includes('task-board') ?"active" :""} to="/app/projects/task-board">Network</Link></li>
-                </ul>
-                	:"" 
-                }
-              </li>
+             
 
               
               <li className={pathname.includes('report') ?"active" :""}> 
-                <Link to = "/app/employees/leads"><i className="la la-user-secret" /> <span>Report</span></Link>
+                <Link to = "/app/employees/leads"><img src ={file}/> <span>Report</span></Link>
               </li>
 
-              <li className={pathname.includes('tickets') ?"active" : pathname.includes('ticket-view') ?"active" : ""}> 
-                <Link to = "/app/employees/tickets"><i className="la la-ticket" /> <span>Tickets</span></Link>
-              </li>
+            
               {/* <li className="menu-title"> 
                 <span>HR</span>
               </li>
