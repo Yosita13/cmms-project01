@@ -30,24 +30,35 @@ const Activity = ({ ID }) => {
   const [forsendEmail, setForsendEmail] = useState();
   const [activity_email, setActivity_email] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+    const [options, setOptions] = useState([]);
 
 
   //console.log('data is ', data)
 
+  //getAdmin 
+  useEffect(() => {
+    fetch('http://localhost:5000/DB/tbl_admin')
+      .then(response => response.json())
+      .then(data => setOptions(data))
+      .catch(error => console.log(error));
+  }, []);
+
+
+
 
   useEffect(() => {
-    getAdmin()
+    getforjoin()
   }, [])
 
   useEffect(() => {
     form3.setFieldValue({ admin_email: activity_email })
   }, [activity_email])
 
-  const getAdmin = async () => {
+  const getforjoin = async () => {
     try {
       const { data } = await axios.get('http://localhost:5000/DB/get/get/for/join')
 
-      // console.log('help',data.length)
+        //console.log('help',data.admin_name)
       setData(data)
     } catch (error) {
 
@@ -56,7 +67,7 @@ const Activity = ({ ID }) => {
 
   const onReset = () => {
     form.resetFields();
-    getAdmin();
+    getforjoin();
   };
   const onFinish = async (values) => {
     setOpen(false);
@@ -67,9 +78,10 @@ const Activity = ({ ID }) => {
         {
           id:values.editStatus,
           status:values.Status,
+          admin_id:values.Responsible,
           
         })
-      // console.log(data.length)
+       console.log(values.Responsible)
       alert('success!!')
 
     } catch (error) {
@@ -89,33 +101,7 @@ const Activity = ({ ID }) => {
     setOpen(true);
 
   }
-  //----------------------------------------------------------------------------------------------------------------------
-  // const SendEmail = () => {
-
-  //   //console.log('editstatus', editStatus);
-  //   axios.get(`http://localhost:5000/DB/get/get/for/join1/${editStatus}`).then((response) => {
-
-  //     console.log('sendEmail',activity_email);
-  //     console.log('sendEmail2',Status);
-  //     setDataEmployee(response.data);
-  //     const defaultValue = {
-
-  //       status: Status,
-  //       employee_email: activity_email
-
-
-  //     }
-
-
-  //     console.log('222',defaultValue);
-  //      setInitialValues(defaultValue);
-
-
-  //   })
-  //   // showModalForEmail()
-  //   setForsendEmail(true);
-
-  // }
+  
 
 
   const getID = (values) => {
@@ -126,7 +112,7 @@ const Activity = ({ ID }) => {
     setStatus(values.status)
     console.log('sta', values.status);
     console.log('email', values.employee_email);
-    //form3.setFieldValue({admin_email:values.employee_email})
+    //form.setFieldValue({Satus:values.status })
 
 
   }
@@ -262,13 +248,13 @@ const Activity = ({ ID }) => {
     {
       title: 'Device_serial',
       dataIndex: 'device_serial',
-      sorter: (a, b) => a.admin_email.length - b.admin_email.length,
+      sorter: (a, b) => a.device_serial.length - b.device_serial.length,
     },
 
     {
       title: 'Model',
       dataIndex: 'device_model',
-      sorter: (a, b) => a.admin_phone.length - b.admin_phone.length,
+      sorter: (a, b) => a.device_model.length - b.device_model.length,
     },
 
     {
@@ -285,6 +271,13 @@ const Activity = ({ ID }) => {
           <span className={text === ":success" ? "badge bg-inverse-success" : "badge bg-inverse-info"}>{text}</span>
         </div>
     },
+    {
+        title: 'Responsible',
+        dataIndex: 'admin_name',
+        sorter: (a, b) => a.case_detail.length - b.case_detail.length,
+      },
+    
+
 
     {
       title: 'Action',
@@ -331,7 +324,7 @@ const Activity = ({ ID }) => {
 
           <Modal
             width={650}
-            title="Update Status"
+            title="Update"
             open={open}
             // onOk={hideModal}
             footer={null}
@@ -364,6 +357,19 @@ const Activity = ({ ID }) => {
                   <Option value="in progress">in progress</Option>
                   <Option value="success">success</Option>
                   <Option value="complete">complete</Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="Responsible"
+                label="Responsible"
+                rules={[{ required: true, message: 'Please select Responsible!' }]}
+                onChange={(event) => {
+                  setStatus(event.target.value)
+                }}
+              >
+                <Select placeholder="Please select Responsible">
+                {options.map(options => ( <option key={options.admin_id} value={options.admin_id}>{options.admin_name}</option>))}
                 </Select>
               </Form.Item>
 

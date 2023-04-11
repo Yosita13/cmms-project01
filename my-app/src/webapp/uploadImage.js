@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import axios from 'axios';
 import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from "react-helmet";
@@ -9,11 +9,11 @@ function UploadImage() {
 
     let history = useHistory()
     const [imageID, setImageID] = useState("");
+    const [data, setData] = useState();
+
     const location = useLocation()
     
     const id = location.state
-
-    console.log(id);
 
 
     console.log('ID of user', location.state);
@@ -44,6 +44,8 @@ function UploadImage() {
           console.log(error.message);
         }
       };
+
+      
     
       const handleSubmit = (e) => {
         // axios.post("http://localhost:5000/DB/tbl_list_repair2", postImage)
@@ -101,6 +103,7 @@ function UploadImage() {
 
    
     const submit = async () => {
+        
         const formdata = new FormData();
         var blob = new Blob([userInfo], { type: 'image/jpeg' });
         var blobUrl = URL.createObjectURL(blob);
@@ -110,7 +113,7 @@ function UploadImage() {
         formdata.append('id', id);
         const image = { headers: { "Content-Type": "multipart/form-data" } }
 
-        console.log('id');
+        console.log('id',id);
 
         // axios.post("http://localhost:5000/DB/tbl_list_repair2", blobUrl, image)
         axios.post("http://localhost:5000/DB/tbl_list_repair2",{
@@ -129,7 +132,7 @@ function UploadImage() {
                 // console.log('res.data',res.data);
                 // const file = new Blob ([res.data],{type:'image/jpeg'})
                 
-                 history.push({pathname:'/webapp/RepairDetails',state:res.data.insertId})
+                 history.push({pathname:'/webapp/RepairDetails',state:res.data.insertId,id})
                 
             })
             

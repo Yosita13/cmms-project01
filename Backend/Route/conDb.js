@@ -46,8 +46,8 @@ router.post("/tbl_admin2" ,(req,res,next) => {
     console.log('data1',req.body);
     // console.log(next);
     // res.send('hello')
-    connect.query('INSERT INTO tbl_admin (admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,admin_id,created_timestamp,updated_timestamp) VALUES(?,?,?,?,?,?,?,now(),now())',
-    [admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,admin_id,created_timestamp,updated_timestamp],
+    connect.query('INSERT INTO tbl_admin (admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,created_timestamp,updated_timestamp) VALUES(?,?,?,?,?,?,now(),now())',
+    [admin_name,admin_designation,admin_email,admin_password,admin_phone,admin_address,created_timestamp,updated_timestamp],
     (err,result) => {
         if (err){
             console.log(err);
@@ -247,16 +247,30 @@ router.get('/gat/tbl_tastimg/:id',async (req,res,next) => {
         res.send(e)
     }
 })
-//---------put repair ----------------------------------------------------------
+//---------put repair and send line noti----------------------------------------------------------
 router.put ("/put/repair/:id" ,(req,res,next) => {
-    
+
+    const lineNotify = require('line-notify-nodejs')('G9lzeks0DzzT4BmXglynx3EtmyIkygN3NekiwUI1zuL');
     const id = req.body.id;
     const case_detail = req.body.case_detail;
+    const device_id = req.body.device_id;
+    const employee_name = req.body.employee_name;
     
     console.log('id22',req.body.id);
+    console.log('id23',req.body.device_id);
     console.log('reqbody',req.body)
     connect.query('UPDATE tbl_repair SET case_detail=? WHERE id = ?',[case_detail,id],
     (err,result) => {
+        lineNotify.notify({
+            message:'\nแจ้งซ่อมอุปกรณ์\n'  +employee_name+ 
+                    '\nรายละเอียด : ' + case_detail+ 
+                    '\nDevice : ' +device_id
+                     
+                
+          }).then(() => {
+            console.log('send completed!');
+          });
+          
         if (err){
             console.log(err);
         
@@ -267,6 +281,23 @@ router.put ("/put/repair/:id" ,(req,res,next) => {
         
     })
 })
+
+// //send noti 
+// router.post("/sendNoti",(req,res,next) => {
+
+//     const lineNotify = require('line-notify-nodejs')('G9lzeks0DzzT4BmXglynx3EtmyIkygN3NekiwUI1zuL');
+
+
+
+// lineNotify.notify({
+//   message: 'A new user has sent a request for repairing the device.',
+  
+  
+// }).then(() => {
+//   console.log('send completed!');
+// });
+
+// })
 
 //get Activity
 router.get('/get/activity',async (req,res,next) => {
@@ -285,15 +316,20 @@ router.get('/get/activity',async (req,res,next) => {
     }
 })
 
-//update Repair_Status
+
+
+//update Repair_Status 
 router.put ("/update/status/:id" ,(req,res,next) => {
-    
-    const status = req.body.status;
+
     const id = req.params.id;
+    const admin_id = req.body.admin_id;
+    const status = req.body.status;
+    
+    
     
     
     console.log('edit55',req.body)
-    connect.query('UPDATE tbl_repair SET status=? WHERE id = ?',[status,id],
+    connect.query('UPDATE tbl_repair SET status=?,admin_id=? WHERE id = ?',[status,admin_id,id],
     (err,result) => {
         if (err){
             console.log(err);
@@ -372,11 +408,13 @@ router.get ("/getDataDevice/:device_id" ,(req,res,next) => {
 //get status for Repair_Status 
 router.get ("/get/get/for/join" ,(req,res,next) => {
     const sql = `
-        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail, r.status
+        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail, r.status,a.admin_name
         FROM tbl_repair AS r 
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
         LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
+        LEFT JOIN tbl_admin AS a ON r.admin_id = a.admin_id
+        
         ORDER BY r.id DESC
     `;
 
@@ -391,8 +429,8 @@ router.get ("/get/get/for/join" ,(req,res,next) => {
 })
 
 //get status for Repair_Status test
-router.get ("/get/get/for/join1/:device_id" ,(req,res,next) => {
-    const device_id = req.params.device_id;
+router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
+    const id = req.params.id;
    
     console.log('555',req.params)
     const sql = `
@@ -401,14 +439,18 @@ router.get ("/get/get/for/join1/:device_id" ,(req,res,next) => {
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
         LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
-        ORDER BY r.id DESC
+        WHERE r.id = ?        
     `;
     connect.query(sql,id, (error, results, fields) => {
         if (error) {
             console.log(error);
             res.status(500).json({error: 'Error fetching data from database.'});
         } else {
-            res.json(results);
+            Object.keys(results).forEach(function (key) {
+                var row = results[key];
+                res.send(row)
+            })
+ 
         }
     });
     
@@ -466,22 +508,22 @@ router.post("/sendEmail",(req,res,next) => {
 
 })
 
-//send noti 
-router.post("/sendNoti",(req,res,next) => {
+// //send noti 
+// router.post("/sendNoti",(req,res,next) => {
 
-    const lineNotify = require('line-notify-nodejs')('G9lzeks0DzzT4BmXglynx3EtmyIkygN3NekiwUI1zuL');
+//     const lineNotify = require('line-notify-nodejs')('G9lzeks0DzzT4BmXglynx3EtmyIkygN3NekiwUI1zuL');
 
 
 
-lineNotify.notify({
-  message: 'A new user has sent a request for repairing the device.',
+// lineNotify.notify({
+//   message: 'A new user has sent a request for repairing the device.',
   
   
-}).then(() => {
-  console.log('send completed!');
-});
+// }).then(() => {
+//   console.log('send completed!');
+// });
 
-})
+// })
 
 
 

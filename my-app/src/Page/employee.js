@@ -270,7 +270,7 @@ const AllEmployees = () => {
   const getEmployees = (values) => {
 
     //console.log(values);
-    axios.get(`http://localhost:5000/DB/get/employee/${values.admin_id}`).then((response) => {
+    axios.get(`http://localhost:5000/DB/getEmployee/${values.admin_id}`).then((response) => {
       //console.log('123',response.data.admin_name);
 
       setDataEmployee(response.data);
@@ -424,7 +424,12 @@ const AllEmployees = () => {
             Edit
           </Button>
 
-          <Button type="primary" danger onClick={() => deleEmployees(text)}
+          {/* <Button type="primary" danger onClick={() => deleEmployees(text)}
+            data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
+            delete
+          </Button> */}
+
+          <Button type="primary" danger 
             data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
             delete
           </Button>
@@ -700,7 +705,7 @@ const AllEmployees = () => {
 
                     </Form.Item>
 
-                    <Form.Item
+                    {/* <Form.Item
                       name="ID"
                       label="ID"
                       rules={[{ required: true, message: 'Please input your ID!' }]}
@@ -709,7 +714,7 @@ const AllEmployees = () => {
                       }}
                     >
                       <Input />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     {/* <Form.Item
                       name="Last Name"

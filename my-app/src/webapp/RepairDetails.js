@@ -185,14 +185,17 @@ function RepairDetails() {
     const [initialValues, setInitialValues] = useState();
     const [save, setSave] = useState(false);
     const [id,setID] = ('')
+    const [data, setData] = useState();
     const { Meta } = Card;
-
+    const [employee_name,setEmployee_name]  = useState(""); 
     
     const location = useLocation()
     
     console.log('location',location.state);
-
-
+    console.log('Devicr_id',location.id);
+    
+    
+   
     
 
     const layout = {
@@ -201,7 +204,7 @@ function RepairDetails() {
     };
 
     const sendNoti = async (values) => {
-
+        console.log('device',location.id);
       try {
       const { data } = await axios.post(`http://localhost:5000/DB/sendNoti`)
       }catch(error){
@@ -220,17 +223,17 @@ function RepairDetails() {
         setOpen(false);
         console.log('Received values of form: ', values);
         console.log('id front',location.state);
+        console.log('employee',employee_name);
         try {
             console.log('Received values of form: ', values);
             const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${location.state}}`, {
                 case_detail: values.case_detail,
-                id:location.state
-                
+                id:location.state,
+                device_id:location.id, 
+                employee_name:employee_name 
             })
             history.push({pathname:'/webapp/sendRepairFinish'})
-            sendNoti();
-            
-           
+            //sendNoti();
         } catch (e) {
 
         }
@@ -281,6 +284,23 @@ function RepairDetails() {
         }
       }
 
+      useEffect(() => {
+        getJoin()
+      }, [])
+    
+      const getJoin = async () => {
+        try {
+          const { data } = await axios.get(`http://localhost:5000/DB/get/get/for/join1/${location.state}`,{
+            
+          })
+          
+           console.log('JOin',data)
+          setEmployee_name(data.employee_name)
+        } catch (error) {
+    
+        }
+      }
+      
      
 
     /* eslint-disable no-template-curly-in-string */

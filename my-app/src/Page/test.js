@@ -179,9 +179,10 @@ function RepairDetails() {
     let history = useHistory()
     const [open, setOpen] = useState(false);
     const [case_detail, setCase_detail] = useState("");
-    const [noti, setNoti] = useState("");
+    const [detail, setDetail] = useState("");
     const [pic,setPic] = useState();
     const [dataImg,setDataImg] = useState();
+    const [data, setData] = useState([]);
     const [initialValues, setInitialValues] = useState();
     const [save, setSave] = useState(false);
     const [id,setID] = ('')
@@ -191,63 +192,45 @@ function RepairDetails() {
     const location = useLocation()
     
     console.log('location',location.state);
-
-
-    
+    console.log('Devicr_id',location.id);
 
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
     };
 
-    useEffect(() => {
-      getNoti()
-  }, [])
 
-  const getNoti = async (values) => {
-      try {
-          const { data } = await axios.get(`http://localhost:5000/DB/get/get/for/join1/${location.state}`,
-          {
-            
-          })
-         
-          // console.log(data.length)
-          setNoti(data)
-      } catch (error) {
+  
+    // const sendNoti = async (values) => {
 
-      }
-  }
+    //   try {
+    //   const { data } = await axios.post(`http://localhost:5000/DB/sendNoti`)
+    //   }catch(error){
 
-    const sendNoti = async (values) => {
-
-      try {
-      const { data } = await axios.post(`http://localhost:5000/DB/sendNoti`)
-      }catch(error){
-
-      }
-      getNoti();
+    //   }
         
           
-        //console.log('222',defaultValue);
+    //     //console.log('222',defaultValue);
       
-    }
+    // }
 
-
-
-    
     const onFinish = async (values) => {
         setOpen(false);
+
         console.log('Received values of form: ', values);
         console.log('id front',location.state);
+        
         try {
             console.log('Received values of form: ', values);
             const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${location.state}}`, {
                 case_detail: values.case_detail,
-                id:location.state
+                id:location.state,
+                device_id:values.device_id
                 
             })
             history.push({pathname:'/webapp/sendRepairFinish'})
-            sendNoti();
+            //sendNoti();
+            
             
            
         } catch (e) {
@@ -268,11 +251,9 @@ function RepairDetails() {
         }catch(error){
 
         }
-          
-            
-          //console.log('222',defaultValue);
-        
+
       }
+
 
     //   const handleNotification = () => {
     //     setSave(true);
@@ -284,8 +265,6 @@ function RepairDetails() {
     //   };
 
       
-
-   
     useEffect(() => {
         getImage()
       }, [])
@@ -294,11 +273,18 @@ function RepairDetails() {
         try {
           const { data } = await axios.get(`http://localhost:5000/DB/getImage/${location.state}`)
            console.log('data',data)
+           console.log('device',data.device_id);
           setPic(data)
         } catch (error) {
     
         }
       }
+    
+     
+
+      
+
+
 
      
 
