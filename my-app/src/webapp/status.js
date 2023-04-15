@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
-import CmmsOnline from '../webapp/CmmsOnline.png';
+import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png'
 import { Button, Form } from 'antd';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { Card } from 'antd';
 import { Helmet } from "react-helmet";
+import WebappHeader from './webappHeader';
 
 
 function Status() {
@@ -27,7 +27,7 @@ function Status() {
     const getStatus = async () => {
         try {
             const { data } = await axios.get(`http://localhost:5000/DB/get/status/device/${location.state}`)
-            console.log('data',data);
+            console.log('data', data);
             // console.log(data.length)
             setDetail(data)
         } catch (error) {
@@ -39,98 +39,83 @@ function Status() {
     return (
         <>
 
-            <section className="comp-section comp-cards" id="comp_cards">
+            <div >
+                <WebappHeader />
                 <div className="account-content">
                     <div className="container">
-                        <div classname="col-sm-6 col-md-4">
-                        <Helmet>
-                                <title>Status</title>
-                                <meta name="description" content="Login page" />
-                            </Helmet>
-                            <div className="content container-fluid">
-                                <div className="page-header">
-                                    <div className="form-header">
-                                        <div className="row align-items-center">
-                                            {/* Page Content */}
-                                            <div className="content container-fluid">
-                                                <div className="row">
-                                                    <div className="col-sm-8">
+                        {/* Page Content */}
+                        <div className="content container-fluid">
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <Helmet>
+                                        <title>UserHome</title>
+                                        {/* <meta name="description" content="Login page" /> */}
+                                    </Helmet>
+                                    {/* Page Content */}
+                                    <div className="page-wrapper-webapp">
+                                        <div className="content container-fluid">
+                                            <div className="form-header">
 
-                                                        {/* Account Logo */}
-
-                                                        <div className="account-logo">
-                                                            <img src={CmmsOnline} alt="" />
-                                                        </div>
-
-                                                        {/* /Account Logo */}
-                                                        <br></br>
-
-                                                        <h3 >รายละเอียดการซ่อม</h3>
+                                                <h3 >รายละเอียดการซ่อม</h3>
 
 
-                                                        <div className="card dash-widget">
+                                                <div className="card">
                                                             <div className="card-body">
-                                                                <span ><i className="fa fa-usd" /></span>
-                                                                <div className="dash-widget-info">
-                                                                    <h5>{detail.case_detail}</h5>
-                                                                    {/* <h5>{detail[0]?.case_detail}</h5> */}
-                                                                    {/* <h3>{License.length}</h3> */}
-                                                                    {/* <span>License</span> */}
-                                                                </div>
-                                                            </div>
+                                                        <div className="dash-widget-info">
+                                                            <h5>{detail.case_detail}</h5>
+                                                            {/* <h5>{detail[0]?.case_detail}</h5> */}
+                                                            {/* <h3>{License.length}</h3> */}
+                                                            {/* <span>License</span> */}
                                                         </div>
-
-
-
-                                                        <h3 >สถานะการซ่อม</h3>
-                                                        {/* <h3 className="page-title">สถานะการซ่อม</h3> */}
-
-
-                                                        <div className="card dash-widget">
-                                                            <div className="card-body">
-                                                                <span ><i className="fa fa-usd" /></span>
-                                                                <div className="dash-widget-info">
-                                                                    <h5>{detail.status}</h5>
-                                                                    {/* <h3>{License.length}</h3> */}
-                                                                    {/* <span>License</span> */}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-
-                                                        {/* Content Starts */}
-
-                                                        <Form.Item >
-
-                                                            <Link to={{
-                                                                pathname: "/webapp/userhome",
-                                                                state: location.state
-                                                            }}>
-                                                                <Button type="primary" className="btn-greensushi" htmlType="submit">BACK</Button></Link>
-                                                        </Form.Item>
-
-
-                                                        {/* Account Logo */}
-
-                                                        <img src={LogoOnlineAssest} />
-
-                                                        {/* /Account Logo */}
-
                                                     </div>
                                                 </div>
+
+
+
+                                                <h3 >สถานะการซ่อม</h3>
+                                                {/* <h3 className="page-title">สถานะการซ่อม</h3> */}
+
+
+                                                <div className="card ">
+                                                    <div className="card-body">
+                                                        <div className="dash-widget-info">
+                                                            <h5>{detail.status}</h5>
+                                                            {/* <h3>{License.length}</h3> */}
+                                                            {/* <span>License</span> */}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                {/* Content Starts */}
+
+                                                <Form.Item >
+
+                                                    <Link to={{
+                                                        pathname: "/webapp/userhome",
+                                                        state: location.state
+                                                    }}>
+                                                        <Button type="primary" className="btn-greensushi" htmlType="submit">BACK</Button></Link>
+                                                </Form.Item>
+
+
+                                                {/* Account Logo */}
+
+                                                <img src={LogoOnlineAssest} />
+
+                                                {/* /Account Logo */}
+
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-
-            </section>
-
+            </div>
 
         </>
     )

@@ -15,12 +15,12 @@ import TakePhoto from './webapp/TakePhoto';
 import RepairDetails from './webapp/RepairDetails';
 import Status from './webapp/status';
 import DataDevice from './webapp/DataDevice';
-import Tests3 from './webapp/tests3';
 import Employee from './Page/employee';
 import UploadImage from './webapp/uploadImage';
 import Test from './Page/test'
 import Activity from './Page/activity';
-import SendRepairFinish from './webapp/SendRepairFinish'
+import SendRepairFinish from './webapp/SendRepairFinish';
+import WebappHeader from './webapp/webappHeader';
 
 
 const App = () => {
@@ -45,9 +45,9 @@ const App = () => {
               <Route path="/webapp/RepairDetails" render={(props) => (<RepairDetails/>)}></Route>
               <Route path="/webapp/Status" render={(props) => (<Status/>)}></Route>
               <Route path="/webapp/DataDevice" render={(props) => (<DataDevice/>)}></Route>
-              <Route path="/webapp/tests3" render={(props) => (<Tests3/>)}></Route>
               <Route path="/webapp/uploadImage" render={(props) => (<UploadImage/>)}></Route>
-            <Route path= "/webapp/sendRepairFinish" render={(props) => (<SendRepairFinish/>)}></Route>
+              <Route path="/webapp/WebappHeader" render={(props) => (<WebappHeader/>)}></Route>
+              <Route path= "/webapp/sendRepairFinish" render={(props) => (<SendRepairFinish/>)}></Route>
               <Redirect to={{pathname: '/Page/admindashboard'}}/>
           </Switch>
       </Router>

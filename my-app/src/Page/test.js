@@ -1,408 +1,584 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
-// import CmmsOnline from '../webapp/CmmsOnline.png';
-// import { Button, Form, Input } from 'antd';
-// import { Link } from 'react-router-dom';
 
-
-
-// function RepairDetails() {
-
-//     const [open, setOpen] = useState(false);
-//     const [case_detail, setCase_detail] = useState("");
-//     const [detail, setDetail] = useState("");
-
-
-//     const layout = {
-//         labelCol: { span: 8 },
-//         wrapperCol: { span: 16 },
-//     };
-
-//     /* eslint-disable no-template-curly-in-string */
-//     const validateMessages = {
-//         required: '${label} is required!',
-//         types: {
-//             email: '${label} is not a valid email!',
-//             number: '${label} is not a valid number!',
-//         },
-//         number: {
-//             range: '${label} must be between ${min} and ${max}',
-//         },
-//     };
-//     /* eslint-enable no-template-curly-in-string */
-
-//     const onFinish = async (values) => {
-//         setOpen(false);
-//         console.log('Received values of form: ', values);
-//         try {
-//             console.log('Received values of form: ', values);
-//             const { data } = await axios.post('http://localhost:5000/DB/tbl_list_repair', {
-
-//                 case_detail: values.case_detail
-//             })
-//             console.log(data);
-//         } catch (e) {
-
-//         }
-//     };
-
-//     const hideModal = () => {
-//         setOpen(false);
-//     };
-
-
-//     const getRepailDeail = async () => {
-//         try {
-//             const { data } = await axios.get('http://localhost:5000/DB/tbl_list_repair')
-//             // console.log(data.length)
-//             setDetail(data)
-//         } catch (error) {
-
-//         }
-//     }
-
-//     useEffect(() => {
-//         getRepailDeail()
-//     }, [])
-
-//     return (
-//         <>
-//          <section className="comp-section comp-cards" id="comp_cards">
-//                 <div className="content container-fluid">
-//                     <div className="page-header">
-//                         <div className="row">
-//                             <div className="col-sm-12">
-//                                 <div className="col-md-6 text-center">
-
-//                                 <div classname="col-sm-6 col-md-4">
-//                                     <div className="content container-fluid">
-//                                         <div className="page-header">
-//                                             <div className="form-header">
-//                                                 <div className="row align-items-center">
-//                                     {/* Account Logo */}
-
-//                                     <div className="account-logo">
-//                                         <img src={CmmsOnline} alt="" />
-//                                     </div>
-
-//                                     {/* /Account Logo */}
-//                                     <br></br>
-//                                     <h3 className="card-title">รายละเอียดการแจ้งซ่อม</h3>
-//                                 </div>
-
-
-//                                     <div className="row">
-//                                             <div className="card flex-fill">
-//                                                 <img alt="" src={LogoOnlineAssest} className="card-img-top" />
-//                                                 <div className="card-header">
-//                                                     <h5 className="card-title mb-0"></h5>
-//                                                 </div>
-
-//                                                 <div className="card-body">
-//                                                     <Form
-//                                                         {...layout}
-//                                                         name="nest-messages"
-//                                                         onFinish={onFinish}
-//                                                         style={{ width: 400}}
-//                                                         validateMessages={validateMessages}
-//                                                     >
-//                                                         <Form.Item name={['case_detail', 'case_detail']} label="รายละเอียดการแจ้งซ่อม"
-//                                                             onChange={(event) => {
-//                                                                 setCase_detail(event.target.value)
-//                                                             }}
-//                                                         ><br></br><br></br>
-//                                                             <Input.TextArea />
-//                                                         </Form.Item>
-
-//                                                         {/* <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-//                                                             <Button className="btn btn-primary" type="primary" htmlType="submit">
-//                                                                 Submit
-//                                                             </Button>
-//                                                         </Form.Item>
-//                                                         */}
-
-//                                                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-//                                                             <Link to="/webapp/TakePhoto">
-//                                                                 <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
-//                                                             </Link>
-//                                                             <Button type="primary" className="btn-greensushi" htmlType="submit">Save</Button>
-//                                                         </Form.Item>
-//                                                     </Form>
-
-//                                                                         {/* Account Logo */}
-//                                                                         <div className="account-logo">
-//                                                                             <img src={LogoOnlineAssest} alt="Dreamguy's Technologies" />
-//                                                                         </div>
-//                                                                         {/* /Account Logo */}
-//                                                                     </div>
-//                                                                 </div>
-//                                                             </div>
-//                                                         </div>
-//                                                     </div>
-//                                                 </div>
-//                                             </div>
-
-//                                     </div>
-
-
-
-
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-
-//             </section>
-
-//         </>
-//     )
-// }
-
-// export default RepairDetails
-
-
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
-import CmmsOnline from '../webapp/CmmsOnline.png';
-import { Button, Form, Input } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom';
-import { Card } from 'antd';
+import { Dropdown, Table, Tag } from 'antd';
+import { MoreOutlined } from "@ant-design/icons"
+import axios, { Axios } from 'axios';
+//import 'antd/dist/antd.css';
+import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
+//import "../../antdstyle.css"
+import { Avatar_02, Avatar_05, Avatar_11, Avatar_12, Avatar_09, Avatar_10, Avatar_13 } from "../Entryfile/imagepath"
+//import  Editemployee from "../../../_components/modelbox/Editemployee"
+//import  Addemployee from "../../../_components/modelbox/Addemployee"
+import "../Page/antdstyle.css";
+import Header from '../initialpage/Sidebar/header'
+import Sidebar from '../initialpage/Sidebar/sidebar'
+import $, { data } from "jquery";
 import { useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
 
+import { Button, Col, Modal, Space } from 'antd';
+import {
+  Form,
+  Input,
+  Select,
+  Row,
+  DatePicker,
 
+} from 'antd';
 
-function RepairDetails() {
+const { Option } = Select;
 
-    let history = useHistory()
-    const [open, setOpen] = useState(false);
-    const [case_detail, setCase_detail] = useState("");
-    const [detail, setDetail] = useState("");
-    const [pic,setPic] = useState();
-    const [dataImg,setDataImg] = useState();
-    const [data, setData] = useState([]);
-    const [initialValues, setInitialValues] = useState();
-    const [save, setSave] = useState(false);
-    const [id,setID] = ('')
-    const { Meta } = Card;
+const Employeeslist = ({Admin}) => {
 
+  const [menu, setMenu] = useState(false)
+  const [open, setOpen] = useState(false)
+  // const [Admin, setAdmin] = useState([])
+  const [Edit, setEdit] = useState([])
+  const [form] = Form.useForm();
+  const [admin_name, setAdmin_name] = useState("");
+  const [admin_email, setAdmin_email] = useState("");
+  const [admin_password, setAdmin_password] = useState("");
+  const [admin_phone, setAdmin_phone] = useState("");
+  const [admin_designation, setAdmin_designation] = useState("");
+  const [created_timestamp, setCreated_timestamp] = useState("");
+  const [updated_timestamp, setUpdated_timestamp] = useState("");
+  const [admin_address, setAdmin_address] = useState("");
+  const [admin_newphone, setAdmin_newphone] = useState("");
+  const [admin_id, setAdmin_id] = useState("");
+  const [dataEmployee,setDataEmployee] = useState();
+  const [initialValues,setInitialValues] = useState();
+  const [newPassword,setNewPassword] = useState();
+  const location = useLocation()
+
+  // useEffect(() => {
+  //   form.setFieldValue({admin_name:'12345'})
+  // }, [dataEmployee])
+
+  // useEffect(() => {
+  //   getAdmin()
+  // }, [])
+ 
+
+  const hideModal = () => {
+    setOpen(false);
+  };
+
+  //edit employee
+  const onFinish = async(values) => {
+    setOpen(false);
+    form.resetFields();
+    console.log('Received values of form: ', values);
+    try {
+      const { data } = await axios.put(`http://localhost:5000/DB/update/${values.admin_id}`,
+      { admin_id: values.admin_id,
+        admin_name: values.admin_name,
+        admin_email: values.admin_email,
+        admin_password: values.admin_password,
+        admin_phone: values.admin_phone,
+        admin_address: values.admin_address,
+        admin_designation: values.admin_designation}) 
+      // console.log(data.length)
+      //alert('success!!')
+      window.location.reload();
+
+    } catch (error) {
+
+    }
     
-    const location = useLocation()
-    
-    console.log('location',location.state);
-    console.log('Devicr_id',location.id);
+  };
 
-    const layout = {
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
-    };
 
+
+
+
+  // const toggleMobileMenu = () => {
+  //   setMenu(!menu)
+  // }
+
+  // const formItemLayout = {
+  //   labelCol: {
+  //     xs: { span: 24 },
+  //     sm: { span: 8 },
+  //   },
+  //   wrapperCol: {
+  //     xs: { span: 24 },
+  //     sm: { span: 16 },
+  //   },
+  // };
+  // const tailFormItemLayout = {
+  //   wrapperCol: {
+  //     xs: {
+  //       span: 24,
+  //       offset: 0,
+  //     },
+  //     sm: {
+  //       span: 16,
+  //       offset: 8,
+  //     },
+  //   },
+  // };
+
+
+  const toggleMobileMenu = () => {
+    setMenu(!menu)
+  }
+
+  // useEffect( ()=>{
+  //   if($('.select').length > 0) {
+  //     $('.select').select2({
+  //       minimumResultsForSearch: -1,
+  //       width: '100%'
+  //     });
+  //   }
+  // });  
 
   
-    // const sendNoti = async (values) => {
 
-    //   try {
-    //   const { data } = await axios.post(`http://localhost:5000/DB/sendNoti`)
-    //   }catch(error){
+  
+  //-- get data from DB---
+  // useEffect(() => {
+  //   getAdmin()
+  // }, [])
 
-    //   }
+  // const getAdmin = async () => {
+  //   try {
+  //     const { data } = await axios.get('http://localhost:5000/DB/tbl_admin')
+  //     // console.log(data.length)
+  //     setAdmin(data)
+  //     console.log(data);
+  //   } catch (error) {
+
+  //   }
+  // }
+
+  const deleEmployees = (values) => {
+    //console.log(admin_id);
+      axios.delete(`http://localhost:5000/DB/delete/${values.admin_id}`).then((response) => {
+        // setAdmin(
+        //   Admin.filter((values) => {
+        //     return values.admin_id != admin_id;
+        //   })
+        // )
+        console.log(response);
         
-          
-    //     //console.log('222',defaultValue);
+        alert('success!!')
+      })
+  
       
-    // }
+      
+  }
 
-    const onFinish = async (values) => {
-        setOpen(false);
+  const getEmployees = (values) => {
+    
+    //console.log(values);
+      axios.get(`http://localhost:5000/DB/getEmployee/${values.admin_id}`).then((response) => {
+        //console.log('123',response.data.admin_name);
+        console.log(response.data);
+        setDataEmployee(response.data);
+        const defaultValue = {
+          admin_id: response.data.admin_id,
+          admin_name: response.data.admin_name,
+          admin_email: response.data.admin_email,
+          admin_password: response.data.admin_password,
+          admin_phone: response.data.admin_phone,
+          created_timestamp: response.data.created_timestamp,
+          updated_timestamp: response.data.updated_timestamp,
+          admin_address: response.data.admin_address,
+          admin_designation: response.data.admin_designation
+        }
+        //console.log('222',defaultValue);
+        setInitialValues(defaultValue);
 
-        console.log('Received values of form: ', values);
-        console.log('id front',location.state);
         
-        try {
-            console.log('Received values of form: ', values);
-            const { data } = await axios.put(`http://localhost:5000/DB/put/repair/${location.state}}`, {
-                case_detail: values.case_detail,
-                id:location.state,
-                device_id:values.device_id
+      })
+      // showModal()
+      setOpen(true);
+      console.log(initialValues);
+      console.log(dataEmployee);
+      
+    
+  }
+
+
+  const handlepassword = (e) =>{
+      
+      form.setFieldValue({admin_password:e.target.value})
+  }
+
+  
+
+  // const items = [
+  //   {
+  //     key: '1',
+  //     label: (
+  //       <a target="_blank" >
+  //         Edit
+  //       </a>
+  //     ),
+  //   },
+  //   {
+  //     key: '2',
+  //     label: (
+  //       <a href="\Page\Delete.js" >
+          
+  //         delete
+  //       </a>
+  //     ),
+  //   },
+
+  // ]
+
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Option value="66">+66</Option>
+        <Option value="87">+87</Option>
+        <Option value="87">+87</Option>
+      </Select>
+    </Form.Item>
+  );
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 8 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 16 },
+    },
+  };
+  
+  const tailFormItemLayout = {
+    wrapperCol: {
+      xs: {
+        span: 24,
+        offset: 0,
+      },
+      sm: {
+        span: 16,
+        offset: 8,
+      },
+    },
+  };
+
+  const showModal = () => {
+    //console.log('66666',dataEmployee)
+    setOpen(true);
+    
+  };
+
+  // const items = [
+  //   {
+  //     label: <a href="\Page\Delete.js">delete</a>,
+  //     key: '0',
+  //   },
+    
+  // ];
+
+  
+
+  const columns = [
+
+    {
+      title: 'ID',
+      dataIndex: 'admin_id',
+
+      sorter: (a, b) => a.ID.length - b.ID.length,
+    },
+    {
+      title: 'name',
+      dataIndex: 'admin_name',
+      sorter: (a, b) => a.admin_name.length - b.admin_name.length,
+    },
+
+    {
+      title: 'Email',
+      dataIndex: 'admin_email',
+      sorter: (a, b) => a.admin_email.length - b.admin_email.length,
+    },
+
+    {
+      title: 'Mobile',
+      dataIndex: 'admin_phone',
+      sorter: (a, b) => a.admin_phone.length - b.admin_phone.length,
+    },
+
+    // {
+    //   title: 'Join Date',
+    //   dataIndex: 'created_timestamp',
+    //   sorter: (a, b) => a.created_timestamp.length - b.created_timestamp.length,
+    // },
+
+    {
+      title: 'Role',
+      dataIndex: 'admin_designation',
+      render: (text, record) => <Tag>{text}</Tag>
+      //console.log(text)
+
+      // <div className="dropdown">
+      // <a href="" className="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{text} </a>
+      // <div className="dropdown-menu">
+      //   <a className="dropdown-item" href="#">Software Engineer</a>
+      //   <a className="dropdown-item" href="#">Software Tester</a>
+      //   <a className="dropdown-item" href="#">Frontend Developer</a>
+      //   <a className="dropdown-item" href="#">UI/UX Developer</a>
+      // </div>
+      // </div>
+
+    },
+    // {
+    //   title: 'Action',
+    //   render: (text, record) =>
+    //     <div >
+
+    //       <Dropdown
+    //         menu={{
+    //           items,
+    //         }}
+    //         placement="bottomRight"
+    //       >
+    //         <Button type='text' ><MoreOutlined /></Button>
+    //       </Dropdown>
+
+         
+    //     </div>
+
+    // },
+
+    {
+      title: 'Action',
+      render: (text, record) =>
+        <div className="dropdown profile-action">
+        
+
+          {/* <Col span={12} style={{ textAlign: 'left' }}>
+            <Button  type="primary" htmlType="submit"  >Edit  </Button>
+          </Col>
+          <Col span={8} style={{ textAlign: 'right' }}>
+            <Button type="primary" danger onClick={() => {deleteEmployees()}}>Delete</Button>
+          </Col> */}
+
+          <Button type="primary" success onClick={() => getEmployees (text)} 
+             data-bs-toggle="modal" data-bs-target="#add_employee"><i className="fa fa-plus" />
+            Edit
+          </Button>
+
+          <Button type="primary" danger onClick={() => deleEmployees (text)} 
+             data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
+            delete
+          </Button>
+
+
+          {/* model Edit */}
+          <Modal 
+            width={650}
+            title="Edit"
+            open={open}
+            // onOk={hideModal}
+            footer={null}
+            onCancel={hideModal}
+            // okText="submit"
+            // cancelText="cancle"
+          >
+            {initialValues&&
+            <Form
+              initialValues={initialValues }
+              {...formItemLayout}
+              form={form}
+              name="Save"
+              onFinish={onFinish}
+              scrollToFirstError
+            >
+              <Form.Item
                 
-            })
-            history.push({pathname:'/webapp/sendRepairFinish'})
-            //sendNoti();
-            
-            
-           
-        } catch (e) {
+                name="admin_name"
+                label="Name"
+                rules={[{ required: true, message: 'Please input your  Name', whitespace: true }]}
+                onChange={(event) => {
+                  setAdmin_name(event.target.value)
+                }}
+              >
+                <Input />
 
-        }
-    };
+              </Form.Item>
 
-    useEffect(() => {
-        getDataImage()
-      }, [])
+              <Form.Item
+                name="admin_id"
+                label="ID"
+                rules={[{ required: true, message: 'Please input your ID!' }]}
+                onChange={(event) => {
+                  setAdmin_id(event.target.value)
+                }}
+              >
+                <Input disabled/>
+              </Form.Item>
 
-    const getDataImage = async (values) => {
+              <Form.Item
+                name="admin_designation"
+                label="role"
+                rules={[{ required: true, message: 'Please select role!' }]}
+                onChange={(event) => {
+                  setAdmin_designation(event.target.value)
+                }}
+              >
+                <Select placeholder="select your role">
+                  <Option value="admin">Admin</Option>
+                  <Option value="it support">IT Support</Option>
+                  <Option value="other">Other</Option>
+                </Select>
+              </Form.Item>
 
-        try {
-        const { data } = await axios.get(`http://localhost:5000/DB/gat/tbl_tastimg/${location.state}`)
-          console.log('123',data);
-          setID(data)
-        }catch(error){
+              <Form.Item
+                name="admin_email"
+                label="E-mail"
+                rules={[
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!',
+                  },
+                ]}
+                onChange={(event) => {
+                  setAdmin_email(event.target.value)
+                }}
+              >
 
-        }
+                <Input />
+              </Form.Item>
 
-      }
+              <Form.Item
+                name="admin_password"
+                label="Password"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your password!',
+                  },
+                ]}
+                hasFeedback
+                onChange={(event) => {
+                  setAdmin_password(event.target.value)
+                }}
+              >
+                <Input.Password onChange={handlepassword}/>
+              </Form.Item>
+
+              <Form.Item
+                name="confirm"
+                label="Confirm Password"
+                dependencies={['password']}
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please confirm your password!',
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value ||  dataEmployee.admin_password=== value || getFieldValue('admin_password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                      
+                      
+                    },
+                  }),
+                ]}
+
+              >
+                <Input.Password />
+              </Form.Item>
+
+              <Form.Item
+                name="admin_phone"
+                label="Phone Number"
+                rules={[{ required: true, message: 'Please input your phone number!' }]}
+                onChange={(event) => {
+                  setAdmin_newphone(event.target.value)
+                }}
+              >
+                <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+              </Form.Item>
+
+              <Form.Item
+                name="admin_address"
+                label="Address"
+                rules={[{ required: true, message: 'Please input your Address', whitespace: true }]}
+                onChange={(event) => {
+                  setAdmin_address(event.target.value)
+                }}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item  {...tailFormItemLayout}>
+                <Row>
+                  <Col span={12} style={{ textAlign: 'left' }}>
+                    <Button type="primary" htmlType="submit" >
+                      Save
+                    </Button></Col>
+                  <Col span={12} style={{ textAlign: 'right' }}>
+                    <Button type="primary" danger onClick={hideModal}>
+                      Cancle
+                    </Button>
+                  </Col>
+                </Row>
+
+              </Form.Item>
+            </Form>}
+          </Modal>
+
+        </div>
+
+    },
 
 
-    //   const handleNotification = () => {
-    //     setSave(true);
-    //     socket.emit("sendNotification", {
-    //       senderName: user,
-    //       receiverName: post.username,
-          
-    //     });
-    //   };
+  ]
+
+  //console.log(Admin);
+
+  return (
+
+    <div className={`main-wrapper ${menu ? 'slide-nav' : ''}`}>
+
+
+      <Header onMenuClick={(value) => toggleMobileMenu()} />
+      <Sidebar />
+
 
       
-    useEffect(() => {
-        getImage()
-      }, [])
-    
-      const getImage = async () => {
-        try {
-          const { data } = await axios.get(`http://localhost:5000/DB/getImage/${location.state}`)
-           console.log('data',data)
-           console.log('device',data.device_id);
-          setPic(data)
-        } catch (error) {
-    
-        }
-      }
-    
-     
+      <div className="row">
+        <div className="col-md-12">
+          <div className="table-responsive">
+            <Table className="table-striped"
+              pagination={{
+                total: Admin?.length,
+                showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+              }}
+              style={{ overflowX: 'auto' }}
+              columns={columns}
+              // bordered
+              dataSource={Admin}
+              rowKey={record => record.id}
+            // onChange={console.log("change")}
+            />
+          </div>
+        </div>
+      </div>
 
       
 
+      
+             
+    </div>
 
-
-     
-
-    /* eslint-disable no-template-curly-in-string */
-    const validateMessages = {
-        required: '${label} is required!',
-        types: {
-            email: '${label} is not a valid email!',
-            number: '${label} is not a valid number!',
-        },
-        number: {
-            range: '${label} must be between ${min} and ${max}',
-        },
-    };
-    /* eslint-enable no-template-curly-in-string */
-
-   
-    
-    const hideModal = () => {
-        setOpen(false);
-    };
-
-   
-
-    
-    return (
-        <>
-
-            <section className="comp-section comp-cards" id="comp_cards">
-                <div className="account-content">
-                    <div className="container">
-                        <div classname="col-sm-6 col-md-4">
-                            <div className="content container-fluid">
-                                <div className="page-header">
-                                    <div className="form-header">
-                                        <div className="row align-items-center">
-                                            {/* Page Content */}
-                                            <div className="content container-fluid">
-                                                <div className="row">
-                                                    <div className="col-sm-12"> 
-
-                                                        {/* Account Logo */}
-
-                                                        <div className="account-logo">
-                                                            <img src={CmmsOnline} alt="" />
-                                                        </div>
-
-                                                        {/* /Account Logo */}
-                                                        <br></br>
-
-                                                        <h3 className="page-title">รายละเอียดการแจ้งซ่อม</h3>
-
-
-
-
-                                                        {/* Content Starts */}
-                                                       <Card>
-                                                       {pic&&<img alt="" src={pic.image} />}
-
-                                                        
-
-
-                                                            <Form
-                                                                {...layout}
-                                                                name="nest-messages"
-                                                                onFinish={onFinish}
-                                                               
-                                                                validateMessages={validateMessages}
-                                                            >
-                                                                <Form.Item name={['case_detail']} label="รายละเอียดการแจ้งซ่อม"
-                                                                    onChange={(event) => {
-                                                                        setCase_detail(event.target.value)
-                                                                    }}
-                                                                >
-                                                                    <Input.TextArea />
-                                                                </Form.Item>
-
-                                                                {/* <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-                                                                    <Button className="btn btn-primary" type="primary" htmlType="submit">
-                                                                        Submit
-                                                                    </Button>
-                                                                </Form.Item>
-                                                                */}
-
-                                                                <Form.Item >
-                                                                    <Link to="/webapp/QR">
-                                                                        <Button type="primary" className='btn-gray-1000' onClick={hideModal}>Cancle</Button>
-                                                                    </Link>
-                                                                    <Button type="primary" className="btn-greensushi"   htmlType="submit" >Save</Button>
-                                                                </Form.Item>
-                                                            </Form>
-                                                      </Card>
-
-                                                        {/* Account Logo */}
-
-                                                        <img src={LogoOnlineAssest} />
-
-                                                        {/* /Account Logo */}
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
-
-        </>
-    )
+  );
 }
 
-export default RepairDetails
-
-
+export default Employeeslist;

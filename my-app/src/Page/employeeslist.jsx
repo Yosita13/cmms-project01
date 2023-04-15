@@ -15,6 +15,7 @@ import "../Page/antdstyle.css";
 import Header from '../initialpage/Sidebar/header'
 import Sidebar from '../initialpage/Sidebar/sidebar'
 import $, { data } from "jquery";
+import { useLocation } from 'react-router-dom';
 
 import { Button, Col, Modal, Space } from 'antd';
 import {
@@ -35,6 +36,7 @@ const Employeeslist = ({Admin}) => {
   // const [Admin, setAdmin] = useState([])
   const [Edit, setEdit] = useState([])
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const [admin_name, setAdmin_name] = useState("");
   const [admin_email, setAdmin_email] = useState("");
   const [admin_password, setAdmin_password] = useState("");
@@ -44,11 +46,13 @@ const Employeeslist = ({Admin}) => {
   const [updated_timestamp, setUpdated_timestamp] = useState("");
   const [admin_address, setAdmin_address] = useState("");
   const [admin_newphone, setAdmin_newphone] = useState("");
+  const [id_admin,setId_admin] = useState("");
   const [admin_id, setAdmin_id] = useState("");
   const [dataEmployee,setDataEmployee] = useState();
   const [initialValues,setInitialValues] = useState();
+  const [forComfirmDelete,setForComfirmDelete] = useState();
   const [newPassword,setNewPassword] = useState();
-  
+  const location = useLocation()
 
   // useEffect(() => {
   //   form.setFieldValue({admin_name:'12345'})
@@ -57,6 +61,7 @@ const Employeeslist = ({Admin}) => {
   // useEffect(() => {
   //   getAdmin()
   // }, [])
+ 
 
   const hideModal = () => {
     setOpen(false);
@@ -77,11 +82,13 @@ const Employeeslist = ({Admin}) => {
         admin_address: values.admin_address,
         admin_designation: values.admin_designation}) 
       // console.log(data.length)
-      alert('success!!')
+      //alert('success!!')
+      window.location.reload();
 
     } catch (error) {
 
     }
+    
   };
 
 
@@ -147,18 +154,37 @@ const Employeeslist = ({Admin}) => {
 
   //   }
   // }
+  const getEmployeesForDelete = (values) => {
+    
+    //console.log(values);
+      axios.get(`http://localhost:5000/DB/getEmployee/${values.admin_id}`).then((response) => {
+        //console.log('123',response.data.admin_name);
+        console.log(response.data);
+        setDataEmployee(response.data);
+        
+      })
+      // showModal()
+      setId_admin(values.admin_id)
+      console.log('222',id_admin);
+      setForComfirmDelete(true);
+      console.log(dataEmployee);
+  }
+
 
   const deleEmployees = (values) => {
+    setForComfirmDelete(false)
     //console.log(admin_id);
-      axios.delete(`http://localhost:5000/DB/delete/${values.admin_id}`).then((response) => {
+      axios.delete(`http://localhost:5000/DB/delete/${id_admin}`).then((response) => {
         // setAdmin(
         //   Admin.filter((values) => {
         //     return values.admin_id != admin_id;
         //   })
         // )
         console.log(response);
+       
+        //alert('success!!')
+        window.location.reload();
         
-        alert('success!!')
       })
   
       
@@ -185,7 +211,8 @@ const Employeeslist = ({Admin}) => {
         }
         //console.log('222',defaultValue);
         setInitialValues(defaultValue);
-
+       
+        
         
       })
       // showModal()
@@ -195,7 +222,9 @@ const Employeeslist = ({Admin}) => {
       
     
   }
-  console.log(initialValues);
+
+ 
+
 
   const handlepassword = (e) =>{
       
@@ -265,6 +294,17 @@ const Employeeslist = ({Admin}) => {
     
   };
 
+  const showModal2 = () => {
+    //console.log('66666',dataEmployee)
+    setForComfirmDelete(true);
+   
+    
+  };
+
+  const hideModal2 = () => {
+    setForComfirmDelete(false);
+  };
+
   // const items = [
   //   {
   //     label: <a href="\Page\Delete.js">delete</a>,
@@ -272,6 +312,17 @@ const Employeeslist = ({Admin}) => {
   //   },
     
   // ];
+
+  const getID = (values) => {
+
+    console.log('value', values);
+    
+    setId_admin(values.admin_id)
+    deleEmployees(id_admin)
+    
+
+
+  }
 
   
 
@@ -349,45 +400,79 @@ const Employeeslist = ({Admin}) => {
         <div className="dropdown profile-action">
         
 
-          {/* <Col span={12} style={{ textAlign: 'left' }}>
-            <Button  type="primary" htmlType="submit"  >Edit  </Button>
-          </Col>
-          <Col span={8} style={{ textAlign: 'right' }}>
-            <Button type="primary" danger onClick={() => {deleteEmployees()}}>Delete</Button>
-          </Col> */}
-
           <Button type="primary" success onClick={() => getEmployees (text)} 
              data-bs-toggle="modal" data-bs-target="#add_employee"><i className="fa fa-plus" />
             Edit
           </Button>
 
-          <Button type="primary" danger onClick={() => deleEmployees (text)} 
+          {/* <Button type="primary" danger onClick={() => deleEmployees (text)} 
+             data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
+            delete
+          </Button> */}
+
+          <Button type="primary" danger onClick={() => getEmployeesForDelete (text)}
              data-bs-toggle="modal" data-bs-target="#add_employee" ><i className="fa fa-plus" />
             delete
           </Button>
 
-          
 
-          
+         
+        </div>
+
+    },
+
+
+  ]
+
+  //console.log(Admin);
+
+  return (
+
+    <div className={`main-wrapper ${menu ? 'slide-nav' : ''}`}>
+
+
+      <Header onMenuClick={(value) => toggleMobileMenu()} />
+      <Sidebar />
+
 
       
-        
-          <Modal 
+      <div className="row">
+        <div className="col-md-12">
+          <div className="table-responsive">
+            <Table className="table-striped"
+              pagination={{
+                total: Admin?.length,
+                showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
+                showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
+              }}
+              style={{ overflowX: 'auto' }}
+              columns={columns}
+              // bordered
+              dataSource={Admin}
+              rowKey={record => record.id}
+            // onChange={console.log("change")}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* model Edit */}
+      <Modal 
             width={650}
             title="Edit"
             open={open}
             // onOk={hideModal}
             footer={null}
             onCancel={hideModal}
-            okText="submit"
-            cancelText="cancle"
+            // okText="submit"
+            // cancelText="cancle"
           >
             {initialValues&&
             <Form
               initialValues={initialValues }
               {...formItemLayout}
               form={form}
-              name="save"
+              name="Save"
               onFinish={onFinish}
               scrollToFirstError
             >
@@ -396,9 +481,9 @@ const Employeeslist = ({Admin}) => {
                 name="admin_name"
                 label="Name"
                 rules={[{ required: true, message: 'Please input your  Name', whitespace: true }]}
-                // onChange={(event) => {
-                //   setAdmin_name(event.target.value)
-                // }}
+                onChange={(event) => {
+                  setAdmin_name(event.target.value)
+                }}
               >
                 <Input />
 
@@ -415,23 +500,6 @@ const Employeeslist = ({Admin}) => {
                 <Input disabled/>
               </Form.Item>
 
-              {/* <Form.Item
-                      name="Last Name"
-                      label="Last Name"
-
-                      rules={[{ required: true, message: 'Please input your Last Name', whitespace: true }]}
-                    >
-                      <Input />
-                    </Form.Item> */}
-
-              {/* <Form.Item
-                      name="nickname"
-                      label="Nickname"
-                      rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
-                    >
-                      <Input />
-                    </Form.Item> */}
-
               <Form.Item
                 name="admin_designation"
                 label="role"
@@ -446,19 +514,6 @@ const Employeeslist = ({Admin}) => {
                   <Option value="other">Other</Option>
                 </Select>
               </Form.Item>
-
-
-              {/* <Form.Item
-                      name="gender"
-                      label="Gender"
-                      rules={[{ required: true, message: 'Please select gender!' }]}
-                    >
-                      <Select placeholder="select your gender">
-                        <Option value="male">Male</Option>
-                        <Option value="female">Female</Option>
-                        <Option value="other">Other</Option>
-                      </Select>
-                    </Form.Item> */}
 
               <Form.Item
                 name="admin_email"
@@ -563,49 +618,62 @@ const Employeeslist = ({Admin}) => {
             </Form>}
           </Modal>
 
-        </div>
+      {/* model Delete */}
 
-    },
+      <div className="modal custom-modal fade" id="delete_approve" role="dialog">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body">
+              <Modal
+                width={650}
+                title="Delete"
+                open={forComfirmDelete}
+                onOk={hideModal}
+                footer={null}
+                onCancel={hideModal2}
+                okText="submit"
+                cancelText="cancle"
+              >
 
+                <Form
 
-  ]
+                  
+                  form={form2}
+                  //name="Delete"
+                  onFinish={deleEmployees}
+                  scrollToFirstError
+                >
+                  <Form.Item>
+                    {/* Delete Leave Modal */}
+                    <div className="form-header">
+                      <h3>Delete Leave</h3>
+                      <p>Are you sure want to delete this leave?</p>
+                    </div>
 
-  //console.log(Admin);
+                    <div className="modal-btn delete-action">
+                      <div className="row">
+                        <div className="col-6">
+                          <a className="btn btn-primary continue-btn" onClick={deleEmployees}>Delete</a>
+                        </div>
+                        <div className="col-6">
+                          <a data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={hideModal2}>Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+                    {/* /Delete Leave Modal */}
 
-  return (
-
-    <div className={`main-wrapper ${menu ? 'slide-nav' : ''}`}>
-
-
-      <Header onMenuClick={(value) => toggleMobileMenu()} />
-      <Sidebar />
-
-
-      
-      <div className="row">
-        <div className="col-md-12">
-          <div className="table-responsive">
-            <Table className="table-striped"
-              pagination={{
-                total: Admin?.length,
-                showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
-                showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
-              }}
-              style={{ overflowX: 'auto' }}
-              columns={columns}
-              // bordered
-              dataSource={Admin}
-              rowKey={record => record.id}
-            // onChange={console.log("change")}
-            />
+                  </Form.Item>
+                </Form>
+              </Modal>
+            </div>
           </div>
         </div>
       </div>
 
-      
 
-      
-             
+
+
+
     </div>
 
   );

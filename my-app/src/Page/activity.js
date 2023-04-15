@@ -12,12 +12,14 @@ import { useLocation } from 'react-router-dom';
 
 const { Option } = Select;
 
-const Activity = ({ ID }) => {
+
+const Activity = () => {
 
 
-  const [menu, setMenu] = useState(false)
-  const [open, setOpen] = useState(false)
-  const [Admin, setAdmin] = useState([])
+  const [menu, setMenu] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [Admin, setAdmin] = useState([]);
+  const [activity,setActivity]  = useState([]);
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
   const [form3] = Form.useForm();
@@ -30,7 +32,8 @@ const Activity = ({ ID }) => {
   const [forsendEmail, setForsendEmail] = useState();
   const [activity_email, setActivity_email] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
-    const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState([]);
+  const location = useLocation();
 
 
   //console.log('data is ', data)
@@ -42,8 +45,6 @@ const Activity = ({ ID }) => {
       .then(data => setOptions(data))
       .catch(error => console.log(error));
   }, []);
-
-
 
 
   useEffect(() => {
@@ -65,10 +66,31 @@ const Activity = ({ ID }) => {
     }
   }
 
+  useEffect(() => {
+    getActivity2()
+  }, [])
+
+  const getActivity2 = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/DB/get/get/for/join')
+
+        //console.log('help',data.admin_name)
+      setActivity(data)
+    } catch (error) {
+
+    }
+  }
+  const onReset2 = () => {
+    form2.resetFields();
+    getActivity2();
+  
+  };
+
   const onReset = () => {
     form.resetFields();
     getforjoin();
   };
+
   const onFinish = async (values) => {
     setOpen(false);
     form.resetFields();
@@ -83,26 +105,71 @@ const Activity = ({ ID }) => {
         })
        console.log(values.Responsible)
       alert('success!!')
+      window.location.reload();
 
     } catch (error) {
 
     }
   };
 
- 
+  const onFinish2 = (value) => {
+   
+    console.log('fillter',value);
+    console.log('activity',activity);
+    //console.log('value.admin_id',admin_id);
+    //console.log('typeof value.id',typeof value.id)
+    
+    if (value.name === undefined) {
+      const act = activity.filter((act) =>act.id === Number(value.id)) 
+      setActivity(act)
+      console.log('emp.activityid',value.id);
+      console.log('name_undefine',act);
+      console.log('แต๋มสวย')
+      // alert(`${Admin}`)
+
+    } else if (value.id === undefined) {
+      const act = activity.filter((act) => act.employee_name.split(" ")[0] === value.name)
+      setActivity(act)
+      console.log('id undefind',act);
+      console.log('แต๋มขี้เหล่')
+
+    }else if(value.name !== undefined && value.id !== undefined){
+      const act1 = activity.filter((act1) => (act1.id === Number(value.id)) && act1.employee_name.split(" ")[0] === value.name)
+      //const emp2 = Admin.filter((emp2) => emp2.employee_name.split(" ")[0] === value.name)
+      setActivity(act1)
+      console.log('1',act1)
+      //console.log('2',emp2);
+      
+    // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.employee_name.split(" ")[0] !== value.name)){
+    //   setAdmin([])
+    //   console.log('3');
+    // }
+    // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.employee_name.split(" ")[0] === value.name)){
+    //   setAdmin(emp1)
+    //   console.log('4');
+    // }
+
+    }
+    
+
+  }
+
+
+
+  
 
   const getActivity = () => {
 
     console.log('editstatus', editStatus);
     const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
-
+      
     })
     showModal()
     setOpen(true);
+    
 
   }
   
-
 
   const getID = (values) => {
 
@@ -116,7 +183,7 @@ const Activity = ({ ID }) => {
 
 
   }
-  console.log('from2', form3.getFieldValue('admin_email'));
+  //console.log('from2', form3.getFieldValue('admin_email'));
 
   const showModal2 = () => {
     setIsModalOpen(true);
@@ -505,7 +572,7 @@ const Activity = ({ ID }) => {
 
             form={form2}
             name="control-hooks"
-            onFinish={''}
+            onFinish={onFinish2}
 
           >
             <div className="row filter-row">
@@ -522,7 +589,7 @@ const Activity = ({ ID }) => {
                     width: 'calc(50% - 8px)',
                   }}
                 >
-                  <input className="form-control floating" placeholder="Employee ID" />
+                  <input className="form-control floating" placeholder="Activity ID" />
                 </Form.Item>
                 <Form.Item
                   name="name"
@@ -533,7 +600,7 @@ const Activity = ({ ID }) => {
                     margin: '0 8px',
                   }}
                 >
-                  <input className="form-control floating" placeholder="Employee Name" />
+                  <input className="form-control floating" placeholder="Name" />
                 </Form.Item>
               </Form.Item>
             </div>
@@ -544,7 +611,7 @@ const Activity = ({ ID }) => {
                 <Button type="primary" htmlType="submit" className="btn btn-success btn-block w-20">
                   Search
                 </Button>
-                <Button htmlType="button" className="btn btn-danger btn-block w-20 " style={{ marginLeft: '5px' }} onClick={onReset}>
+                <Button htmlType="button" className="btn btn-danger btn-block w-20 " style={{ marginLeft: '5px' }} onClick={onReset2}>
                   Reset
                 </Button>
 
@@ -552,7 +619,6 @@ const Activity = ({ ID }) => {
               </div>
 
             </Form.Item>
-
 
           </Form>
 
@@ -570,14 +636,14 @@ const Activity = ({ ID }) => {
               <div className="table-responsive">
                 <Table className="table-striped"
                   pagination={{
-                    total: data?.length,
+                    total: activity?.length,
                     showTotal: (total, range) => `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                     showSizeChanger: true, onShowSizeChange: onShowSizeChange, itemRender: itemRender
                   }}
                   style={{ overflowX: 'auto' }}
                   columns={columns}
 
-                  dataSource={data}
+                  dataSource={activity}
                   rowKey={record => record.id}
 
                 />

@@ -23,6 +23,7 @@ import {
 } from 'antd';
 import Employeeslist from '../Page/employeeslist';
 import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
+import { useLocation } from 'react-router-dom';
 
 const { Option } = Select;
 
@@ -50,8 +51,39 @@ const AllEmployees = () => {
   const [newPassword, setNewPassword] = useState();
   const [EmployeeID, setEmployeeID] = useState(null);
   const [EmployeeName, setEmployeeName] = useState(null);
+  const location = useLocation()
+  const [forsendEmail, setForsendEmail] = useState();
+  
 
-  console.log('employeeID', EmployeeID);
+  //console.log('employeeID', EmployeeID);
+
+  const getEmployees = (values) => {
+
+    //console.log(values);
+    axios.get(`http://localhost:5000/DB/getEmployee/${values.admin_id}`).then((response) => {
+      //console.log('123',response.data.admin_name);
+
+      setDataEmployee(response.data);
+      const defaultValue = {
+        admin_id: response.data.admin_id,
+        admin_name: response.data.admin_name,
+        admin_email: response.data.admin_email,
+        admin_password: response.data.admin_password,
+        admin_phone: response.data.admin_phone,
+        created_timestamp: response.data.created_timestamp,
+        updated_timestamp: response.data.updated_timestamp,
+        admin_address: response.data.admin_address,
+        admin_designation: response.data.admin_designation
+      }
+      //console.log('222',defaultValue);
+      setInitialValues(defaultValue);
+
+
+    })
+   
+
+
+  }
 
   const onFinish = async (values) => {
     setOpen(false);
@@ -69,49 +101,66 @@ const AllEmployees = () => {
         admin_designation: values.role
       })
       console.log(data);
-
+      handleOk();
       alert('success!!')
+      window.location.reload();
 
     } catch (e) {
 
     }
   };
 
-  const onFinish2 = (value) => {
-    console.log(value);
+  
 
+  const onFinish2 = (value) => {
+   
+    console.log('fillter',value);
+    console.log('admin',Admin);
+    //console.log('value.admin_id',admin_id);
+    //console.log('typeof value.id',typeof value.id)
+    
     if (value.name === undefined) {
-      console.log('แต๋มสวย')
-      const emp = Admin.filter((emp) => emp.admin_id === value.id)
+      const emp = Admin.filter((emp) =>emp.admin_id === Number(value.id)) 
       setAdmin(emp)
+      console.log('emp.adminid',value.id);
+      console.log('name_undefine',emp);
+      console.log('แต๋มสวย')
       // alert(`${Admin}`)
 
     } else if (value.id === undefined) {
       const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === value.name)
       setAdmin(emp)
-      console.log(emp);
+      console.log('id undefind',emp);
       console.log('แต๋มขี้เหล่')
 
     }else if(value.name !== undefined && value.id !== undefined){
-      const emp1 = Admin.filter((emp1) => (emp1.admin_id === value.id) && emp1.admin_name.split(" ")[0] === value.name)
-      // const emp2 = Admin.filter((emp2) => emp2.admin_name.split(" ")[0] === value.name)
+      const emp1 = Admin.filter((emp1) => (emp1.admin_id === Number(value.id)) && emp1.admin_name.split(" ")[0] === value.name)
+      //const emp2 = Admin.filter((emp2) => emp2.admin_name.split(" ")[0] === value.name)
       setAdmin(emp1)
       console.log('1',emp1)
-      // console.log('2',emp2);
+      //console.log('2',emp2);
+      
     // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] !== value.name)){
     //   setAdmin([])
+    //   console.log('3');
     // }
     // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.admin_name.split(" ")[0] === value.name)){
     //   setAdmin(emp1)
+    //   console.log('4');
     // }
 
     }
+    
 
   }
+
+
   const onReset = () => {
-    form.resetFields();
+    form2.resetFields();
     getAdmin();
+  
   };
+
   const Finish = async (values) => {
     setOpen(false);
     form.resetFields();
@@ -151,57 +200,31 @@ const AllEmployees = () => {
 
     }
   }
+  //console.log(Admin)
 
-  console.log(Admin)
+//-----------------send email after register------------------------
+  const hideModal2 = () => {
 
-  const items = [
-    {
-      label: <a href="/app/profile/employee-profile">My Profile</a>,
-      key: '0',
-    },
-    {
-      label: <a href="/settings/companysetting">Settings</a>,
-      key: '1',
-    },
-    {
-      label: <a href="/login">Logout</a>,
-      key: '2',
-    },
-  ];
+    setForsendEmail(false);
+    form.resetFields()
+    //console.log('111',activity_email)
+    form.setFieldValue({ admin_email: admin_email })
+  };
 
+  const handleOk = (values) => {
+    console.log('va', values);
+    //setIsModalOpen(false);
+    hideModal2()
 
-
-  // const addAdmin = () => {
-  //   axios.post('http://localhost:5000/DB/tbl_admin', {
-  //     admin_name: admin_name,
-  //     admin_designation: admin_designation,
-  //     admin_email: admin_email,
-  //     admin_password: admin_password,
-  //     // confirmpassword: confirmpassword,
-  //     admin_phone: admin_phone,
-  //     created_timestamp : created_timestamp ,
-  //     updated_timestamp : updated_timestamp ,
-  //     admin_address: admin_address,
-  //     admin_id: admin_id
-  //   }).then(() => {
-  //     setAdmin([
-  //       {
-  //         admin_name: admin_name,
-  //         admin_designation: admin_designation,
-  //         admin_email: admin_email,
-  //         admin_password: admin_password,
-  //         //confirmpassword: confirmpassword,
-  //         admin_phone: admin_phone,
-  //         created_timestamp : created_timestamp ,
-  //         updated_timestamp : updated_timestamp ,
-  //         admin_address: admin_address,
-  //         admin_id: admin_id
-  //       }
-  //     ])
-  //   })
-  // }
-
-
+    const { data } = axios.post('http://localhost:5000/DB/sendEmailAdmin', {
+        admin_email: admin_email,
+        admin_password : admin_password
+    })
+    console.log(data);
+    //form3.resetFields()
+  };
+  
+  //-----------------send email after register------------------------
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
       <Select style={{ width: 70 }}>
@@ -267,33 +290,7 @@ const AllEmployees = () => {
   }
 
 
-  const getEmployees = (values) => {
-
-    //console.log(values);
-    axios.get(`http://localhost:5000/DB/getEmployee/${values.admin_id}`).then((response) => {
-      //console.log('123',response.data.admin_name);
-
-      setDataEmployee(response.data);
-      const defaultValue = {
-        admin_id: response.data.admin_id,
-        admin_name: response.data.admin_name,
-        admin_email: response.data.admin_email,
-        admin_password: response.data.admin_password,
-        admin_phone: response.data.admin_phone,
-        created_timestamp: response.data.created_timestamp,
-        updated_timestamp: response.data.updated_timestamp,
-        admin_address: response.data.admin_address,
-        admin_designation: response.data.admin_designation
-      }
-      //console.log('222',defaultValue);
-      setInitialValues(defaultValue);
-
-
-    })
-    showModal()
-
-
-  }
+  
 
   const showModal = () => {
     setOpen(true);
@@ -309,27 +306,7 @@ const AllEmployees = () => {
     form.setFieldValue({ admin_password: e.target.value })
   }
 
-  const handleEmployee = () => {
 
-
-    if (EmployeeName === null) {
-      const emp = Admin.filter((emp) => emp.admin_id === EmployeeID)
-      setAdmin(emp)
-      console.log('แต๋มสวย')
-      console.log(emp);
-      console.log(EmployeeName);
-      console.log('id', EmployeeID);
-    } else if (EmployeeID === null) {
-      const emp = Admin.filter((emp) => emp.admin_name.split(" ")[0] === EmployeeName)
-      setAdmin(emp)
-      console.log(emp);
-      console.log('แต๋มขี้เหล่')
-      console.log(emp);
-      console.log(EmployeeName);
-      console.log('id', EmployeeID);
-
-    }
-  }
 
   const handleClear = async () => {
     setEmployeeID(null)
@@ -895,8 +872,10 @@ const AllEmployees = () => {
                     display: 'inline-block',
                     width: 'calc(50% - 8px)',
                   }}
+                  
+                  
                 >
-                  <input className="form-control floating" placeholder="Employee ID" />
+                  <input className="form-control floating"  placeholder="Employee ID" />
                 </Form.Item>
                 <Form.Item
                   name="name"
@@ -961,8 +940,9 @@ const AllEmployees = () => {
               {/* <Button type="primary" htmlType="submit">
         Search
         </Button> */}
-              <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
-                <Button type="primary" htmlType="submit" className="btn btn-success btn-block w-20">
+        
+              <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }} >
+                <Button type="primary" htmlType="submit" className="btn btn-success btn-block w-20" >
                   Search
                 </Button>
                 <Button htmlType="button" className="btn btn-danger btn-block w-20 " style={{ marginLeft: '5px' }} onClick={onReset}>
@@ -985,11 +965,13 @@ const AllEmployees = () => {
           {/* </div> */}
 
           {/* <div className="col-sm-6 col-md-4" style={{ textAlign: 'left' }}>
-              <a href="#" className="btn btn-success btn-block w-20" onClick={handleEmployee}> Search </a>
+              <a href="#" className="btn btn-success btn-block w-20" > Search </a>
               <a href="#" className="btn btn-danger btn-block w-20 " style={{ marginLeft : '5px' }}  onClick={handleClear} > Clear </a>
-              <div></div>
+              
             </div> */}
         </div>
+
+        
         {/* /employee */}
         <Employeeslist Admin={Admin} />
         {/* Add Employee Modal */}

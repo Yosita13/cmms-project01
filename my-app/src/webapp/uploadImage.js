@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from "react-helmet";
 import { useHistory } from 'react-router-dom';
 import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
+import WebappHeader from './webappHeader';
 
 function UploadImage() {
 
@@ -142,22 +143,15 @@ function UploadImage() {
     return (
        
             <div className="container mr-60">
+                <WebappHeader/>
                 <Helmet>
                     <title>แจ้งซ่อม</title>
                     <meta name="description" content="Login page" />
                 </Helmet>
                 {/* Page Content */}
-                <div className="content container-fluid">
-                    <div className="row">
-                        <div className="col-md-8 offset-md-2">
-                            {/* Page Header */}
-                            <div className="page-header">
-                                <div className="form-header">
-                                    <div className="row align-items-center">
-                                        <div className="account-logo">
-                                            <img src={LogoOnlineAssest} alt="Dreamguy's Technologies" />
-                                        </div>
-                                    
+                <div className="page-wrapper-webapp">
+                                <div className="content container-fluid">
+                                        <div className="form-header">
                                 <div className="row">
                                     <div className="col-sm-12">
                                         <h4 className="page-title">อัปโหลดรูปภาพอุปกรณ์ เพื่อแจ้งซ่อม</h4><br></br>
@@ -197,10 +191,7 @@ function UploadImage() {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-       
+                
     );
 }
 

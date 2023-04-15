@@ -5,13 +5,16 @@ import { Helmet } from "react-helmet";
 import { useHistory } from 'react-router-dom';
 import LogoOnlineAssest from '../initialpage/Sidebar/img/LogoOnlineAssest.png';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import WebappHeader from './webappHeader';
+import complete from './imgWebapp/complete.svg';
+
 
 function SendRepairFinish() {
 
     let history = useHistory()
     const [imageID, setImageID] = useState("");
     const location = useLocation()
-    
+
     const id = location.state
 
     console.log(id);
@@ -33,56 +36,56 @@ function SendRepairFinish() {
 
     const [postImage, setPostImage] = useState({
         myFile: "",
-      });
-    
-   
-    const createImage = (newImage) => console.log('newimg',newImage);;
-    
-      const createPost = async (post) => {
+    });
+
+
+    const createImage = (newImage) => console.log('newimg', newImage);;
+
+    const createPost = async (post) => {
         try {
-          await createImage(post);
+            await createImage(post);
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      };
-    
-      const handleSubmit = (e) => {
+    };
+
+    const handleSubmit = (e) => {
         // axios.post("http://localhost:5000/DB/tbl_list_repair2", postImage)
         // .then(res=>console.log(res))
         // e.preventDefault();
-        console.log('postImage',postImage);
-        
-        var blob = new Blob(['1678684514063-8853042000109.jpg'], { type: 'image/jpeg' });
-                var blobUrl = URL.createObjectURL(blob);
-                console.log('blob',blob);
-                console.log('blobURL',blobUrl);
-                setPicture({
-                    ...picture,
-                    file:blob,
-                    filepreview:blobUrl,
-                });
-                setPicture(blobUrl);
-        createPost(postImage);
-        
-      };
-      console.log('pic',picture);
-      console.log('useinfo',userInfo);
-    
-      const convertToBase64 = (file) => {
-        console.log('file',file);
-        return new Promise((resolve, reject) => {
-          const fileReader = new FileReader();
-          fileReader.readAsDataURL(file);
-          fileReader.onload = () => {
-            resolve(fileReader.result);
-          };
-          fileReader.onerror = (error) => {
-            reject(error);
-          };
-        });
-      };
+        console.log('postImage', postImage);
 
-   
+        var blob = new Blob(['1678684514063-8853042000109.jpg'], { type: 'image/jpeg' });
+        var blobUrl = URL.createObjectURL(blob);
+        console.log('blob', blob);
+        console.log('blobURL', blobUrl);
+        setPicture({
+            ...picture,
+            file: blob,
+            filepreview: blobUrl,
+        });
+        setPicture(blobUrl);
+        createPost(postImage);
+
+    };
+    console.log('pic', picture);
+    console.log('useinfo', userInfo);
+
+    const convertToBase64 = (file) => {
+        console.log('file', file);
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
+
 
     const handleInputChange = async (event) => {
         setuserInfo({
@@ -90,23 +93,23 @@ function SendRepairFinish() {
             file: event.target.files[0],
             filepreview: URL.createObjectURL(event.target.files[0]),
         });
-        console.log('event',event.target.files[0]);
+        console.log('event', event.target.files[0]);
 
         const file = event.target.files[0];
-        console.log('file0',file);
-    const base64 = await convertToBase64(file);
-    setPostImage({ ...postImage, myFile: base64 });
+        console.log('file0', file);
+        const base64 = await convertToBase64(file);
+        setPostImage({ ...postImage, myFile: base64 });
 
     }
-    
 
-   
+
+
     const submit = async () => {
         const formdata = new FormData();
         var blob = new Blob([userInfo], { type: 'image/jpeg' });
         var blobUrl = URL.createObjectURL(blob);
-                console.log('blob',blob);
-                console.log('blobURL',blobUrl);
+        console.log('blob', blob);
+        console.log('blobURL', blobUrl);
         formdata.append('avatar', userInfo.file);
         formdata.append('id', id);
         const image = { headers: { "Content-Type": "multipart/form-data" } }
@@ -114,95 +117,96 @@ function SendRepairFinish() {
         console.log('id');
 
         // axios.post("http://localhost:5000/DB/tbl_list_repair2", blobUrl, image)
-        axios.post("http://localhost:5000/DB/tbl_list_repair2",{
-            body:{
+        axios.post("http://localhost:5000/DB/tbl_list_repair2", {
+            body: {
                 userInfo,
                 id
             }
         })
             .then(res => { // then print response status
                 console.warn(res);
-                console.log('res',res)
+                console.log('res', res)
                 setImageID(res.data.insertId)
                 if (res.data.success === 1) {
                     setSuccess("Image upload successfully");
                 }
                 // console.log('res.data',res.data);
                 // const file = new Blob ([res.data],{type:'image/jpeg'})
-                
-                 history.push({pathname:'/webapp/RepairDetails',state:res.data.insertId})
+
+                history.push({ pathname: '/webapp/RepairDetails', state: res.data.insertId })
             })
-            
-            //history.push({pathname:'/webapp/RepairDetails',state:imageID})
+
+        //history.push({pathname:'/webapp/RepairDetails',state:imageID})
     }
 
     return (
-       
-            <div className="container mr-60">
-                <Helmet>
-                    <title>แจ้งซ่อม</title>
-                    <meta name="description" content="Login page" />
-                </Helmet>
-                {/* Page Content */}
-                <div className="content container-fluid">
-                    <div className="row">
-                        <div className="col-md-8 offset-md-2">
-                            {/* Page Header */}
-                            <div className="page-header">
-                                <div className="form-header">
-                                    <div className="row align-items-center">
-                                        <div className="account-logo">
-                                            <img src={LogoOnlineAssest} alt="Dreamguy's Technologies" />
+
+        <div className="container mr-60">
+            <WebappHeader />
+
+            <div className="account-content">
+                <div className="container">
+                    {/* Page Content */}
+                    <div className="content container-fluid">
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <Helmet>
+                                    <title>UserHome</title>
+                                    {/* <meta name="description" content="Login page" /> */}
+                                </Helmet>
+                                {/* Page Content */}
+                                <div className="page-wrapper-webapp">
+                                    <div className="content container-fluid">
+                                        <div className="form-header">
+
+                                            <div className="row">
+                                                <div className="col-sm-12">
+                                                    {/* <h4 className="page-title">ส่งเรื่องแจ้งซ่อมสำเร็จ</h4><br></br> */}
+                                                    
+                                                        <div className="card">
+                                                            <div className="card-body">
+                                                           
+                                                                <img src={complete} style={{width:280}}/><br></br><br></br>
+                                                               
+                                                                    <h2>ส่งเรื่องแจ้งซ่อมสำเร็จ</h2>
+                                                                    {/* <span>ส่งเรื่องแจ้งซ่อมสำเร็จ</span> */}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="col-lg-2">
+                                            {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
                                         </div>
-                                    
-                                <div className="row">
-                                    <div className="col-sm-12">
-                                        <h4 className="page-title">ส่งเรื่องแจ้งซ่อมสำเร็จ</h4><br></br>
-                                        <div className="col-md-12 col-sm-12 col-lg-12 col-xl-12">
-                                            <div className="card dash-widget">
-                                                <div className="card-body">
-                                                    <span className="dash-widget-icon"><CheckCircleOutlined /></span>
-                                                    <div className="dash-widget-info">
-                                                        <h2>ส่งเรื่องแจ้งซ่อมสำเร็จ</h2>
-                                                        {/* <span>ส่งเรื่องแจ้งซ่อมสำเร็จ</span> */}
+
+                                        {/* {isSucces !== null ? <h4> {isSucces} </h4> : null} */}
+                                        <div className="form-group row">
+                                            <div className="form-row">
+                                                {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
+
+
+
+
+                                                <div style={{ marginTop: '5px' }} className="submit-section">
+                                                    <div className="form-row">
+
+                                                        <Link to={{
+                                                            pathname: "/webapp/userhome",
+                                                            state: location.state
+                                                        }}>
+                                                            <button type="submit" className="btn btn-greensushi submit-btn"  > OK </button></Link>
+
                                                     </div>
                                                 </div>
                                             </div>
+
+
+
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Page Header */}
-                        
-                                <div className="col-lg-2">
-                                    {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
-                                </div>
-                           
-                                    {/* {isSucces !== null ? <h4> {isSucces} </h4> : null} */}
-                                    <div className="form-group row">
-                                        <div className="form-row">
-                                        {/* <label className="col-lg-12 col-form-label">Selete Image</label> */}
-                                           
-
-                                       
-
-                                            <div style={{ marginTop: '5px' }} className="submit-section">
-                                                <div className="form-row">
-                                                    
-                                                <Link to={{
-                                                    pathname: "/webapp/userhome",
-                                                    state: location.state
-                                                }}>
-                                                    <button type="submit" className="btn btn-greensushi submit-btn"  > OK </button></Link>
- 
                                                 </div>
                                             </div>
                                         </div>
-
-                                        
-
+                                       
                                     </div>
-                                
                                 </div>
                             </div>
                         </div>
@@ -210,6 +214,7 @@ function SendRepairFinish() {
                 </div>
             </div>
        
+
     );
 }
 

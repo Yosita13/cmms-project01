@@ -75,7 +75,7 @@ router.put ("/update/:admin_id" ,(req,res,next) => {
     const admin_id = req.body.admin_id;
     
     console.log('edit',req.body)
-    connect.query('UPDATE tbl_admin SET admin_name=?,admin_email=?,admin_password=?,admin_phone=?,admin_address=?,admin_id=?,created_timestamp=now(),updated_timestamp=now(),admin_designation=? WHERE admin_id = ?',[admin_name,admin_email,admin_password,admin_phone,admin_address,admin_id,admin_id,created_timestamp,updated_timestamp,admin_designation],
+    connect.query('UPDATE CMMS.tbl_admin SET admin_name=?,admin_email=?,admin_password=?,admin_phone=?,admin_address=?,admin_designation=?,created_timestamp=now(),updated_timestamp=now() WHERE admin_id = ?',[admin_name,admin_email,admin_password,admin_phone,admin_address,admin_designation,admin_id,created_timestamp,updated_timestamp],
     (err,result) => {
         if (err){
             console.log(err);
@@ -85,6 +85,7 @@ router.put ("/update/:admin_id" ,(req,res,next) => {
             res.send("Values updated");
         }
     })
+    console.log('Values updated2');
 })
 
 //get Employee for edit employee
@@ -482,7 +483,7 @@ router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
 router.post("/sendEmail",(req,res,next) => {
 
     console.log(req.body);
-
+    
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -496,6 +497,38 @@ router.post("/sendEmail",(req,res,next) => {
         to: req.body.employee_email,
         subject: 'Sending Email using Node.js',
         text: 'I Love You !'
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+})
+
+//send email after register admin
+router.post("/sendEmailAdmin",(req,res,next) => {
+
+    console.log(req.body);
+    const admin_password = req.body.admin_password;
+
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'kh.hatari@gmail.com',
+          pass: 'qtyvtrqaoknhfqki'
+        }
+      });
+      
+      var mailOptions = {
+        from: 'kh.hatari@gmail.co',
+        to: req.body.admin_email,
+        subject: 'Sending Email using Node.js',
+        text: 'your password is'+admin_password
       };
       
       transporter.sendMail(mailOptions, function(error, info){
