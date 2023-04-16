@@ -361,18 +361,10 @@ const Employeeslist = ({Admin}) => {
     {
       title: 'Role',
       dataIndex: 'admin_designation',
-      render: (text, record) => <Tag>{text}</Tag>
-      //console.log(text)
-
-      // <div className="dropdown">
-      // <a href="" className="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{text} </a>
-      // <div className="dropdown-menu">
-      //   <a className="dropdown-item" href="#">Software Engineer</a>
-      //   <a className="dropdown-item" href="#">Software Tester</a>
-      //   <a className="dropdown-item" href="#">Frontend Developer</a>
-      //   <a className="dropdown-item" href="#">UI/UX Developer</a>
-      // </div>
-      // </div>
+      render: (text, record) =>
+      <div>
+        <span className={text === "admin" ? "badge bg-inverse-warning" : "badge bg-inverse-info"}>{text}</span>
+      </div>
 
     },
     // {
