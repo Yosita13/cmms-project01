@@ -319,18 +319,19 @@ router.get('/get/activity',async (req,res,next) => {
 
 
 
-//update Repair_Status 
+//update Repair_Status edit 16/04/2023
 router.put ("/update/status/:id" ,(req,res,next) => {
 
     const id = req.params.id;
     const admin_id = req.body.admin_id;
     const status = req.body.status;
+    const priority = req.body.priority;
     
     
     
     
     console.log('edit55',req.body)
-    connect.query('UPDATE tbl_repair SET status=?,admin_id=? WHERE id = ?',[status,admin_id,id],
+    connect.query('UPDATE tbl_repair SET status=?,admin_id=?,priority=? WHERE id = ?',[status,admin_id,priority,id],
     (err,result) => {
         if (err){
             console.log(err);
@@ -406,10 +407,10 @@ router.get ("/getDataDevice/:device_id" ,(req,res,next) => {
 })
 
 
-//get status for Repair_Status 
+//get status for Repair_Status edit 16/04/2023
 router.get ("/get/get/for/join" ,(req,res,next) => {
     const sql = `
-        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail, r.status,a.admin_name
+        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail,r.priority,r.status,a.admin_name
         FROM tbl_repair AS r 
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
@@ -545,8 +546,6 @@ router.post("/sendEmailAdmin",(req,res,next) => {
 // router.post("/sendNoti",(req,res,next) => {
 
 //     const lineNotify = require('line-notify-nodejs')('G9lzeks0DzzT4BmXglynx3EtmyIkygN3NekiwUI1zuL');
-
-
 
 // lineNotify.notify({
 //   message: 'A new user has sent a request for repairing the device.',

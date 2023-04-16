@@ -27,6 +27,7 @@ const Activity = () => {
   const [dataEmployee, setDataEmployee] = useState();
   const [initialValues, setInitialValues] = useState();
   const [Status, setStatus] = useState(false);
+  const [priority, setPriority] = useState(false);//edit 16/04/2023
   const [data, setData] = useState([]);
   const [editStatus, setEditStatus] = useState();
   const [forsendEmail, setForsendEmail] = useState();
@@ -91,6 +92,7 @@ const Activity = () => {
     getforjoin();
   };
 
+  //edit 16/04/2023
   const onFinish = async (values) => {
     setOpen(false);
     form.resetFields();
@@ -100,17 +102,19 @@ const Activity = () => {
         {
           id:values.editStatus,
           status:values.Status,
+          priority:values.Priority,
           admin_id:values.Responsible,
           
         })
        console.log(values.Responsible)
-      alert('success!!')
+      //alert('success!!')
       window.location.reload();
 
     } catch (error) {
 
     }
   };
+  //edit 16/04/2023
 
   const onFinish2 = (value) => {
    
@@ -329,15 +333,29 @@ const Activity = () => {
       dataIndex: 'case_detail',
       sorter: (a, b) => a.case_detail.length - b.case_detail.length,
     },
-
+    //edit 16/04/2023
+    {
+      title: 'Priority',
+      dataIndex: 'priority',
+      render: (text, record) =>
+        <div>
+          <span className={text === "Hight" ? "badge bg-inverse-danger" : "badge bg-inverse-warning"}>{text}</span>
+        </div>
+    },
     {
       title: 'Status',
       dataIndex: 'status',
       render: (text, record) =>
         <div>
-          <span className={text === ":success" ? "badge bg-inverse-success" : "badge bg-inverse-info"}>{text}</span>
+          <span className={
+            text === "In progress" ? "badge bg-inverse-warning" : 
+            text === "Complete" ? "badge bg-inverse-success":
+            "badge bg-inverse-blue"
+          }>{text}</span>
         </div>
+        
     },
+    //edit 16/04/2023
     {
         title: 'Responsible',
         dataIndex: 'admin_name',
@@ -410,8 +428,23 @@ const Activity = () => {
               }}
               scrollToFirstError
             >
+              {/* //edit 16/4/2023 */}
+              <Form.Item
+                name="Priority"
+                label="Priority"
+                rules={[{ required: true, message: 'Please select priority!' }]}
+                onChange={(event) => {
+                  setPriority(event.target.value)
+                }}
+              >
+                <Select placeholder="select select priority">
+                  <Option value="Hight">Hight</Option>
+                  <Option value="Normal">Normal</Option>
+                </Select>
+              </Form.Item>
+              {/* //edit 16/4/2023 */}
 
-
+               {/* //edit 16/4/2023 */}
               <Form.Item
                 name="Status"
                 label="Status"
@@ -421,11 +454,12 @@ const Activity = () => {
                 }}
               >
                 <Select placeholder="select status device">
-                  <Option value="in progress">in progress</Option>
-                  <Option value="success">success</Option>
-                  <Option value="complete">complete</Option>
+                  <Option value="In progress">In progress</Option>
+                  <Option value="Success">Success</Option>
+                  <Option value="Complete">Complete</Option>
                 </Select>
               </Form.Item>
+               {/* //edit 16/4/2023 */}
 
               <Form.Item
                 name="Responsible"

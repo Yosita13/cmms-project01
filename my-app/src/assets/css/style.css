@@ -1572,7 +1572,12 @@ a.bg-danger:focus, a.bg-danger:hover, button.bg-danger:focus, button.bg-danger:h
   background-color: rgba(2, 182, 179, 0.12) !important;
   color: #1db9aa !important;
 }
-
+/* //edit 16/04/2023 */
+.bg-inverse-blue {
+  background-color: rgba(2, 182, 179, 0.12) !important;
+  color: #0033FF !important;
+}
+/* //edit 16/04/2023 */
 .bg-inverse-warning {
   background-color: rgba(255, 152, 0, 0.12) !important;
   color: #f39c12 !important;
