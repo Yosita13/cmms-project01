@@ -23,7 +23,7 @@ import { MoreOutlined, EditOutlined, MailOutlined ,LaptopOutlined,FileWordOutlin
 import { itemRender, onShowSizeChange } from "../Page/paginationfunction"
 
 
-
+const { Option } = Select;
 const AdminDashboard = () => {
 
   const [menu, setMenu] = useState(false)
@@ -41,6 +41,9 @@ const AdminDashboard = () => {
   const [forsendEmail, setForsendEmail] = useState();
   const [activity_email, setActivity_email] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [priority, setPriority] = useState();//edit 16/04/2023
+  const [responsible, setResponsible] = useState(false)//edit 17/04/2023
+  const [options, setOptions] = useState([]);
 
 
 
@@ -76,6 +79,14 @@ const linechartdata = [
       }, 1000)
     }
   });
+
+  //getAdmin 
+  useEffect(() => {
+    fetch('http://localhost:5000/DB/tbl_admin')
+      .then(response => response.json())
+      .then(data => setOptions(data))
+      .catch(error => console.log(error));
+  }, []);
 
   // useEffect(() => {
   //   getAdmin()
@@ -132,36 +143,53 @@ const linechartdata = [
     form.resetFields();
     getAdmin();
   };
-  const onFinish = async (values) => {
+  
+
+
+  //edit 17/04/2023
+  const getActivity = (values) => {
+
+    console.log('editstatus', editStatus);
+    console.log('editstatus', priority);
+    const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
+      const defaultValue = {
+        Priority:priority ,
+        Status: Status,
+        Responsible: responsible,
+      }
+      console.log('222',defaultValue);
+      setInitialValues(defaultValue);
+          
+    })
+    showModal()
+    setOpen(true);
+  }
+   //edit 17/04/2023
+
+   //edit 16/04/2023
+   const onFinish = async (values) => {
     setOpen(false);
     form.resetFields();
     console.log('Received values of form: ', values);
     try {
       const { data } = await axios.put(`http://localhost:5000/DB/update/status/${editStatus}`,
         {
+          id: values.editStatus,
+          status: values.Status,
+          priority: values.Priority,
+          admin_id: values.Responsible,
 
-          status: Status,
-          employee_email: activity_email
         })
-      // console.log(data.length)
-      alert('success!!')
+      console.log(values.Responsible)
+      //alert('success!!')
+      window.location.reload();
 
     } catch (error) {
 
     }
   };
+  //edit 16/04/2023
 
-
-  const getActivity = () => {
-
-    console.log('editstatus', editStatus);
-    const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
-
-    })
-    showModal()
-    setOpen(true);
-
-  }
   //----------------------------------------------------------------------------------------------------------------------
 
 
@@ -171,9 +199,11 @@ const linechartdata = [
     setEditStatus(values.id)
     setActivity_email(values.employee_email)
     setStatus(values.status)
+    setPriority(values.priority)
+    setResponsible(values.admin_name)
     console.log('sta', values.status);
     console.log('email', values.employee_email);
-    //form3.setFieldValue({admin_email:values.employee_email})
+    //form.setFieldValue({Satus:values.status })
 
 
   }
@@ -306,13 +336,13 @@ const linechartdata = [
     {
       title: 'Device_serial',
       dataIndex: 'device_serial',
-      sorter: (a, b) => a.admin_email.length - b.admin_email.length,
+      sorter: (a, b) => a.device_serial.length - b.device_serial.length,
     },
 
     {
       title: 'Model',
       dataIndex: 'device_model',
-      sorter: (a, b) => a.admin_phone.length - b.admin_phone.length,
+      sorter: (a, b) => a.device_model.length - b.device_model.length,
     },
 
     {
@@ -320,15 +350,36 @@ const linechartdata = [
       dataIndex: 'case_detail',
       sorter: (a, b) => a.case_detail.length - b.case_detail.length,
     },
-
+    //edit 16/04/2023
+    {
+      title: 'Priority',
+      dataIndex: 'priority',
+      render: (text, record) =>
+        <div>
+          <span className={text === "Hight" ? "badge bg-inverse-danger" : "badge bg-inverse-warning"}>{text}</span>
+        </div>
+    },
     {
       title: 'Status',
       dataIndex: 'status',
       render: (text, record) =>
         <div>
-          <span className={text === ":success" ? "badge bg-inverse-success" : "badge bg-inverse-info"}>{text}</span>
+          <span className={
+            text === "In progress" ? "badge bg-inverse-warning" :
+              text === "Complete" ? "badge bg-inverse-success" :
+                "badge bg-inverse-blue"
+          }>{text}</span>
         </div>
+
     },
+    //edit 16/04/2023
+    {
+      title: 'Responsible',
+      dataIndex: 'admin_name',
+      sorter: (a, b) => a.case_detail.length - b.case_detail.length,
+    },
+
+
 
     {
       title: 'Action',
@@ -504,69 +555,196 @@ const linechartdata = [
                             <div className="modal-body">
 
 
-                              <Modal
+                            <Modal
+            width={650}
+            title="Update"
+            open={open}
+            // onOk={hideModal}
+            footer={null}
+            onCancel={hideModal}
+            okText="submit"
+            cancelText="cancle"
+          >
+            {initialValues&&
+            <Form
+            initialValues={initialValues }
+              {...formItemLayout}
+              form={form}
+              name="save"
+              onFinish={onFinish}
+             
+              scrollToFirstError
+            >
+              {/* //edit 16/4/2023 */}
+              <Form.Item
+                name="Priority"
+                label="Priority"
+                rules={[{ required: true, message: 'Please select priority!' }]}
+                onChange={(event) => {
+                  setPriority(event.target.value)
+                }}
+              >
+                <Select placeholder="select select priority">
+                  <Option value="Hight">Hight</Option>
+                  <Option value="Normal">Normal</Option>
+                </Select>
+              </Form.Item>
+              {/* //edit 16/4/2023 */}
 
-                                open={forsendEmail}
-                                // onOk={hideModal}
-                                footer={null}
-                                //onOk={handleOk}
-                                onCancel={hideModal2}
-                                okText="submit"
-                                cancelText="cancle"
-                              >
+              {/* //edit 16/4/2023 */}
+              <Form.Item
+                name="Status"
+                label="Status"
+                rules={[{ required: true, message: 'Please select status!' }]}
+                onChange={(event) => {
+                  setStatus(event.target.value)
+                }}
+              >
+                <Select placeholder="select status device">
+                  <Option value="In progress">In progress</Option>
+                  <Option value="Success">Success</Option>
+                  <Option value="Complete">Complete</Option>
+                </Select>
+              </Form.Item>
+              {/* //edit 16/4/2023 */}
 
-                                <div className="form-header">
-                                  <h3>Send Email</h3>
-                                  <p>Are you sure want to send this email?</p>
+              <Form.Item
+                name="Responsible"
+                label="Responsible"
+                rules={[{ required: true, message: 'Please select Responsible!' }]}
+                onChange={(event) => {
+                  setStatus(event.target.value)
+                }}
+              >
+                <Select placeholder="Please select Responsible">
+                  {options.map(options => (<option key={options.admin_id} value={options.admin_id}>{options.admin_name}</option>))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item  {...tailFormItemLayout}>
+                <Row>
+                  <Col span={12} style={{ textAlign: 'left' }}>
+                    <Button type="primary" htmlType="submit">
+                      save
+                    </Button></Col>
+                  <Col span={12} style={{ textAlign: 'right' }}>
+                    <Button type="primary" danger onClick={hideModal}>
+                      Cancle
+                    </Button>
+                  </Col>
+                </Row>
+
+              </Form.Item>
+            </Form>}
+          </Modal>
+
+          {/* model2 */}
+
+          <div className="modal custom-modal fade" id="delete_approve" role="dialog">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-body">
 
 
-                                  <Form
-                                    initialValues={{ admin_email: activity_email }}
-                                    {...formItemLayout}
-                                    form={form3}
-                                    name="save"
-                                    onFinish={handleOk}
+                  <Modal
+
+                    open={forsendEmail}
+                    // onOk={hideModal}
+                    footer={null}
+                    //onOk={handleOk}
+                    onCancel={hideModal2}
+                    okText="submit"
+                    cancelText="cancle"
+                  >
+
+                    <div className="form-header">
+                      <h3>Send Email</h3>
+                      <p>Are you sure want to send this email?</p>
 
 
-                                    scrollToFirstError
-                                  >
-                                    <Form.Item
-                                      name="admin_email"
-                                      label="E-mail"
-                                      rules={[
-                                        {
-                                          type: 'email',
-                                          message: 'The input is not valid E-mail!',
-                                        },
-                                        {
-                                          required: true,
-                                          message: 'Please input your E-mail!',
-                                        },
-                                      ]}
-
-                                    >
-
-                                      <Input />
-                                    </Form.Item>
-                                  </Form>
+                      <Form
+                        initialValues={{ admin_email: activity_email }}
+                        {...formItemLayout}
+                        form={form3}
+                        name="save"
+                        onFinish={handleOk}
 
 
-                                </div>
+                        scrollToFirstError
+                      >
+                        <Form.Item
+                          name="admin_email"
+                          label="E-mail"
+                          rules={[
+                            {
+                              type: 'email',
+                              message: 'The input is not valid E-mail!',
+                            },
+                            {
+                              required: true,
+                              message: 'Please input your E-mail!',
+                            },
+                          ]}
+
+                        >
+
+                          <Input />
+                        </Form.Item>
+                        {/* <Row>
+                    <Col span={6} offset={1}>
+                        <div className="text-left mt-2">
+                            <Button
+                                ghost
+                                type="primary"
+                                className="mr-2"
+                                onClick={hideModal2}
+
+                                htmlType="submit"
+                                // disabled={disableForm || loadingButton}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </Col>
+                    <Col span={12} offset={4}>
+                        <div className="text-right mt-2">
+                            <Button 
+                                type="primary"
+                                htmlType="submit"
+                                // disabled={disableForm || loadingButton}
+                            >
+                                APPLY
+                            </Button>
+                        </div>
+                    </Col>
+
+                </Row> */}
 
 
-                                <div className="modal-btn delete-action">
-                                  <div className="row">
-                                    <div className="col-6">
-                                      <a className="btn btn-primary continue-btn" onClick={() => handleOk(form3.getFieldValue('admin_email'))}>Confirm</a>
-                                      {/* <a  type = 'submit' className="btn btn-primary continue-btn"  >Confirm</a> */}
-                                    </div>
-                                    <div className="col-6">
-                                      <a data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={hideModal2} >Cancel</a>
-                                    </div>
-                                  </div>
-                                </div>
+                      </Form>
 
-                              </Modal>
+
+                    </div>
+
+
+                    <div className="modal-btn delete-action">
+                      <div className="row">
+                        <div className="col-6">
+                          <a className="btn btn-primary continue-btn" onClick={() => handleOk(form3.getFieldValue('admin_email'))}>Confirm</a>
+                          {/* <a  type = 'submit' className="btn btn-primary continue-btn"  >Confirm</a> */}
+                        </div>
+                        <div className="col-6">
+                          <a data-bs-dismiss="modal" className="btn btn-primary cancel-btn" onClick={hideModal2} >Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+
+                  </Modal>
+
+                </div>
+              </div>
+            </div>
+          </div>
 
                             </div>
                           </div>
