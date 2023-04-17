@@ -343,6 +343,28 @@ router.put ("/update/status/:id" ,(req,res,next) => {
     })
 })
 
+//update Repair_Status when user accep device edit 17/04/2023
+router.put ("/update/statusComplete/:id" ,(req,res,next) => {
+
+    const id = req.params.id;
+    //const admin_id = req.body.admin_id;
+    const status = 'Complete';
+    //const priority = req.body.priority;
+    
+
+    console.log('edit55',req.body)
+    connect.query('UPDATE tbl_repair SET status=? WHERE id = ?',[status,id],
+    (err,result) => {
+        if (err){
+            console.log(err);
+        
+        }
+        else{
+            res.send("Values updated");
+        }
+    })
+})
+
 //get status for Repair_Status
 // router.get ("/get/status/:id" ,(req,res,next) => {
 //     const id = req.params.id;
@@ -496,8 +518,8 @@ router.post("/sendEmail",(req,res,next) => {
       var mailOptions = {
         from: 'kh.hatari@gmail.co',
         to: req.body.employee_email,
-        subject: 'Sending Email using Node.js',
-        text: 'I Love You !'
+        subject: 'อุปกรณ์ซ่อมเสร็จแล้ว',
+        text: 'อุปกรณ์ซ่อมเสร็จแล้ว กรุณารับเครื่องคืน และกดยืนยันการรับเครื่อง'
       };
       
       transporter.sendMail(mailOptions, function(error, info){
@@ -528,8 +550,8 @@ router.post("/sendEmailAdmin",(req,res,next) => {
       var mailOptions = {
         from: 'kh.hatari@gmail.co',
         to: req.body.admin_email,
-        subject: 'Sending Email using Node.js',
-        text: 'your password is'+admin_password
+        subject: 'รหัสผ่านสำหรับเข้าใช้งานระบบ cmms online asset',
+        text: 'รหัสผ่านของคุณคือ '+admin_password
       };
       
       transporter.sendMail(mailOptions, function(error, info){

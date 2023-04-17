@@ -67,7 +67,7 @@ const ReadQr = () => {
                             {selected}
                           </h2> */}
 
-                      <button type="submit" className="btn btn-greensushi submit-btn"
+                      <button type="submit" className="btn btn-primary-green submit-btn"
                         onClick={() => {
                           setStartScan(!startScan);
                         }}

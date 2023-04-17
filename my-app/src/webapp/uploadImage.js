@@ -178,8 +178,9 @@ function UploadImage() {
                                                 {userInfo.filepreview !== null ?
                                             <img className="previewimg" src={userInfo.filepreview} alt="UploadImage" />
                                             : null}
-                                                    <button type="submit" className="btn btn-greensushi submit-btn" onClick={() => submit ()} > Save </button>
- 
+                                                    <Link to="/webapp/userhome" type="submit" className="btn btn-primary-gray submit-btn" > กลับ </Link>
+
+                                                    <button type="submit" className="btn btn-primary-green submit-btn" onClick={() => submit ()} > บันทึก </button>
                                                 </div>
                                             </div>
                                         </div>

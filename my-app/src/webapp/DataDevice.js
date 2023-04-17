@@ -87,7 +87,7 @@ function DataDevice() {
                                                         pathname: "/webapp/userhome",
                                                         state: location.state
                                                     }}>
-                                                        <Button type="primary" className="btn-greensushi" htmlType="submit">BACK</Button></Link>
+                                                        <Button type="primary" className="btn-greensushi" htmlType="submit">กลับ</Button></Link>
                                                 </Form.Item>
 
 

@@ -914,6 +914,33 @@ a.bg-danger:focus, a.bg-danger:hover, button.bg-danger:focus, button.bg-danger:h
   border: 1px solid #ff9b44;
   color: #ffffff !important;
 }
+/* //edit 17/04 */
+.btn-primary-green {
+  background-color: #7AC142;
+  border: 1px solid #7AC142;
+  color: #ffffff !important;
+}
+
+.btn-primary-green:focus, .btn-primary-green:hover, .btn-primary-green:active, .btn-primary-green.active {
+  color: #ffffff;
+  background-color: #7AC142;
+  border-color: #7AC142;
+}
+
+.btn-primary-gray {
+  background-color: #717174;
+  border: 1px solid #717174;
+  color: #ffffff !important;
+}
+
+.btn-primary-gray:focus, .btn-primary-gray:hover, .btn-primary-gray:active, .btn-primary-gray.active {
+  color: #ffffff;
+  background-color: #717174;
+  border-color: #717174;
+}
+/* //edit 17/04 */
+
+
 .btn-primary:focus, .btn-primary:hover, .btn-primary:active, .btn-primary.active {
   color: #ffffff;
   background-color: #fd8e2d;
@@ -3239,6 +3266,26 @@ input[type=file].form-control {
 .cancel-btn:hover {
   color: #fff !important;
 }
+
+/* //edit 17/04 */
+.continue-green-btn,
+.cancel-green-btn {
+  background-color: #ffffff;
+  border: 1px solid #7AC142;
+  color: #7AC142 !important;
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 50px;
+  padding: 10px 20px;
+}
+.continue-green-btn:hover,
+.cancel-green-btn:hover {
+  color: #fff !important;
+}
+
+
 
 .table {
   padding: 0;

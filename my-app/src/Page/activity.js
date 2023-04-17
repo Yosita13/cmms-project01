@@ -19,7 +19,7 @@ const Activity = () => {
   const [menu, setMenu] = useState(false);
   const [open, setOpen] = useState(false);
   const [Admin, setAdmin] = useState([]);
-  const [activity,setActivity]  = useState([]);
+  const [activity, setActivity] = useState([]);
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
   const [form3] = Form.useForm();
@@ -60,7 +60,7 @@ const Activity = () => {
     try {
       const { data } = await axios.get('http://localhost:5000/DB/get/get/for/join')
 
-        //console.log('help',data.admin_name)
+      //console.log('help',data.admin_name)
       setData(data)
     } catch (error) {
 
@@ -75,7 +75,7 @@ const Activity = () => {
     try {
       const { data } = await axios.get('http://localhost:5000/DB/get/get/for/join')
 
-        //console.log('help',data.admin_name)
+      //console.log('help',data.admin_name)
       setActivity(data)
     } catch (error) {
 
@@ -84,7 +84,7 @@ const Activity = () => {
   const onReset2 = () => {
     form2.resetFields();
     getActivity2();
-  
+
   };
 
   const onReset = () => {
@@ -100,13 +100,13 @@ const Activity = () => {
     try {
       const { data } = await axios.put(`http://localhost:5000/DB/update/status/${editStatus}`,
         {
-          id:values.editStatus,
-          status:values.Status,
-          priority:values.Priority,
-          admin_id:values.Responsible,
-          
+          id: values.editStatus,
+          status: values.Status,
+          priority: values.Priority,
+          admin_id: values.Responsible,
+
         })
-       console.log(values.Responsible)
+      console.log(values.Responsible)
       //alert('success!!')
       window.location.reload();
 
@@ -116,64 +116,53 @@ const Activity = () => {
   };
   //edit 16/04/2023
 
+  //edit 17/04/2023
   const onFinish2 = (value) => {
-   
-    console.log('fillter',value);
-    console.log('activity',activity);
+
+    console.log('fillter', value);
+    console.log('activity', activity);
     //console.log('value.admin_id',admin_id);
     //console.log('typeof value.id',typeof value.id)
-    
+
     if (value.name === undefined) {
-      const act = activity.filter((act) =>act.id === Number(value.id)) 
+      const act = activity.filter((act) => act.id === Number(value.id))
       setActivity(act)
-      console.log('emp.activityid',value.id);
-      console.log('name_undefine',act);
+      console.log('emp.activityid', value.id);
+      console.log('name_undefine', act);
       console.log('แต๋มสวย')
       // alert(`${Admin}`)
 
     } else if (value.id === undefined) {
-      const act = activity.filter((act) => act.employee_name.split(" ")[0] === value.name)
+      const act = activity.filter((act) => act.employee_name && act.employee_name.split(" ")[0] === value.name)
       setActivity(act)
-      console.log('id undefind',act);
+      console.log('id undefind', act);
       console.log('แต๋มขี้เหล่')
 
-    }else if(value.name !== undefined && value.id !== undefined){
+    } else if (value.name !== undefined && value.id !== undefined) {
       const act1 = activity.filter((act1) => (act1.id === Number(value.id)) && act1.employee_name.split(" ")[0] === value.name)
-      //const emp2 = Admin.filter((emp2) => emp2.employee_name.split(" ")[0] === value.name)
       setActivity(act1)
-      console.log('1',act1)
-      //console.log('2',emp2);
-      
-    // if(Admin.filter((Admin) => Admin.admin_id !== value.id) ||  Admin.filter((Admin) => Admin.employee_name.split(" ")[0] !== value.name)){
-    //   setAdmin([])
-    //   console.log('3');
-    // }
-    // else if(Admin.filter((Admin) => Admin.admin_id === value.id) &&  Admin.filter((Admin) => Admin.employee_name.split(" ")[0] === value.name)){
-    //   setAdmin(emp1)
-    //   console.log('4');
-    // }
-
+      console.log('1', act1)
     }
-    
 
   }
+  //edit 17/04/2023
 
 
 
-  
+
 
   const getActivity = () => {
 
     console.log('editstatus', editStatus);
     const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
-      
+
     })
     showModal()
     setOpen(true);
-    
+
 
   }
-  
+
 
   const getID = (values) => {
 
@@ -348,20 +337,20 @@ const Activity = () => {
       render: (text, record) =>
         <div>
           <span className={
-            text === "In progress" ? "badge bg-inverse-warning" : 
-            text === "Complete" ? "badge bg-inverse-success":
-            "badge bg-inverse-blue"
+            text === "In progress" ? "badge bg-inverse-warning" :
+              text === "Complete" ? "badge bg-inverse-success" :
+                "badge bg-inverse-blue"
           }>{text}</span>
         </div>
-        
+
     },
     //edit 16/04/2023
     {
-        title: 'Responsible',
-        dataIndex: 'admin_name',
-        sorter: (a, b) => a.case_detail.length - b.case_detail.length,
-      },
-    
+      title: 'Responsible',
+      dataIndex: 'admin_name',
+      sorter: (a, b) => a.case_detail.length - b.case_detail.length,
+    },
+
 
 
     {
@@ -444,7 +433,7 @@ const Activity = () => {
               </Form.Item>
               {/* //edit 16/4/2023 */}
 
-               {/* //edit 16/4/2023 */}
+              {/* //edit 16/4/2023 */}
               <Form.Item
                 name="Status"
                 label="Status"
@@ -459,7 +448,7 @@ const Activity = () => {
                   <Option value="Complete">Complete</Option>
                 </Select>
               </Form.Item>
-               {/* //edit 16/4/2023 */}
+              {/* //edit 16/4/2023 */}
 
               <Form.Item
                 name="Responsible"
@@ -470,7 +459,7 @@ const Activity = () => {
                 }}
               >
                 <Select placeholder="Please select Responsible">
-                {options.map(options => ( <option key={options.admin_id} value={options.admin_id}>{options.admin_name}</option>))}
+                  {options.map(options => (<option key={options.admin_id} value={options.admin_id}>{options.admin_name}</option>))}
                 </Select>
               </Form.Item>
 
