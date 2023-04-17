@@ -458,11 +458,12 @@ router.get ("/get/get/for/join1/:id" ,(req,res,next) => {
    
     console.log('555',req.params)
     const sql = `
-        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail, r.status
+        SELECT r.id, e.employee_name, e.employee_email,d.device_id,d.device_serial, d.device_model, r.case_detail,r.priority, r.status,a.admin_name
         FROM tbl_repair AS r 
         LEFT JOIN tbl_device AS d ON r.device_id = d.device_id
         LEFT JOIN tbl_owner AS o ON d.device_id = o.device_id
         LEFT JOIN tbl_employee AS e ON o.employee_id = e.employee_id
+        LEFT JOIN tbl_admin AS a ON r.admin_id = a.admin_id
         WHERE r.id = ?        
     `;
     connect.query(sql,id, (error, results, fields) => {

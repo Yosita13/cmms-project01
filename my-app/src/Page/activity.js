@@ -27,7 +27,8 @@ const Activity = () => {
   const [dataEmployee, setDataEmployee] = useState();
   const [initialValues, setInitialValues] = useState();
   const [Status, setStatus] = useState(false);
-  const [priority, setPriority] = useState(false);//edit 16/04/2023
+  const [priority, setPriority] = useState();//edit 16/04/2023
+  const [responsible, setResponsible] = useState(false)//edit 17/04/2023
   const [data, setData] = useState([]);
   const [editStatus, setEditStatus] = useState();
   const [forsendEmail, setForsendEmail] = useState();
@@ -150,18 +151,25 @@ const Activity = () => {
 
 
 
-
-  const getActivity = () => {
+   //edit 17/04/2023
+  const getActivity = (values) => {
 
     console.log('editstatus', editStatus);
+    console.log('editstatus', priority);
     const { data } = axios.get(`http://localhost:5000/DB/get/status/${editStatus}`).then((response) => {
-
+      const defaultValue = {
+        Priority:priority ,
+        Status: Status,
+        Responsible: responsible,
+      }
+      console.log('222',defaultValue);
+      setInitialValues(defaultValue);
+          
     })
     showModal()
     setOpen(true);
-
-
   }
+   //edit 17/04/2023
 
 
   const getID = (values) => {
@@ -170,6 +178,8 @@ const Activity = () => {
     setEditStatus(values.id)
     setActivity_email(values.employee_email)
     setStatus(values.status)
+    setPriority(values.priority)
+    setResponsible(values.admin_name)
     console.log('sta', values.status);
     console.log('email', values.employee_email);
     //form.setFieldValue({Satus:values.status })
@@ -406,15 +416,14 @@ const Activity = () => {
             okText="submit"
             cancelText="cancle"
           >
+            {initialValues&&
             <Form
+            initialValues={initialValues }
               {...formItemLayout}
               form={form}
               name="save"
               onFinish={onFinish}
-              initialValues={{
-                residence: ['zhejiang', 'hangzhou', 'xihu'],
-                prefix: '86',
-              }}
+             
               scrollToFirstError
             >
               {/* //edit 16/4/2023 */}
@@ -477,7 +486,7 @@ const Activity = () => {
                 </Row>
 
               </Form.Item>
-            </Form>
+            </Form>}
           </Modal>
 
           {/* model2 */}
