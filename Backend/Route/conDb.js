@@ -366,25 +366,25 @@ router.put ("/update/statusComplete/:id" ,(req,res,next) => {
 })
 
 //get status for Repair_Status
-// router.get ("/get/status/:id" ,(req,res,next) => {
-//     const id = req.params.id;
-//     console.log('555',req.params)
+router.get ("/get/status/:id" ,(req,res,next) => {
+    const id = req.params.id;
+    console.log('555',req.params)
 
-//     connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
-//     (err,rows) => {
-//         if (err){
-//             res.send(err)
-//         }
-//         else {
-//             Object.keys(rows).forEach(function (key) {
-//                 var row = rows[key];
-//                 res.send(row)
+    connect.query('SELECT * FROM device_asset.tbl_repair WHERE id = ? ',id,
+    (err,rows) => {
+        if (err){
+            res.send(err)
+        }
+        else {
+            Object.keys(rows).forEach(function (key) {
+                var row = rows[key];
+                res.send(row)
                 
-//             })
-//             // console.log(rows);
-//         }
-//     }) 
-// })
+            })
+            // console.log(rows);
+        }
+    }) 
+})
 
 //get status for Repair_Status
 router.get ("/get/status/device/:device_id" ,(req,res,next) => {
