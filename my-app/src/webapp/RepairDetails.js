@@ -71,7 +71,6 @@ function RepairDetails() {
                 employee_name: employee_name
             })
             history.push({ pathname: '/webapp/sendRepairFinish' })
-            //sendNoti();
         } catch (e) {
 
         }
